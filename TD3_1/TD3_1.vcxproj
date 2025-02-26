@@ -115,6 +115,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(projectDir)Src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +134,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(projectDir)Src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,19 +152,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SampleFramework.cpp" />
-    <ClCompile Include="SampleScene.cpp" />
-    <ClCompile Include="SceneFactory.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="SampleFramework.h" />
-    <ClInclude Include="SampleScene.h" />
-    <ClInclude Include="SceneFactory.h" />
+    <ClCompile Include="Src\Essential\SampleFramework.cpp" />
+    <ClCompile Include="Src\Essential\SampleScene.cpp" />
+    <ClCompile Include="Src\Essential\SceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
       <Project>{9fb9cd27-3069-43a4-90e8-44bc0a21d5da}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Essential\SampleFramework.h" />
+    <ClInclude Include="Src\Essential\SampleScene.h" />
+    <ClInclude Include="Src\Essential\SceneFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

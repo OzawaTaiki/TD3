@@ -1,4 +1,4 @@
-#include "SampleFramework.h"
+#include <Essential/SampleFramework.h>
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)

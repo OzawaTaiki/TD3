@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Essential">
+      <UniqueIdentifier>{8fe94dcb-dc9f-475f-8c7e-4c401ecec204}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -21,25 +24,25 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SampleFramework.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Src\Essential\SampleFramework.cpp">
+      <Filter>Essential</Filter>
     </ClCompile>
-    <ClCompile Include="SampleScene.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Src\Essential\SampleScene.cpp">
+      <Filter>Essential</Filter>
     </ClCompile>
-    <ClCompile Include="SceneFactory.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Src\Essential\SceneFactory.cpp">
+      <Filter>Essential</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SampleFramework.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Src\Essential\SampleFramework.h">
+      <Filter>Essential</Filter>
     </ClInclude>
-    <ClInclude Include="SampleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Src\Essential\SampleScene.h">
+      <Filter>Essential</Filter>
     </ClInclude>
-    <ClInclude Include="SceneFactory.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Src\Essential\SceneFactory.h">
+      <Filter>Essential</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
