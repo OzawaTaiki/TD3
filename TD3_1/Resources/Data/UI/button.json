@@ -1,0 +1,36 @@
+{
+    "button": {
+        "button_anchor": {
+            "x": 0.5,
+            "y": 0.0
+        },
+        "button_isActive": 257,
+        "button_isVisible": 1,
+        "button_label": "button",
+        "button_pos": {
+            "x": 895.0,
+            "y": 204.0
+        },
+        "button_size": {
+            "x": 114.0,
+            "y": 126.0
+        },
+        "button_textureName": "white.png",
+        "buttonanchor": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "buttonisActive": 257,
+        "buttonisVisible": 1,
+        "buttonlabel": "button",
+        "buttonpos": {
+            "x": 365.0,
+            "y": 129.0
+        },
+        "buttonsize": {
+            "x": 54.0,
+            "y": 204.0
+        },
+        "buttontextureName": "white.png"
+    }
+}
