@@ -14,25 +14,16 @@ struct VertexShaderInput
     float3 normal : NORMAL0;
 };
 
-cbuffer gMaterial : register(b1)
-{
-    float4x4 unTransform;
-    float shininess;
-    int enableLighting;
-};
-
-cbuffer gColor : register(b2)
-{
-    float4 materialColor;
-}
-
-
 struct PixelShaderOutput
 {
-    float4 color : SV_TARGET0;
+    float4 data : SV_TARGET0;
 };
 
-Texture2D<float4> gTexture : register(t0);
+cbuffer gID : register(b2)
+{
+    uint id;
+}
+
 SamplerState gSampler : register(s0);
 
 VertexShaderOutput ShadowMapVS(VertexShaderInput _input)
@@ -54,7 +45,13 @@ VertexShaderOutput ShadowMapVS(VertexShaderInput _input)
 PixelShaderOutput ShadowMapPS(VertexShaderOutput _input)
 {
     PixelShaderOutput output;
-    output.color = float4(0.5f, 0.5f, 0.5f, 1.0f);
+
+    float r = (id & 0xFF) / 255.0; // 下位8bit
+    float g = ((id >> 8) & 0xFF) / 255.0; // 中位8bit
+    float b = ((id >> 16) & 0xFF) / 255.0; // 上位8bit
+
+    float a = 1.0f;
+    output.data = float4(r, g, b, a);
 
     return output;
 }

@@ -151,6 +151,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Essential\SampleFramework.cpp" />
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
@@ -162,6 +163,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />

@@ -4,12 +4,14 @@
 #include <Debug/ImGuiManager.h>
 #include <Features/Sprite/Sprite.h>
 #include <Features/Model/Manager/ModelManager.h>
+#include <Core/DXCommon/RTV/RTVManager.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Debug/ImguITools.h>
 
 
 SampleScene::~SampleScene()
 {
+    delete edgeDetection;
 }
 
 void SampleScene::Initialize()
@@ -27,12 +29,12 @@ void SampleScene::Initialize()
 
     input_ = Input::GetInstance();
 
-    oModel_ = std::make_unique<ObjectModel>("plane");
+    oModel_ = std::make_unique<ObjectModel>("bunny");
     oModel_->Initialize("bunny.gltf");
     oModel_->translate_.x = 3;
 
-    oModel2_ = std::make_unique<ObjectModel>("cube");
-    oModel2_->Initialize("Cube/Cube.obj");
+    oModel2_ = std::make_unique<ObjectModel>("human");
+    oModel2_->Initialize("human/walk.gltf");
     oModel2_->translate_.x = -3;
 
     aModel_ = std::make_unique<ObjectModel>("sample");
@@ -54,6 +56,10 @@ void SampleScene::Initialize()
     colors.push_back({ 0.1f,Vector4(0,1,0,1) });
     colors.push_back({ 0.532f,Vector4(0,1,0,1) });
     colors.push_back({ 0.12f,Vector4(1,1,0,1) });
+
+
+    edgeDetection = new EdgeDetection();
+    edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
 }
 
 void SampleScene::Update()
@@ -80,6 +86,8 @@ void SampleScene::Update()
 #endif // _DEBUG
     LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
+
+    edgeDetection->Execute();
 
     oModel_->Update();
     oModel2_->Update();
