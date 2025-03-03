@@ -15,6 +15,7 @@
 #include <Features/Model/Primitive/Cylinder.h>
 #include <Features/UVTransform/SpriteSheetAnimetion.h>
 #include <Features/UVTransform/UVTransformAnimation.h>
+#include <Features/SilhouetteDetection.h>
 
 #include <memory>
 
@@ -52,6 +53,9 @@ private:
     std::unique_ptr<LightGroup> lights_;
     std::list<std::pair<float, Vector4>> colors;
 
+    SilhouetteDetection* silhouetteDetection_ = nullptr;
+
+    bool a = false;
 
 
 #ifdef _DEBUG

@@ -7,9 +7,9 @@
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Debug/ImguITools.h>
 
-
 SampleScene::~SampleScene()
 {
+    delete silhouetteDetection_;
 }
 
 void SampleScene::Initialize()
@@ -32,11 +32,11 @@ void SampleScene::Initialize()
     oModel_->translate_.x = 3;
 
     oModel2_ = std::make_unique<ObjectModel>("cube");
-    oModel2_->Initialize("Cube/Cube.obj");
+    oModel2_->Initialize("AnimSample/AnimSample.gltf");
     oModel2_->translate_.x = -3;
 
     aModel_ = std::make_unique<ObjectModel>("sample");
-    aModel_->Initialize("AnimSample/AnimSample.gltf");
+    aModel_->Initialize("Plane/MovePlane.gltf");
 
     plane_ = std::make_unique<ObjectModel>("plane2");
     plane_->Initialize("Tile/Tile.gltf");
@@ -54,6 +54,19 @@ void SampleScene::Initialize()
     colors.push_back({ 0.1f,Vector4(0,1,0,1) });
     colors.push_back({ 0.532f,Vector4(0,1,0,1) });
     colors.push_back({ 0.12f,Vector4(1,1,0,1) });
+
+    silhouetteDetection_ = new SilhouetteDetection();
+
+    //silhouetteDetection_->Initialize(aModel_->GetVertexSrvIndex(),
+    //    SilhouetteDetection::CreateSRVForInputIndexResource(aModel_->GetIndexResource(0), 6) ,
+    //    4, 6, { 0,-1,0 });
+
+    silhouetteDetection_->Initialize(oModel2_->GetVertexSrvIndex(),
+        SilhouetteDetection::CreateSRVForInputIndexResource(oModel2_->GetIndexResource(0), 36),
+        24, 36, { 0,-1,0 });
+
+    // lightVPで変換後Zを０に
+    // それを回転して地面に
 }
 
 void SampleScene::Update()
@@ -64,9 +77,12 @@ void SampleScene::Update()
         Input::GetInstance()->IsKeyPressed(DIK_RSHIFT))
         enableDebugCamera_ = !enableDebugCamera_;
 
+    if(a)
+        silhouetteDetection_->Execute();
+
     if (ImGui::Button("rot"))
     {
-        aModel_->ChangeAnimation("RotateAnim", 0.5f,true);
+        aModel_->ChangeAnimation("xMove", 0.5f,true);
     }
 
     if (ImGui::Button("scale"))
@@ -115,6 +131,7 @@ void SampleScene::Draw()
 
     oModel_->Draw(&SceneCamera_, { 1,1,1,1 });
     oModel2_->Draw(&SceneCamera_, { 1,1,1,1 });
+    if(a)
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
     aModel_->Draw(&SceneCamera_, { 1,1,1,1 });
@@ -122,6 +139,7 @@ void SampleScene::Draw()
     Sprite::PreDraw();
     sprite_->Draw();
 
+    a = true;
 
     //button_->Draw();
 
