@@ -29,16 +29,20 @@ void SampleScene::Initialize()
 
     input_ = Input::GetInstance();
 
-    oModel_ = std::make_unique<ObjectModel>("bunny");
-    oModel_->Initialize("bunny.gltf");
-    oModel_->translate_.x = 3;
+    bunny_ = std::make_unique<ObjectModel>("bunny");
+    bunny_->Initialize("bunny.gltf");
+    bunny_->translate_.x = 3;
 
-    oModel2_ = std::make_unique<ObjectModel>("human");
-    oModel2_->Initialize("human/walk.gltf");
-    oModel2_->translate_.x = -3;
+    human_ = std::make_unique<ObjectModel>("human");
+    human_->Initialize("human/walk.gltf");
+    human_->translate_.x = -3;
 
-    aModel_ = std::make_unique<ObjectModel>("sample");
-    aModel_->Initialize("AnimSample/AnimSample.gltf");
+    cube_ = std::make_unique<ObjectModel>("cube");
+    cube_->Initialize("AnimSample/AnimSample.gltf");
+
+    //aModel_->translate_.x = -127;
+    //aModel_->translate_.z = 126;
+
 
     plane_ = std::make_unique<ObjectModel>("plane2");
     plane_->Initialize("Tile/Tile.gltf");
@@ -60,6 +64,7 @@ void SampleScene::Initialize()
 
     edgeDetection = new EdgeDetection();
     edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
+    test = false;
 }
 
 void SampleScene::Update()
@@ -72,12 +77,12 @@ void SampleScene::Update()
 
     if (ImGui::Button("rot"))
     {
-        aModel_->ChangeAnimation("RotateAnim", 0.5f,true);
+        cube_->ChangeAnimation("RotateAnim", 0.5f,true);
     }
 
     if (ImGui::Button("scale"))
     {
-        aModel_->ChangeAnimation("ScaleAnim", 0.5f);
+        cube_->ChangeAnimation("ScaleAnim", 0.5f);
     }
 
     ImGuiTool::GradientEditor("Ambient", colors);
@@ -87,11 +92,37 @@ void SampleScene::Update()
     LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
 
-    edgeDetection->Execute();
+    if (ImGui::Button("b"))
+    {
+        if (edgeDetection)
+            delete edgeDetection;
 
-    oModel_->Update();
-    oModel2_->Update();
-    aModel_->Update();
+        edgeDetection = new EdgeDetection();
+        edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
+
+        edgeDetection->Execute();
+
+        DirectionalLight light = lights_->GetDirectionalLight();
+
+        if (testModel_)
+        {
+            testModel_.reset();
+        }
+
+        testModel_ = std::make_unique<ObjectModel>("test");
+        testModel_->Initialize(edgeDetection->GenerateMeshFromContourPoints(Inverse(light.viewProjection), 1.0f));
+    }
+
+    test = true;
+
+
+    if (testModel_)
+    {
+        testModel_->Update();
+    }
+    bunny_->Update();
+    human_->Update();
+    cube_->Update();
     plane_->Update();
     sprite_->Update();
 
@@ -121,11 +152,16 @@ void SampleScene::Draw()
 
     ModelManager::GetInstance()->PreDrawForObjectModel();
 
-    oModel_->Draw(&SceneCamera_, { 1,1,1,1 });
-    oModel2_->Draw(&SceneCamera_, { 1,1,1,1 });
+    bunny_->Draw(&SceneCamera_, { 1,1,1,1 });
+    human_->Draw(&SceneCamera_, { 1,1,1,1 });
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
-    aModel_->Draw(&SceneCamera_, { 1,1,1,1 });
+    cube_->Draw(&SceneCamera_, { 1,1,1,1 });
+
+    if (testModel_)
+    {
+        testModel_->Draw(&SceneCamera_, { 1,1,1,1 });
+    }
 
     Sprite::PreDraw();
     sprite_->Draw();
@@ -143,9 +179,9 @@ void SampleScene::DrawShadow()
     PSOManager::GetInstance()->SetRootSignature(PSOFlags::Type_ShadowMap);
 
 
-    oModel_->DrawShadow(&SceneCamera_,0);
-    oModel2_->DrawShadow(&SceneCamera_,1);
-    aModel_->DrawShadow(&SceneCamera_, 2);
+    bunny_->DrawShadow(&SceneCamera_, 2);
+    //oModel2_->DrawShadow(&SceneCamera_,1);
+    cube_->DrawShadow(&SceneCamera_, 0);
 }
 
 #ifdef _DEBUG

@@ -42,11 +42,13 @@ private:
     Input* input_ = nullptr;
     ParticleManager* particleManager_ = nullptr;
 
-    std::unique_ptr<ObjectModel> aModel_ = nullptr;
+    std::unique_ptr<ObjectModel> cube_ = nullptr;
 
-    std::unique_ptr<ObjectModel> oModel_= nullptr;
-    std::unique_ptr<ObjectModel> oModel2_= nullptr;
+    std::unique_ptr<ObjectModel> bunny_= nullptr;
+    std::unique_ptr<ObjectModel> human_= nullptr;
     std::unique_ptr<ObjectModel> plane_ = nullptr;
+
+    std::unique_ptr<ObjectModel> testModel_ = nullptr;
 
     Sprite* sprite_ = nullptr;
 
@@ -54,6 +56,8 @@ private:
     std::list<std::pair<float, Vector4>> colors;
 
     EdgeDetection* edgeDetection;
+
+    bool test;
 
 
 #ifdef _DEBUG
