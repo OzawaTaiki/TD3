@@ -114,7 +114,7 @@ void EdgeDetection::ProcessContourPoints()
 
 }
 
-std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height)
+std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height, Vector3& _centroid)
 {
     // 輪郭点データを取得
     ProcessContourPoints();
@@ -215,7 +215,9 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4
     // 3. 実行完了を待機
     computeCommandList_->Execute(true);
 
-    return GenerateMesh();
+
+
+    return GenerateMesh(_centroid);
 }
 
 EdgeShape EdgeDetection::IdentifyShape()
@@ -325,11 +327,10 @@ std::vector<Vector2> EdgeDetection::FindCorners(const std::vector<Vector2>& cont
     return simplifiedContour; // 単純化した点群が角に相当
 }
 
-std::unique_ptr<Mesh> EdgeDetection::GenerateMesh()
+std::unique_ptr<Mesh> EdgeDetection::GenerateMesh(Vector3& _centroid)
 {
     std::vector<VertexData> vertices = {};
     std::vector<uint32_t> indices = {};
-
 
     // カウンターデータを読み取り、頂点数とインデックス数を取得
     auto counterReadback = dxCommon_->CreateReadbackResources(sizeof(uint32_t) * 8);
@@ -356,11 +357,9 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMesh()
         D3D12_RANGE readRange = { 0, sizeof(uint32_t) * 4 };
         uint32_t* mappedData = nullptr;
         counterReadback->Map(0, &readRange, reinterpret_cast<void**>(&mappedData));
-
         vertexCount = mappedData[0];
         triangleCount = mappedData[1];
         indexCount = mappedData[2];
-
         counterReadback->Unmap(0, nullptr);
     }
 
@@ -386,20 +385,45 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMesh()
 
     // 頂点データを読み取り
     std::vector<OriginalVertexData> originalVertices(vertexCount);
+
     {
         D3D12_RANGE readRange = { 0, sizeof(OriginalVertexData) * vertexCount };
         OriginalVertexData* mappedData = nullptr;
         vertexReadback->Map(0, &readRange, reinterpret_cast<void**>(&mappedData));
-
         memcpy(originalVertices.data(), mappedData, sizeof(OriginalVertexData) * vertexCount);
-
         vertexReadback->Unmap(0, nullptr);
     }
 
-    // オリジナル構造体から必要な構造体へ変換
+    // 1. 重心の計算（底面の頂点の平均）
+    Vector3 centroid(0, 0, 0);
+    uint32_t bottomVertexCount = 0;
+
+    // 底面の頂点（インデックス 0 から numCountourPoints-1 まで）を使用して重心を計算
+    uint32_t numCountourPoints = vertexCount / 2 - 1; // 底面と上面の頂点数の半分（中心点を除く）
+
+    for (uint32_t i = 0; i < originalVertices.size(); i++) {
+        centroid.x += originalVertices[i].position.x;
+        centroid.y += originalVertices[i].position.y;
+        centroid.z += originalVertices[i].position.z;
+        bottomVertexCount++;
+    }
+
+    if (bottomVertexCount > 0) {
+        centroid.x /= bottomVertexCount;
+        centroid.y /= bottomVertexCount;
+        centroid.z /= bottomVertexCount;
+    }
+
+    // 2. ローカル座標系への変換
     vertices.resize(vertexCount);
+
     for (uint32_t i = 0; i < vertexCount; i++) {
-        vertices[i].position = originalVertices[i].position;
+        // 重心を原点とするローカル座標系に変換
+        vertices[i].position.x = originalVertices[i].position.x - centroid.x;
+        vertices[i].position.y = originalVertices[i].position.y - centroid.y;
+        vertices[i].position.z = originalVertices[i].position.z - centroid.z;
+        vertices[i].position.w = originalVertices[i].position.w;
+
         vertices[i].texcoord = originalVertices[i].texcoord;
         vertices[i].normal = originalVertices[i].normal;
     }
@@ -410,16 +434,15 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMesh()
         D3D12_RANGE readRange = { 0, sizeof(uint32_t) * indexCount };
         uint32_t* mappedData = nullptr;
         indexReadback->Map(0, &readRange, reinterpret_cast<void**>(&mappedData));
-
         memcpy(indices.data(), mappedData, sizeof(uint32_t) * indexCount);
-
         indexReadback->Unmap(0, nullptr);
     }
 
-
+    // 3. メッシュの作成
     std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
-
     mesh->Initialize(vertices, indices);
+
+    _centroid = centroid;
 
     return std::move(mesh);
 }

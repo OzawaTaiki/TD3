@@ -96,7 +96,6 @@ void SampleScene::Update()
     // TODO IDを変更できるようにする
     // TODO Normalをなんとか
     // TODO SL PL での影の描画
-    // TODO
 
     if (ImGui::Button("b"))
     {
@@ -116,7 +115,7 @@ void SampleScene::Update()
         }
 
         testModel_ = std::make_unique<ObjectModel>("test");
-        testModel_->Initialize(edgeDetection->GenerateMeshFromContourPoints(Inverse(light.viewProjection), 1.0f));
+        testModel_->Initialize(edgeDetection->GenerateMeshFromContourPoints(Inverse(light.viewProjection), 1.0f, testModel_->translate_));
     }
 
     test = true;

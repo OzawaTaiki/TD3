@@ -104,13 +104,6 @@ float3 ScreenToWorld(float2 screenPos, float depth)
     groundIntersection.y = 0.0f; // 数値誤差を防ぐために明示的に0に設定
 
     return groundIntersection;
-
-
-    //// Y=0の平面に投影
-    //float3 result = worldPos.xyz;
-    //result.y = 0.0f;
-
-    //return result;
 }
 
 [numthreads(1, 1, 1)]
