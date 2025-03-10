@@ -14,6 +14,14 @@
 #include <d3d12.h>
 #include <wrl.h>
 
+enum class EdgeShape
+{
+    Triangle,
+    Rectangle,
+    Circle,
+    Other
+};
+
 class DXCommon;
 class EdgeDetection
 {
@@ -28,6 +36,8 @@ public:
     void ProcessContourPoints();
     std::unique_ptr<Mesh> GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height);
 
+    EdgeShape IdentifyShape();
+    std::vector<Vector2> FindCorners(const std::vector<Vector2>& contourPoints);
 
 
 private:

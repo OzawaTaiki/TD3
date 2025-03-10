@@ -39,6 +39,8 @@ void SampleScene::Initialize()
 
     cube_ = std::make_unique<ObjectModel>("cube");
     cube_->Initialize("AnimSample/AnimSample.gltf");
+    //cube_->Initialize("sphere/sphere.obj");
+    //cube_->Initialize("Triangular_Prism/Triangular_Prism.obj");
 
     //aModel_->translate_.x = -127;
     //aModel_->translate_.z = 126;
@@ -91,6 +93,10 @@ void SampleScene::Update()
 #endif // _DEBUG
     LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
+    // TODO IDを変更できるようにする
+    // TODO Normalをなんとか
+    // TODO SL PL での影の描画
+    // TODO
 
     if (ImGui::Button("b"))
     {
@@ -153,7 +159,7 @@ void SampleScene::Draw()
     ModelManager::GetInstance()->PreDrawForObjectModel();
 
     bunny_->Draw(&SceneCamera_, { 1,1,1,1 });
-    human_->Draw(&SceneCamera_, { 1,1,1,1 });
+    //human_->Draw(&SceneCamera_, { 1,1,1,1 });
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
     cube_->Draw(&SceneCamera_, { 1,1,1,1 });
@@ -179,9 +185,9 @@ void SampleScene::DrawShadow()
     PSOManager::GetInstance()->SetRootSignature(PSOFlags::Type_ShadowMap);
 
 
-    bunny_->DrawShadow(&SceneCamera_, 2);
+    //bunny_->DrawShadow(&SceneCamera_, 2);
     //oModel2_->DrawShadow(&SceneCamera_,1);
-    cube_->DrawShadow(&SceneCamera_, 0);
+    cube_->DrawShadow(&SceneCamera_, 2);
 }
 
 #ifdef _DEBUG

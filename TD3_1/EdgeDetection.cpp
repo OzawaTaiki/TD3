@@ -55,6 +55,7 @@ void EdgeDetection::Execute()
 
     inputData_->frameCount++;
     idData_->ID[0] = 2;
+    //idData_->ID[1] = 0;
 
 
 
@@ -107,7 +108,7 @@ void EdgeDetection::ProcessContourPoints()
     OrderContourPoints(contourPoints, orderedPoints);
 
     // ダグラス・ポイカー法で点を削減
-    float epsilon = 0.2f; // 許容誤差（適宜調整）
+    float epsilon = 2.0f; // 許容誤差（適宜調整）
     DouglasPeucker(orderedPoints, epsilon, contourPoints_);
 
 
@@ -120,6 +121,8 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4
     if (contourPoints_.empty() || contourPoints_.size() < 3) {
         return nullptr; // 少なくとも3点が必要
     }
+
+    IdentifyShape();
 
     // 1. コンピュートシェーダー用のバッファを準備
 
@@ -215,6 +218,112 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4
     return GenerateMesh();
 }
 
+EdgeShape EdgeDetection::IdentifyShape()
+{
+    // 中心点と面積を計算
+    Vector2 centroid(0, 0);
+    for (const auto& point : contourPoints_)
+    {
+        centroid += point;
+    }
+    centroid /= static_cast<float>(contourPoints_.size());
+
+    // 面積計算（多角形の面積）
+    float area = 0.0f;
+    for (size_t i = 0; i < contourPoints_.size(); i++)
+    {
+        const Vector2& p1 = contourPoints_[i];
+        const Vector2& p2 = contourPoints_[(i + 1) % contourPoints_.size()];
+        area += (p1.x * p2.y - p2.x * p1.y);
+    }
+    area = std::abs(area) / 2.0f;
+
+    // 最大距離と最小距離（中心からの）
+    float maxDist = 0.0f;
+    float minDist = FLT_MAX;
+    float avgDist = 0.0f;
+
+    for (const auto& point : contourPoints_)
+    {
+        float dist = (point - centroid).Length();
+        maxDist = (std::max)(maxDist, dist);
+        minDist = (std::min)(minDist, dist);
+        avgDist += dist;
+    }
+    avgDist /= contourPoints_.size();
+
+    // 円形度（Circularity）: 4π * area / perimeter^2
+    float perimeter = 0.0f;
+    for (size_t i = 0; i < contourPoints_.size(); i++)
+    {
+        const Vector2& p1 = contourPoints_[i];
+        const Vector2& p2 = contourPoints_[(i + 1) % contourPoints_.size()];
+        perimeter += (p2 - p1).Length();
+    }
+
+    float PI = 3.14159265359f;
+    float circularity = (4.0f * PI * area) / (perimeter * perimeter);
+
+    // 形状判定
+    // 1. 円判定 (circularity が 1に近い、かつ maxDist/minDist が1に近い)
+    bool isCircle = (circularity > 0.6f) && ((maxDist / minDist) < 1.2f);
+
+    // 2. 長方形判定 (面積と外接矩形の面積の比)
+    float minX = FLT_MAX, minY = FLT_MAX;
+    float maxX = -FLT_MAX, maxY = -FLT_MAX;
+
+    for (const auto& point : contourPoints_)
+    {
+        minX = (std::min)(minX, point.x);
+        minY = (std::min)(minY, point.y);
+        maxX = (std::max)(maxX, point.x);
+        maxY = (std::max)(maxY, point.y);
+    }
+
+    float boundingBoxArea = (maxX - minX) * (maxY - minY);
+    float rectangularity = area / boundingBoxArea;
+
+    bool isRectangle = (rectangularity > 0.8f) && !isCircle;
+
+    // 3. 三角形判定（頂点数が少なく、角の数が3に近い）
+    std::vector<Vector2> corners = FindCorners(contourPoints_);
+    bool isTriangle = (corners.size() == 3 || (corners.size() >= 3 && corners.size() <= 5));
+
+    // 分類結果
+    if (isCircle)
+    {
+        Debug::Log("Shape classified as: Circle\n");
+        return EdgeShape::Circle;
+    }
+    else if (isRectangle)
+    {
+        Debug::Log("Shape classified as: Rectangle\n");
+        return EdgeShape::Rectangle;
+    }
+    else if (isTriangle)
+    {
+        Debug::Log("Shape classified as: Triangle\n");
+        return EdgeShape::Triangle;
+    }
+    else
+    {
+        Debug::Log("Shape classified as: Other\n");
+        return EdgeShape::Other;
+    }
+
+}
+
+std::vector<Vector2> EdgeDetection::FindCorners(const std::vector<Vector2>& contourPoints)
+{
+    std::vector<Vector2> corners;
+
+    // ダグラス・ポイカー法で単純化
+    std::vector<Vector2> simplifiedContour;
+    float epsilon = 5.0f; // 単純化の程度
+    DouglasPeucker(contourPoints, epsilon, simplifiedContour);
+
+    return simplifiedContour; // 単純化した点群が角に相当
+}
 
 std::unique_ptr<Mesh> EdgeDetection::GenerateMesh()
 {
