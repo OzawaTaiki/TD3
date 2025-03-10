@@ -33,6 +33,9 @@
     <ClCompile Include="Src\Essential\SceneFactory.cpp">
       <Filter>Essential</Filter>
     </ClCompile>
+    <ClCompile Include="EdgeDetection.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Essential\SampleFramework.h">
@@ -43,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="Src\Essential\SceneFactory.h">
       <Filter>Essential</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgeDetection.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

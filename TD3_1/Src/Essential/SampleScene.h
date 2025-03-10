@@ -15,6 +15,7 @@
 #include <Features/Model/Primitive/Cylinder.h>
 #include <Features/UVTransform/SpriteSheetAnimetion.h>
 #include <Features/UVTransform/UVTransformAnimation.h>
+#include "../EdgeDetection.h"
 
 #include <memory>
 
@@ -41,17 +42,22 @@ private:
     Input* input_ = nullptr;
     ParticleManager* particleManager_ = nullptr;
 
-    std::unique_ptr<ObjectModel> aModel_ = nullptr;
+    std::unique_ptr<ObjectModel> cube_ = nullptr;
 
-    std::unique_ptr<ObjectModel> oModel_= nullptr;
-    std::unique_ptr<ObjectModel> oModel2_= nullptr;
+    std::unique_ptr<ObjectModel> bunny_= nullptr;
+    std::unique_ptr<ObjectModel> human_= nullptr;
     std::unique_ptr<ObjectModel> plane_ = nullptr;
+
+    std::unique_ptr<ObjectModel> testModel_ = nullptr;
 
     Sprite* sprite_ = nullptr;
 
     std::unique_ptr<LightGroup> lights_;
     std::list<std::pair<float, Vector4>> colors;
 
+    EdgeDetection* edgeDetection;
+
+    bool test;
 
 
 #ifdef _DEBUG
