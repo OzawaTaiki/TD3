@@ -34,7 +34,7 @@ public:
     void Execute();
 
     void ProcessContourPoints();
-    std::unique_ptr<Mesh> GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height,Vector3& _centroid);
+    std::unique_ptr<Mesh> GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height, const Vector3& _centroid);
 
     EdgeShape IdentifyShape();
     std::vector<Vector2> FindCorners(const std::vector<Vector2>& contourPoints);
@@ -129,8 +129,8 @@ private:
     uint32_t meshIndexSRVIndex_ = 0;
 
 
-    std::unique_ptr<Mesh> GenerateMesh(Vector3& _centroid);
-
+    std::unique_ptr<Mesh> GenerateMesh(const Vector3& _centroid);
+    void RecalculateNormals(std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices);
 
     void CreatePipelineAndRootSignatrue();
     void CreateMeshGenerationPipeline();

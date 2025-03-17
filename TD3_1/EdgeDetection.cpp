@@ -114,7 +114,7 @@ void EdgeDetection::ProcessContourPoints()
 
 }
 
-std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height, Vector3& _centroid)
+std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height, const Vector3& _centroid)
 {
     // 輪郭点データを取得
     ProcessContourPoints();
@@ -153,7 +153,7 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4
     contourPointsBuffer_->Unmap(0, nullptr);
 
     // 頂点バッファを作成・更新（必要に応じて）
-    uint32_t maxVertices = numPoints * 2 + 2; // 底面 + 上面 + 中心点2つ
+    uint32_t maxVertices = numPoints * 6;
     if (!meshVertexBuffer_ || meshVertexBufferSize_ < maxVertices) {
         meshVertexBuffer_ = dxCommon_->CreateUAVBufferResource(sizeof(OriginalVertexData) * maxVertices);
         meshVertexBufferSize_ = maxVertices;
@@ -172,7 +172,7 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMeshFromContourPoints(const Matrix4
     }
 
     // インデックスバッファを作成・更新（必要に応じて）
-    uint32_t maxTriangles = numPoints * 4; // 側面 + 底面上面
+    uint32_t maxTriangles = (numPoints - 2) * 2 + 2 * numPoints; // 側面 + 底面上面
     uint32_t indexCount = maxTriangles * 3; // 三角形あたり3インデックス
 
     if (!meshIndexBuffer_ || meshIndexBufferSize_ < indexCount) {
@@ -327,7 +327,7 @@ std::vector<Vector2> EdgeDetection::FindCorners(const std::vector<Vector2>& cont
     return simplifiedContour; // 単純化した点群が角に相当
 }
 
-std::unique_ptr<Mesh> EdgeDetection::GenerateMesh(Vector3& _centroid)
+std::unique_ptr<Mesh> EdgeDetection::GenerateMesh(const Vector3& _centroid)
 {
     std::vector<VertexData> vertices = {};
     std::vector<uint32_t> indices = {};
@@ -394,58 +394,88 @@ std::unique_ptr<Mesh> EdgeDetection::GenerateMesh(Vector3& _centroid)
         vertexReadback->Unmap(0, nullptr);
     }
 
-    // 1. 重心の計算（底面の頂点の平均）
-    Vector3 centroid(0, 0, 0);
-    uint32_t bottomVertexCount = 0;
 
-    // 底面の頂点（インデックス 0 から numCountourPoints-1 まで）を使用して重心を計算
-    uint32_t numCountourPoints = vertexCount / 2 - 1; // 底面と上面の頂点数の半分（中心点を除く）
+    // 頂点は法線別で作成
+    // サイズを計算
+    // 底面の数
+    uint32_t vertexSize = vertexCount/6 * 6; // 3つの法線を持つ頂点
 
-    for (uint32_t i = 0; i < originalVertices.size(); i++) {
-        centroid.x += originalVertices[i].position.x;
-        centroid.y += originalVertices[i].position.y;
-        centroid.z += originalVertices[i].position.z;
-        bottomVertexCount++;
-    }
+    // インデックスのサイズを計算
+    uint32_t indexSize = triangleCount * 3; // 底面と上面と側面の三角形の数*3
 
-    if (bottomVertexCount > 0) {
-        centroid.x /= bottomVertexCount;
-        centroid.y /= bottomVertexCount;
-        centroid.z /= bottomVertexCount;
-    }
+    std::vector <VertexData> verticesForMesh(vertexSize);
+    std::vector<uint32_t> indicesForMesh(indexSize);
 
     // 2. ローカル座標系への変換
-    vertices.resize(vertexCount);
 
     for (uint32_t i = 0; i < vertexCount; i++) {
         // 重心を原点とするローカル座標系に変換
-        vertices[i].position.x = originalVertices[i].position.x - centroid.x;
-        vertices[i].position.y = originalVertices[i].position.y - centroid.y;
-        vertices[i].position.z = originalVertices[i].position.z - centroid.z;
-        vertices[i].position.w = originalVertices[i].position.w;
+        verticesForMesh[i].position.x = originalVertices[i].position.x - _centroid.x;
+        verticesForMesh[i].position.y = originalVertices[i].position.y - _centroid.y;
+        verticesForMesh[i].position.z = originalVertices[i].position.z - _centroid.z;
+        verticesForMesh[i].position.w = originalVertices[i].position.w;
 
-        vertices[i].texcoord = originalVertices[i].texcoord;
-        vertices[i].normal = originalVertices[i].normal;
+        verticesForMesh[i].texcoord = originalVertices[i].texcoord;
+        verticesForMesh[i].normal = originalVertices[i].normal;
     }
 
     // インデックスデータを読み取り
-    indices.resize(indexCount);
     {
         D3D12_RANGE readRange = { 0, sizeof(uint32_t) * indexCount };
         uint32_t* mappedData = nullptr;
         indexReadback->Map(0, &readRange, reinterpret_cast<void**>(&mappedData));
-        memcpy(indices.data(), mappedData, sizeof(uint32_t) * indexCount);
+        memcpy(indicesForMesh.data(), mappedData, sizeof(uint32_t) * indexCount);
         indexReadback->Unmap(0, nullptr);
     }
 
+    //RecalculateNormals(verticesForMesh, indicesForMesh);
+
     // 3. メッシュの作成
     std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
-    mesh->Initialize(vertices, indices);
+    mesh->Initialize(verticesForMesh, indicesForMesh);
 
-    _centroid = centroid;
+    //_centroid = centroid;
 
     return std::move(mesh);
 }
+
+void EdgeDetection:: RecalculateNormals(std::vector<VertexData>& vertices, const std::vector<uint32_t>& indices)
+{
+    // 法線をリセット
+    for (auto& vertex : vertices) {
+        vertex.normal = Vector3(0, 0, 0);
+    }
+
+    // 各三角形の法線を計算して頂点に加算
+    for (size_t i = 0; i < indices.size(); i += 3) {
+        uint32_t i0 = indices[i];
+        uint32_t i1 = indices[i + 1];
+        uint32_t i2 = indices[i + 2];
+
+        Vector4& v0 = vertices[i0].position;
+        Vector4& v1 = vertices[i1].position;
+        Vector4& v2 = vertices[i2].position;
+
+        // 辺ベクトル
+        Vector4 edge1 = v1 - v0;
+        Vector4 edge2 = v2 - v0;
+
+        // 面法線（外積）
+        Vector3 normal = edge1.xyz().Cross(edge2.xyz());
+        normal.Normalize();
+
+        // 各頂点に法線を加算
+        vertices[i0].normal += normal;
+        vertices[i1].normal += normal;
+        vertices[i2].normal += normal;
+    }
+
+    // 法線を正規化
+    for (auto& vertex : vertices) {
+        vertex.normal = vertex.normal.Normalize();
+    }
+}
+
 
 void EdgeDetection::GetContourPoints(std::vector<Vector2>& _contourPoints)
 {

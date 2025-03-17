@@ -110,50 +110,17 @@ float3 ScreenToWorld(float2 screenPos, float depth)
 void main()
 {
     // 頂点数の計算
-    uint vertexCount = numCountourPoints * 2 + 2; // 底面 + 上面 + 中心点2つ
+    // 中心点は持たない 上面と底面の点が三つの法線を持つ
+    // 三つの法線->その点が属する面の法線
+    uint vertexCount = numCountourPoints * 2 * 3;
+    uint vertexOffset = 0;
 
     // カウンターの初期化
     CounterBuffer[0] = vertexCount; // 頂点数を記録
+    uint i = 0;
 
 
-    // 底面と上面の中心点の計算
-    float3 bottomCenter = float3(0, 0, 0);
-
-    uint i= 0;
-
-    // すべての輪郭点をスキャンして中心点を計算
-    for (i= 0; i < numCountourPoints; i++)
-    {
-        float depth = DepthTexture[ContourPoints[i]];
-        float3 bottomPos = ScreenToWorld(ContourPoints[i], depth);
-        bottomCenter += bottomPos;
-    }
-
-    // 中心点を平均化
-    bottomCenter /= numCountourPoints;
-    float3 topCenter = bottomCenter + float3(0.0f, height, 0.0f);
-
-    // 中心点を頂点バッファに格納
-    // 底面中心点
-    uint bottomCenterIndex = numCountourPoints * 2;
-    VertexData bottomCenterVertex;
-    bottomCenterVertex.position = float4(bottomCenter, 1.0f);
-    bottomCenterVertex.nomal = float3(0.0f, 1.0f, 0.0f);
-    bottomCenterVertex.pad = 0.0f;
-    bottomCenterVertex.texcoord = float2(0.5f, 0.5f); // 中心点のUV
-    VertexBuffer[bottomCenterIndex] = bottomCenterVertex;
-
-    // 上面中心点
-    uint topCenterIndex = numCountourPoints * 2 + 1;
-    VertexData topCenterVertex;
-    topCenterVertex.position = float4(topCenter, 1.0f);
-    topCenterVertex.nomal = float3(0.0f, 1.0f, 0.0f);
-    topCenterVertex.pad = 0.0f;
-    topCenterVertex.texcoord = float2(0.5f, 0.5f); // 中心点のUV
-    VertexBuffer[topCenterIndex] = topCenterVertex;
-
-    // 底面と上面の頂点を生成
-    for (i= 0; i < numCountourPoints; i++)
+    for (i = 0; i < numCountourPoints; i++)
     {
         // 底面の頂点
         float depth = DepthTexture[ContourPoints[i]];
@@ -162,11 +129,12 @@ void main()
 
         VertexData bottomVertex;
         bottomVertex.position = float4(bottomPos, 1.0f);
-        bottomVertex.nomal = float3(0.0f, 1.0f, 0.0f);
+        bottomVertex.nomal = float3(0.0f, -1.0f, 0.0f);
         bottomVertex.pad = 0.0f;
         bottomVertex.texcoord = float2(ContourPoints[i]) / screenDimensions; // 正規化したUV
 
         VertexBuffer[bottomIndex] = bottomVertex;
+
 
         // 上面の頂点
         float3 topPos = bottomPos + float3(0.0f, height, 0.0f);
@@ -179,56 +147,78 @@ void main()
         topVertex.texcoord = float2(ContourPoints[i]) / screenDimensions; // 同じUV
 
         VertexBuffer[topIndex] = topVertex;
+
+        vertexOffset += 2;
     }
 
-    // インデックスバッファの生成
     uint indexOffset = 0;
 
+    uint numTriangles = numCountourPoints - 2;
+
+    // 底面の三角形を生成
+    for (i = 0; i < numTriangles; i++)
+    {
+        TriangleIndices[indexOffset++] = 0;
+        TriangleIndices[indexOffset++] = i + 1;
+        TriangleIndices[indexOffset++] = i + 2;
+    }
+
+    //上面の三角形を生成
+    for (i = 0; i < numTriangles; i++)
+    {
+        TriangleIndices[indexOffset++] = i + numCountourPoints + 2;
+        TriangleIndices[indexOffset++] = i + numCountourPoints + 1;
+        TriangleIndices[indexOffset++] = numCountourPoints;
+    }
+
     // 側面の三角形を生成
-    for (i= 0; i < numCountourPoints; i++)
+    // 頂点は反時計回りに並んでいる
+    for (i = 0; i < numCountourPoints; i++)
     {
-        uint next = (i + 1) % numCountourPoints;
+        uint lb = i;
+        uint rb = (lb + 1) % vertexCount;
+        uint lt = i + numCountourPoints;
+        uint rt = (lt + 1) % vertexCount;
 
-        // 底面インデックス
-        uint b0 = i;
-        uint b1 = next;
+        float3 v0 = VertexBuffer[lb].position.xyz;
+        float3 v1 = VertexBuffer[rb].position.xyz;
+        float3 v2 = VertexBuffer[lt].position.xyz;
 
-        // 上面インデックス
-        uint t0 = i + numCountourPoints;
-        uint t1 = next + numCountourPoints;
+        float3 edge0 = normalize(v1 - v0); // 左下から右下へのベクトル 右方向のベクトル
+        float3 edge1 = normalize(v2 - v0); // 左下から左上へのベクトル 上方向のベクトル
 
-        // 1つ目の三角形（底辺→上辺→底辺）
-        TriangleIndices[indexOffset++] = b0;
-        TriangleIndices[indexOffset++] = t0;
-        TriangleIndices[indexOffset++] = b1;
+        float3 crossVector = normalize(cross(edge1, edge0));
 
-        // 2つ目の三角形（底辺→上辺→上辺）
-        TriangleIndices[indexOffset++] = b1;
-        TriangleIndices[indexOffset++] = t0;
-        TriangleIndices[indexOffset++] = t1;
+        uint copyVertexOffset = vertexOffset;
+        
+        VertexData triangleVertex = VertexBuffer[lb];
+        triangleVertex.nomal = normalize(crossVector);
+
+        VertexBuffer[copyVertexOffset++] = triangleVertex;
+
+        triangleVertex.position = VertexBuffer[rb].position;
+        VertexBuffer[copyVertexOffset++] = triangleVertex;
+
+        triangleVertex.position = VertexBuffer[lt].position;
+        VertexBuffer[copyVertexOffset++] = triangleVertex;
+
+        triangleVertex.position = VertexBuffer[rt].position;
+        VertexBuffer[copyVertexOffset++] = triangleVertex;
+
+
+        TriangleIndices[indexOffset++] = vertexOffset;
+        TriangleIndices[indexOffset++] = vertexOffset + 2;
+        TriangleIndices[indexOffset++] = vertexOffset + 1;
+
+        TriangleIndices[indexOffset++] = vertexOffset + 2;
+        TriangleIndices[indexOffset++] = vertexOffset + 3;
+        TriangleIndices[indexOffset++] = vertexOffset + 1;
+        
+        vertexOffset = copyVertexOffset;
+
     }
 
-    // 底面の三角形を生成（中心点から扇形）
-    for (i= 0; i < numCountourPoints; i++)
-    {
-        uint next = (i + 1) % numCountourPoints;
 
-        TriangleIndices[indexOffset++] = bottomCenterIndex;
-        TriangleIndices[indexOffset++] = i;
-        TriangleIndices[indexOffset++] = next;
-    }
-
-    // 上面の三角形を生成（中心点から扇形）
-    for (i= 0; i < numCountourPoints; i++)
-    {
-        uint next = (i + 1) % numCountourPoints;
-        uint current = i + numCountourPoints;
-        uint nextTop = next + numCountourPoints;
-
-        TriangleIndices[indexOffset++] = topCenterIndex;
-        TriangleIndices[indexOffset++] = nextTop;
-        TriangleIndices[indexOffset++] = current;
-    }
 
     // 生成した三角形の数を記録
     CounterBuffer[1] = indexOffset / 3; // 三角形数

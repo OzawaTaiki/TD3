@@ -29,15 +29,15 @@ void SampleScene::Initialize()
 
     input_ = Input::GetInstance();
 
-    bunny_ = std::make_unique<ObjectModel>("bunny");
-    bunny_->Initialize("bunny.gltf");
+    bunny_ = std::make_unique<ObjectModel>("cube");
+    bunny_->Initialize("cube/cube.obj");
     bunny_->translate_.x = 3;
 
     human_ = std::make_unique<ObjectModel>("human");
     human_->Initialize("human/walk.gltf");
     human_->translate_.x = -3;
 
-    cube_ = std::make_unique<ObjectModel>("cube");
+    cube_ = std::make_unique<ObjectModel>("animCube");
     cube_->Initialize("AnimSample/AnimSample.gltf");
     //cube_->Initialize("sphere/sphere.obj");
     //cube_->Initialize("Triangular_Prism/Triangular_Prism.obj");
@@ -98,6 +98,7 @@ void SampleScene::Update()
     // TODO SL PL での影の描画
 
     if (ImGui::Button("b"))
+    //if(test)
     {
         if (edgeDetection)
             delete edgeDetection;
@@ -161,7 +162,7 @@ void SampleScene::Draw()
     //human_->Draw(&SceneCamera_, { 1,1,1,1 });
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
-    cube_->Draw(&SceneCamera_, { 1,1,1,1 });
+    //cube_->Draw(&SceneCamera_, { 1,1,1,1 });
 
     if (testModel_)
     {
