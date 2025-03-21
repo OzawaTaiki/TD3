@@ -3,11 +3,10 @@
 #include <Features/Camera/Camera/Camera.h>
 #include <Features/Camera/DebugCamera/DebugCamera.h>
 #include <Features/Model/ObjectModel.h>
-#include <Features/Model/AnimationModel.h>
-
 #include <Features/Effect/Manager/ParticleManager.h>
 #include <Features/LineDrawer/LineDrawer.h>
 #include <System/Input/Input.h>
+
 #include <System/Time/GameTime.h>
 #include <Features/UI/UIButton.h>
 #include <Features/Model/Primitive/Ring.h>
@@ -51,7 +50,7 @@ private:
 
     std::unique_ptr<ObjectModel> testModel_ = nullptr;
 
-    Sprite* sprite_ = nullptr;
+    std::unique_ptr<Sprite> sprite_ = nullptr;
 
     std::unique_ptr<LightGroup> lights_;
     std::list<std::pair<float, Vector4>> colors;
