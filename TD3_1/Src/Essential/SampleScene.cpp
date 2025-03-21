@@ -12,6 +12,7 @@
 SampleScene::~SampleScene()
 {
     delete edgeDetection;
+    delete sequence_;
 }
 
 void SampleScene::Initialize()
@@ -37,10 +38,10 @@ void SampleScene::Initialize()
     human_->Initialize("human/walk.gltf");
     human_->translate_.x = -3;
 
-    cube_ = std::make_unique<ObjectModel>("animCube");
-    cube_->Initialize("AnimSample/AnimSample.gltf");
+    cube_ = std::make_unique<ObjectModel>("sample");
+    //cube_->Initialize("AnimSample/AnimSample.gltf");
     //cube_->Initialize("sphere/sphere.obj");
-    //cube_->Initialize("Triangular_Prism/Triangular_Prism.obj");
+    cube_->Initialize("Triangular_Prism/Triangular_Prism.obj");
 
     //aModel_->translate_.x = -127;
     //aModel_->translate_.z = 126;
@@ -56,16 +57,13 @@ void SampleScene::Initialize()
     lights_ = std::make_unique<LightGroup>();
     lights_->Initialize();
 
-    colors.push_back({ 0.0f,Vector4(1,0,0,1) });
-    colors.push_back({ 1.0f,Vector4(0,0,1,1) });
-    colors.push_back({ 0.5f,Vector4(0,1,0,1) });
-    colors.push_back({ 0.1f,Vector4(0,1,0,1) });
-    colors.push_back({ 0.532f,Vector4(0,1,0,1) });
-    colors.push_back({ 0.12f,Vector4(1,1,0,1) });
-
 
     edgeDetection = new EdgeDetection();
     edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
+
+    sequence_ = new AnimationSequence("test");
+    sequence_->Initialize("Resources/Data/");
+
     test = false;
 }
 
@@ -90,6 +88,8 @@ void SampleScene::Update()
     ImGuiTool::GradientEditor("Ambient", colors);
 
     lights_->DrawDebugWindow();
+
+    ImGuiTool::TimeLine("timeline", sequence_);
 #endif // _DEBUG
     LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
@@ -97,7 +97,7 @@ void SampleScene::Update()
     // TODO Normalをなんとか
     // TODO SL PL での影の描画
 
-    if (ImGui::Button("b"))
+    if (ImGui::Button("Create Shadow Obj"))
     //if(test)
     {
         if (edgeDetection)
@@ -119,7 +119,7 @@ void SampleScene::Update()
         testModel_->Initialize(edgeDetection->GenerateMeshFromContourPoints(Inverse(light.viewProjection), 1.0f, testModel_->translate_));
     }
 
-    test = true;
+    //test = true;
 
 
     if (testModel_)
@@ -162,7 +162,7 @@ void SampleScene::Draw()
     //human_->Draw(&SceneCamera_, { 1,1,1,1 });
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
-    //cube_->Draw(&SceneCamera_, { 1,1,1,1 });
+    cube_->Draw(&SceneCamera_, { 1,1,1,1 });
 
     if (testModel_)
     {

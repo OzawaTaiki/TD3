@@ -190,7 +190,7 @@ void main()
         float3 crossVector = normalize(cross(edge1, edge0));
 
         uint copyVertexOffset = vertexOffset;
-        
+
         VertexData triangleVertex = VertexBuffer[lb];
         triangleVertex.nomal = normalize(crossVector);
 
@@ -213,7 +213,7 @@ void main()
         TriangleIndices[indexOffset++] = vertexOffset + 2;
         TriangleIndices[indexOffset++] = vertexOffset + 3;
         TriangleIndices[indexOffset++] = vertexOffset + 1;
-        
+
         vertexOffset = copyVertexOffset;
 
     }

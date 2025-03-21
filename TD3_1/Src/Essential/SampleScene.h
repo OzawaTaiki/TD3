@@ -15,6 +15,7 @@
 #include <Features/Model/Primitive/Cylinder.h>
 #include <Features/UVTransform/SpriteSheetAnimetion.h>
 #include <Features/UVTransform/UVTransformAnimation.h>
+#include <Features/Animation/Sequence/AnimationSequence.h>
 #include "../EdgeDetection.h"
 
 #include <memory>
@@ -57,6 +58,8 @@ private:
 
     EdgeDetection* edgeDetection;
 
+    AnimationSequence* sequence_ = nullptr;
+ 
     bool test;
 
 
