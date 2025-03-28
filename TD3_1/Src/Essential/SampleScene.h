@@ -16,7 +16,8 @@
 #include <Features/UVTransform/SpriteSheetAnimetion.h>
 #include <Features/UVTransform/UVTransformAnimation.h>
 #include <Features/Animation/Sequence/AnimationSequence.h>
-#include "../EdgeDetection.h"
+
+#include <Features/Collision/Manager/CollisionManager.h>
 
 #include <memory>
 
@@ -43,24 +44,23 @@ private:
     Input* input_ = nullptr;
     ParticleManager* particleManager_ = nullptr;
 
-    std::unique_ptr<ObjectModel> cube_ = nullptr;
+    std::unique_ptr<ObjectModel> aModel_ = nullptr;
 
-    std::unique_ptr<ObjectModel> bunny_= nullptr;
-    std::unique_ptr<ObjectModel> human_= nullptr;
+    std::unique_ptr<ObjectModel> oModel_= nullptr;
+    std::unique_ptr<ObjectModel> oModel2_= nullptr;
     std::unique_ptr<ObjectModel> plane_ = nullptr;
 
-    std::unique_ptr<ObjectModel> testModel_ = nullptr;
-
-    std::unique_ptr<Sprite> sprite_ = nullptr;
+    std::unique_ptr <Sprite> sprite_ = nullptr;
 
     std::unique_ptr<LightGroup> lights_;
     std::list<std::pair<float, Vector4>> colors;
 
-    EdgeDetection* edgeDetection;
+    std::unique_ptr<AnimationSequence> sequence_ = nullptr;
 
-    AnimationSequence* sequence_ = nullptr;
+    AABBCollider* bunnyCollider_ = nullptr;
+    SphereCollider* cubeCollider_ = nullptr;
+    CapsuleCollider* cubeCollider2_ = nullptr;
 
-    bool test;
 
 
 #ifdef _DEBUG

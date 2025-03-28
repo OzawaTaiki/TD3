@@ -4,15 +4,18 @@
 #include <Debug/ImGuiManager.h>
 #include <Features/Sprite/Sprite.h>
 #include <Features/Model/Manager/ModelManager.h>
-#include <Core/DXCommon/RTV/RTVManager.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
+#include <Features/Collision/Manager/CollisionManager.h>
 #include <Debug/ImguITools.h>
+
+#include <Features/Collision/RayCast/RayCollisionManager.h>
 
 
 SampleScene::~SampleScene()
 {
-    delete edgeDetection;
-    delete sequence_;
+    delete bunnyCollider_;
+    delete cubeCollider_;
+    delete cubeCollider2_;
 }
 
 void SampleScene::Initialize()
@@ -30,22 +33,16 @@ void SampleScene::Initialize()
 
     input_ = Input::GetInstance();
 
-    bunny_ = std::make_unique<ObjectModel>("cube");
-    bunny_->Initialize("cube/cube.obj");
-    bunny_->translate_.x = 3;
+    oModel_ = std::make_unique<ObjectModel>("plane");
+    oModel_->Initialize("bunny.gltf");
+    oModel_->translate_.x = 3;
 
-    human_ = std::make_unique<ObjectModel>("human");
-    human_->Initialize("human/walk.gltf");
-    human_->translate_.x = -3;
+    oModel2_ = std::make_unique<ObjectModel>("cube");
+    oModel2_->Initialize("Cube/Cube.obj");
+    oModel2_->translate_.x = -3;
 
-    cube_ = std::make_unique<ObjectModel>("sample");
-    //cube_->Initialize("AnimSample/AnimSample.gltf");
-    //cube_->Initialize("sphere/sphere.obj");
-    cube_->Initialize("Triangular_Prism/Triangular_Prism.obj");
-
-    //aModel_->translate_.x = -127;
-    //aModel_->translate_.z = 126;
-
+    aModel_ = std::make_unique<ObjectModel>("sample");
+    aModel_->Initialize("AnimSample/AnimSample.gltf");
 
     plane_ = std::make_unique<ObjectModel>("plane2");
     plane_->Initialize("Tile/Tile.gltf");
@@ -57,14 +54,33 @@ void SampleScene::Initialize()
     lights_ = std::make_unique<LightGroup>();
     lights_->Initialize();
 
-
-    edgeDetection = new EdgeDetection();
-    edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
-
-    sequence_ = new AnimationSequence("test");
+    sequence_ = std::make_unique<AnimationSequence>("test");
     sequence_->Initialize("Resources/Data/");
 
-    test = false;
+    bunnyCollider_ = new AABBCollider();
+    bunnyCollider_->SetLayer("bunny");
+    bunnyCollider_->SetMinMax({ -1,-1,-1 }, { 1,1,1 });
+    bunnyCollider_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
+        Debug::Log("bunny Collision\n");
+        });
+
+    cubeCollider_ = new SphereCollider();
+    cubeCollider_->SetLayer("cube");
+    cubeCollider_->SetRadius(.5f);
+    cubeCollider_->SetWorldTransform(oModel2_->GetWorldTransform());
+    cubeCollider_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
+        });
+
+    cubeCollider2_ = new CapsuleCollider();
+    cubeCollider2_->SetLayer("cube2");
+    cubeCollider2_->SetRadius(1);
+    cubeCollider2_->SetHeight(5);
+    cubeCollider2_->SetWorldTransform(aModel_->GetWorldTransform());
+    cubeCollider2_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
+        Debug::Log("cube2 Collision\n");
+        });
+
+
 }
 
 void SampleScene::Update()
@@ -77,58 +93,34 @@ void SampleScene::Update()
 
     if (ImGui::Button("rot"))
     {
-        cube_->ChangeAnimation("RotateAnim", 0.5f,true);
+        aModel_->ChangeAnimation("RotateAnim", 0.5f,true);
     }
 
     if (ImGui::Button("scale"))
     {
-        cube_->ChangeAnimation("ScaleAnim", 0.5f);
+        aModel_->ChangeAnimation("ScaleAnim", 0.5f);
     }
 
-    ImGuiTool::GradientEditor("Ambient", colors);
+    ImGuiTool::TimeLine("TimeLine", sequence_.get());
 
     lights_->DrawDebugWindow();
 
-    ImGuiTool::TimeLine("timeline", sequence_);
+    static bool play = false;
+    if (ImGui::Button("Play"))
+    {
+        //play = !play;
+        sequence_->Save();
+    }
+    if (play)
+        oModel_->translate_ = sequence_->GetValue<Vector3>("a");
+
 #endif // _DEBUG
     LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
-    // TODO IDを変更できるようにする
-    // TODO Normalをなんとか
-    // TODO SL PL での影の描画
 
-    if (ImGui::Button("Create Shadow Obj"))
-    //if(test)
-    {
-        if (edgeDetection)
-            delete edgeDetection;
-
-        edgeDetection = new EdgeDetection();
-        edgeDetection->Initialize(RTVManager::GetInstance()->GetRenderTexture("ShadowMap"));
-
-        edgeDetection->Execute();
-
-        DirectionalLight light = lights_->GetDirectionalLight();
-
-        if (testModel_)
-        {
-            testModel_.reset();
-        }
-
-        testModel_ = std::make_unique<ObjectModel>("test");
-        testModel_->Initialize(edgeDetection->GenerateMeshFromContourPoints(Inverse(light.viewProjection), 1.0f, testModel_->translate_));
-    }
-
-    //test = true;
-
-
-    if (testModel_)
-    {
-        testModel_->Update();
-    }
-    bunny_->Update();
-    human_->Update();
-    cube_->Update();
+    oModel_->Update();
+    oModel2_->Update();
+    aModel_->Update();
     plane_->Update();
     sprite_->Update();
 
@@ -151,23 +143,49 @@ void SampleScene::Update()
         ParticleManager::GetInstance()->Update(SceneCamera_.rotate_);
     }
 
+
+#pragma region 半直線との衝突判定
+
+    if(input_->IsMouseTriggered(0))
+    {
+        // カーソルからRayを生成 (うまくいかない
+        Ray ray = Ray::CreateFromMouseCursor(SceneCamera_, input_->GetMousePosition());
+
+        Ray ray2 = Ray::CreateFromPointAndTarget(SceneCamera_.translate_, oModel2_->GetWorldTransform()->GetWorldPosition());
+        RayCollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
+
+        std::vector<RayCastHit> hits;
+        RayCollisionManager::GetInstance()->RayCastAll(ray2, hits, 0xffffffff);
+
+        RayCastHit hit2;
+        // 個々での衝突判定
+        if (RayCollisionManager::GetInstance()->RayCast(ray, cubeCollider_, hit2))
+        {
+            // 衝突した
+            Debug::Log("Ray Hit\n");
+        }
+        else
+            Debug::Log("Ray Not Hit\n");
+    }
+
+#pragma endregion
+
+    CollisionManager::GetInstance()->RegisterCollider(bunnyCollider_);
+    CollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
+    CollisionManager::GetInstance()->RegisterCollider(cubeCollider2_);
+
+    CollisionManager::GetInstance()->Update();
 }
 
 void SampleScene::Draw()
 {
-
     ModelManager::GetInstance()->PreDrawForObjectModel();
 
-    bunny_->Draw(&SceneCamera_, { 1,1,1,1 });
-    //human_->Draw(&SceneCamera_, { 1,1,1,1 });
+    oModel_->Draw(&SceneCamera_, { 1,1,1,1 });
+    oModel2_->Draw(&SceneCamera_, { 1,1,1,1 });
     plane_->Draw(&SceneCamera_, { 1,1,1,1 });
 
-    cube_->Draw(&SceneCamera_, { 1,1,1,1 });
-
-    if (testModel_)
-    {
-        testModel_->Draw(&SceneCamera_, { 1,1,1,1 });
-    }
+    aModel_->Draw(&SceneCamera_, { 1,1,1,1 });
 
     Sprite::PreDraw();
     sprite_->Draw();
@@ -184,10 +202,10 @@ void SampleScene::DrawShadow()
     PSOManager::GetInstance()->SetPipeLineStateObject(PSOFlags::Type_ShadowMap);
     PSOManager::GetInstance()->SetRootSignature(PSOFlags::Type_ShadowMap);
 
+    oModel_->DrawShadow(&SceneCamera_, 0);
+    oModel2_->DrawShadow(&SceneCamera_, 1);
+    aModel_->DrawShadow(&SceneCamera_, 2);
 
-    //bunny_->DrawShadow(&SceneCamera_, 2);
-    //oModel2_->DrawShadow(&SceneCamera_,1);
-    cube_->DrawShadow(&SceneCamera_, 2);
 }
 
 #ifdef _DEBUG

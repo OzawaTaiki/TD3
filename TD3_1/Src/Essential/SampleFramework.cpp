@@ -24,13 +24,11 @@ void SampleFramework::Update()
 {
     Framework::Update();
 
-    collisionManager_->ResetColliderList();
 
     //========== 更新処理 =========
 
     sceneManager_->Update();
     //particleManager_->Update(); TODO ; 引数のカメラの回転をなんとかしたい
-    collisionManager_->CheckAllCollision();
 
     //=============================
 }
