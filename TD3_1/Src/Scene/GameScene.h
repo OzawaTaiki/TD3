@@ -19,7 +19,9 @@ public:
     void Draw() override;
     void DrawShadow() override;
 
-
+/// <summary>
+/// 基盤機能
+/// </summary>
 private:
     // シーン関連
     Camera SceneCamera_ = {};
@@ -36,5 +38,34 @@ private:
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
 
+/// <summary>
+/// アプリケーション
+/// </summary>
+private:
+	/// <summary>
+	/// ゲームシーン用オブジェクト関連
+	/// </summary>
+    
+    // 初期化・更新・描画
+	void InitializeGameObjects();
+	void UpdateGameObjects();
+	void DrawGameObjects();
 
+    // キューブオブジェクト
+	std::unique_ptr<ObjectModel> objectCube_ = nullptr;
+
+
+    /// <summary>
+	/// オブジェクトのドラッグ&ドロップ関連
+	/// </summary>
+    
+    // オブジェクトのドラッグアンドドロップ処理
+    void HandleObjectDragAndDrop();
+
+    // オブジェクトを持ち上げている状態の管理
+    bool isHoldingObject_ = false;
+	// 持ち上げているオブジェクト（持ち上げているオブジェクトを一時的に保存）
+	ObjectModel* grabbedObject_ = nullptr;
+
+    Vector4 Transform(const Matrix4x4& mat, const Vector4& vec);
 };
