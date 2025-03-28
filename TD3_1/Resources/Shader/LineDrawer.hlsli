@@ -7,5 +7,4 @@ struct VertexShaderOutput
 cbuffer constBuf0 : register(b0)
 {
     float4x4 vp;
-	float4 color;
 }
