@@ -9,6 +9,8 @@
 #include <Features/LineDrawer/LineDrawer.h>
 #include <System/Input/Input.h>
 
+#include <Features/Collision/Manager/CollisionManager.h>
+#include <Features/Collision/RayCast/RayCollisionManager.h>
 
 class GameScene : public BaseScene
 {
@@ -53,7 +55,8 @@ private:
 
     // キューブオブジェクト
 	std::unique_ptr<ObjectModel> objectCube_ = nullptr;
-
+    // キューブオブジェクト用コライダー
+    OBBCollider* colliderObjectCube_ = nullptr;
 
     /// <summary>
 	/// オブジェクトのドラッグ&ドロップ関連
@@ -62,10 +65,8 @@ private:
     // オブジェクトのドラッグアンドドロップ処理
     void HandleObjectDragAndDrop();
 
-    // オブジェクトを持ち上げている状態の管理
-    bool isHoldingObject_ = false;
-	// 持ち上げているオブジェクト（持ち上げているオブジェクトを一時的に保存）
-	ObjectModel* grabbedObject_ = nullptr;
-
-    Vector4 Transform(const Matrix4x4& mat, const Vector4& vec);
+    // マウスレイの生成（オブジェクトとの衝突判定用）
+    Ray CreateMouseRay();
+    // マウスレイと平面の交差判定（オブジェクトが地面を貫通して奥に移動するのを防ぐ用）
+    bool IntersectRayWithPlane(const Ray& ray, const Vector3& planeNormal, float planeD, Vector3& outIntersection);
 };
