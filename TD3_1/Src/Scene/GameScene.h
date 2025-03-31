@@ -16,6 +16,7 @@
 #include <Application/MovableObject/MovableObjectManager.h>
 #include <Application/Field/Field.h>
 #include <Application/Tower/Tower.h>
+#include <Application/EnemySpawner/EnemySpawner.h>
 
 class GameScene : public BaseScene
 {
@@ -27,7 +28,7 @@ public:
     void DrawShadow() override;
 
 /// <summary>
-/// 基盤機能
+/// base
 /// </summary>
 private:
     // シーン関連
@@ -46,7 +47,7 @@ private:
     std::unique_ptr<ObjectModel> ground_ = nullptr;
 
 /// <summary>
-/// アプリケーション
+/// Application
 /// </summary>
 private:
     // フィールド
@@ -55,4 +56,6 @@ private:
     std::unique_ptr<MovableObjectManager> movableObjectManager_;
     // タワー
     std::unique_ptr<Tower> tower_;
+    // 敵スポナー
+    std::unique_ptr<EnemySpawner> enemySpawner_;
 };

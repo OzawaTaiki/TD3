@@ -153,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EdgeDetection.cpp" />
+    <ClCompile Include="Src\Application\EnemySpawner\EnemySpawner.cpp" />
+    <ClCompile Include="Src\Application\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp" />
     <ClCompile Include="Src\Application\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,6 +171,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EdgeDetection.h" />
+    <ClInclude Include="Src\Application\EnemySpawner\EnemySpawner.h" />
+    <ClInclude Include="Src\Application\Enemy\Enemy.h" />
     <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h" />
     <ClInclude Include="Src\Application\Field\Field.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />

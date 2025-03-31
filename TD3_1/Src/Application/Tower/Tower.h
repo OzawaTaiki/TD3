@@ -13,6 +13,8 @@ public:
 	void Update();
 	void Draw(const Camera& camera);
 
+	Vector3 GetTranslate() const { return object_->translate_; }
+
 private:
 	std::unique_ptr<ObjectModel> object_;
 	uint32_t texture_;
