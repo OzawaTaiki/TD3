@@ -74,6 +74,12 @@ void GameScene::InitializeGameObjects() {
 void GameScene::UpdateGameObjects() { 
 	for (size_t i = 0; i < movableObjects_.size(); i++) {
 		movableObjects_[i]->Update();
+
+		// コライダーのサイズをオブジェクトのスケールに応じて更新（見た目おかしいけど当たり判定は正しく取れてる）
+		Vector3 halfExtents = (movableObjects_[i]->GetMax() - movableObjects_[i]->GetMin()) * 0.5f;
+		halfExtents *= movableObjects_[i]->scale_; // スケールを考慮
+		colliders_[i]->SetHalfExtents(halfExtents);
+
 		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
 	}
 
@@ -167,7 +173,6 @@ void GameScene::HandleObjectDragAndDrop() {
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({0, 1, 0});
 	}
-
 	ImGui::Checkbox("isDragging", &isDragging);
 	ImGui::End();
 }
