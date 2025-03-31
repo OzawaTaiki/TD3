@@ -3,7 +3,7 @@
 #include <Features/Model/Manager/ModelManager.h>
 
 GameScene::~GameScene() {
-	delete colliderObjectCube_;
+	
 }
 
 void GameScene::Initialize() {
@@ -55,12 +55,6 @@ void GameScene::Update() {
 		SceneCamera_.UpdateMatrix();
 		particleManager_->Update(SceneCamera_.rotate_);
 	}
-
-	///
-	/// ゲームシーン用
-	///
-
-	objectCube_->Update();
 }
 
 void GameScene::Draw() {
@@ -74,83 +68,92 @@ void GameScene::Draw() {
 void GameScene::DrawShadow() {}
 
 void GameScene::InitializeGameObjects() {
-	// キューブオブジェクトの生成
-	objectCube_ = std::make_unique<ObjectModel>("cube");
-	objectCube_->Initialize("Cube/cube.obj");
-	objectCube_->translate_.y = 1.0f;
-	objectCube_->useQuaternion_ = true;
-	
-	// キューブオブジェクト用のOBBColliderを生成
-	colliderObjectCube_ = new OBBCollider();
-	colliderObjectCube_->SetLayer("cube");
 
-	Vector3 localMin = objectCube_->GetMin();
-	Vector3 localMax = objectCube_->GetMax();
-
-	Vector3 halfExtents = (localMax - localMin) * 0.5f;
-	colliderObjectCube_->SetHalfExtents(halfExtents); // 半分の大きさを計算してセット
-
-	Vector3 localPivot = (localMin + localMax) * 0.5f;
-	colliderObjectCube_->SetLocalPivot(localPivot); // 基準点を計算してセット
-
-	colliderObjectCube_->SetWorldTransform(objectCube_->GetWorldTransform());
 }
 
 void GameScene::UpdateGameObjects() { 
-	objectCube_->Update(); 
-	CollisionManager::GetInstance()->RegisterCollider(colliderObjectCube_);
+	for (size_t i = 0; i < movableObjects_.size(); i++) {
+		movableObjects_[i]->Update();
+		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
+	}
 
 	CollisionManager::GetInstance()->Update();
 }
 
 void GameScene::DrawGameObjects() { 
-	objectCube_->Draw(&SceneCamera_, {1, 1, 1, 1}); 
+	for (const auto& object : movableObjects_) {
+		object->Draw(&SceneCamera_, {1, 1, 1, 1});
+	}
+}
+
+void GameScene::AddMovableObject(const Vector3& position) { 
+	// オブジェクトを生成
+	auto object = std::make_unique<ObjectModel>("cube" + std::to_string(movableObjects_.size()));
+	object->Initialize("Cube/cube.obj");
+	object->translate_ = position;
+	object->useQuaternion_ = true;
+
+	// オブジェクト用コライダーを生成
+	auto collider = std::make_unique<OBBCollider>();
+	collider->SetLayer("cube");
+	collider->SetHalfExtents((object->GetMax() - object->GetMin()) * 0.5f);
+	collider->SetLocalPivot((object->GetMin() + object->GetMax()) * 0.5f);
+	collider->SetWorldTransform(object->GetWorldTransform());
+
+	// 配列に追加
+	movableObjects_.push_back(std::move(object));
+	colliders_.push_back(std::move(collider));
 }
 
 void GameScene::HandleObjectDragAndDrop() {
 	///
-	///	マウスレイとオブジェクトの衝突判定
+	///	マウスレイの生成と描画
 	/// 
 	
-	// マウスレイの生成
 	Ray mouseRay = CreateMouseRay();
 
-	// マウスレイの描画（デバッグ用）
+	// 終点を設定して描画（デバッグ用）
 	Vector3 mouseRayEnd = mouseRay.GetOrigin() + mouseRay.GetDirection() * mouseRay.GetLength();
 	LineDrawer::GetInstance()->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	LineDrawer::GetInstance()->RegisterPoint(mouseRay.GetOrigin(), mouseRayEnd);
 
-	// コライダー登録
-	RayCollisionManager::GetInstance()->RegisterCollider(colliderObjectCube_);
-
-	// マウスレイとキューブオブジェクトの衝突判定
-	RayCastHit hit;
-	bool isHit = RayCollisionManager::GetInstance()->RayCast(mouseRay, colliderObjectCube_, hit);
-
 	///
 	///	オブジェクトをドラッグで移動
-	/// 
+	///
 
 	static bool isDragging = false;
 	static Vector3 dragOffset;
-	static float dragStartHeight = 0.0f; // オブジェクトの元の高さを保持
+	static float dragStartHeight = 0.0f;          // オブジェクトの元の高さを保持
+	static ObjectModel* draggingObject = nullptr; // ドラッグ中のオブジェクト
+
+	// マウスレイとキューブオブジェクトの衝突判定
+	RayCastHit hit;
+	ObjectModel* hitObject = nullptr;
+	for (size_t i = 0; i < movableObjects_.size(); i++) {
+		if (RayCollisionManager::GetInstance()->RayCast(mouseRay, colliders_[i].get(), hit)) {
+			hitObject = movableObjects_[i].get();
+		}
+	}
 
 	// 左クリックした瞬間
 	if (input_->IsMouseTriggered(0)) {
-		if (isHit) {
+		if (hitObject) {
 			isDragging = true;
-			dragStartHeight = objectCube_->translate_.y; // 高さを記録
-			dragOffset = objectCube_->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
+			draggingObject = hitObject;
+			dragStartHeight = draggingObject->translate_.y; // 掴んだ際の高さを記録
+			dragOffset = draggingObject->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
 		}
 	}
 
 	if (isDragging) {
-		// マウスレイとオブジェクトの初期高さの平面との交点を求める
-		Vector3 intersection;
-		if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight, intersection)) {
-			objectCube_->translate_.x = intersection.x + dragOffset.x;
-			objectCube_->translate_.y = dragStartHeight;
-			objectCube_->translate_.z = intersection.z + dragOffset.z;
+		if (draggingObject) {
+			// マウスレイとオブジェクトの初期高さの平面との交点を求める
+			Vector3 intersection;
+			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight, intersection)) {
+				draggingObject->translate_.x = intersection.x + dragOffset.x;
+				draggingObject->translate_.y = dragStartHeight;
+				draggingObject->translate_.z = intersection.z + dragOffset.z;
+			}
 		}
 	}
 
@@ -161,7 +164,10 @@ void GameScene::HandleObjectDragAndDrop() {
 
 	// デバッグ表示
 	ImGui::Begin("hoge");
-	ImGui::Checkbox("isHit", &isHit);
+	if (ImGui::Button("AddObject")) {
+		AddMovableObject({0, 1, 0});
+	}
+
 	ImGui::Checkbox("isDragging", &isDragging);
 	ImGui::End();
 }

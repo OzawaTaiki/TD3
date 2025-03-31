@@ -53,15 +53,16 @@ private:
 	void UpdateGameObjects();
 	void DrawGameObjects();
 
-    // キューブオブジェクト
-	std::unique_ptr<ObjectModel> objectCube_ = nullptr;
-    // キューブオブジェクト用コライダー
-    OBBCollider* colliderObjectCube_ = nullptr;
-
     /// <summary>
 	/// オブジェクトのドラッグ&ドロップ関連
 	/// </summary>
     
+    // ドラッグによって動かせる複数のオブジェクトを配列で管理
+	std::vector<std::unique_ptr<ObjectModel>> movableObjects_;
+	std::vector<std::unique_ptr<OBBCollider>> colliders_;
+
+    // ドラッグによって動かせるオブジェクトを追加
+	void AddMovableObject(const Vector3& position);
     // オブジェクトのドラッグアンドドロップ処理
     void HandleObjectDragAndDrop();
 
