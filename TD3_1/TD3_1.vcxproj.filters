@@ -19,6 +19,12 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{38b74c24-1577-4412-9da5-8125f4d19972}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShadowObject">
+      <UniqueIdentifier>{b68afe6e-675f-47c0-967f-a6c2efaa7f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShadowObject\Detection">
+      <UniqueIdentifier>{7ef3a113-1114-4e6d-be1b-19dd137d115b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -36,11 +42,17 @@
     <ClCompile Include="Src\Essential\SceneFactory.cpp">
       <Filter>Essential</Filter>
     </ClCompile>
-    <ClCompile Include="EdgeDetection.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Scene\GameScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShadowObject\shadowobject.cpp">
+      <Filter>ShadowObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShadowObject\ShadowObjectGenerator.cpp">
+      <Filter>ShadowObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShadowObject\detection\EdgeDetection.cpp">
+      <Filter>ShadowObject\Detection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,11 +65,17 @@
     <ClInclude Include="Src\Essential\SceneFactory.h">
       <Filter>Essential</Filter>
     </ClInclude>
-    <ClInclude Include="EdgeDetection.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Scene\GameScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ShadowObject\ShadowObject.h">
+      <Filter>ShadowObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ShadowObject\ShadowObjectGenerator.h">
+      <Filter>ShadowObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ShadowObject\detection\EdgeDetection.h">
+      <Filter>ShadowObject\Detection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

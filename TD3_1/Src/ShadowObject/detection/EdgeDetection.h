@@ -8,7 +8,7 @@
 #include <Core/DXCommon/CmdList/CommandList.h>
 
 
-
+#include <initializer_list>
 #include <cstdint>
 
 #include <d3d12.h>
@@ -31,7 +31,7 @@ public:
 
     void Initialize(RenderTarget* _Rendertarget);
 
-    void Execute();
+    void Execute(std::initializer_list<uint32_t> _ids);
 
     void ProcessContourPoints();
     std::unique_ptr<Mesh> GenerateMeshFromContourPoints(const Matrix4x4& inverseLightViewProj, float height, const Vector3& _centroid);

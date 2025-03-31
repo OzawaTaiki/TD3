@@ -152,12 +152,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Essential\SampleFramework.cpp" />
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\ShadowObject\detection\EdgeDetection.cpp" />
+    <ClCompile Include="Src\ShadowObject\shadowobject.cpp" />
+    <ClCompile Include="Src\ShadowObject\ShadowObjectGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
@@ -165,11 +167,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\ShadowObject\detection\EdgeDetection.h" />
+    <ClInclude Include="Src\ShadowObject\ShadowObject.h" />
+    <ClInclude Include="Src\ShadowObject\ShadowObjectGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -42,7 +42,7 @@ void EdgeDetection::Initialize(RenderTarget* _Rendertarget)
 
 }
 
-void EdgeDetection::Execute()
+void EdgeDetection::Execute(std::initializer_list<uint32_t> _ids)
 {
     if (!isCreated_)
         CreatePipelineAndRootSignatrue();
@@ -54,8 +54,11 @@ void EdgeDetection::Execute()
     SRVManager::GetInstance()->PreDraw(commandList);
 
     inputData_->frameCount++;
-    idData_->ID[0] = 2;
-    //idData_->ID[1] = 0;
+    uint32_t index = 0;
+    for (uint32_t id : _ids)
+    {
+        idData_->ID[index++] = id;
+    }
 
 
 
