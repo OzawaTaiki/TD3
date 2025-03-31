@@ -78,10 +78,10 @@ void GameScene::UpdateGameObjects() {
 	for (size_t i = 0; i < movableObjects_.size(); i++) {
 		movableObjects_[i]->Update();
 
-		// コライダーのサイズをオブジェクトのスケールに応じて更新（見た目おかしいけど当たり判定は正しく取れてる）
-		Vector3 halfExtents = (movableObjects_[i]->GetMax() - movableObjects_[i]->GetMin()) * 0.5f;
-		halfExtents *= movableObjects_[i]->scale_; // スケールを考慮
-		colliders_[i]->SetHalfExtents(halfExtents);
+		//// コライダーのサイズをオブジェクトのスケールに応じて更新（見た目おかしいけど当たり判定は正しく取れてる）
+		//Vector3 halfExtents = (movableObjects_[i]->GetMax() - movableObjects_[i]->GetMin()) * 0.5f;
+		//halfExtents *= movableObjects_[i]->scale_; // スケールを考慮
+		//colliders_[i]->SetHalfExtents(halfExtents);
 
 		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
 	}
@@ -110,10 +110,11 @@ void GameScene::AddMovableObject(const Vector3& position) {
 	object->useQuaternion_ = true;
 
 	// オブジェクト用コライダーを生成
-	auto collider = std::make_unique<OBBCollider>();
+	auto collider = std::make_unique<AABBCollider>();
 	collider->SetLayer("cube");
-	collider->SetHalfExtents((object->GetMax() - object->GetMin()) * 0.5f);
-	collider->SetLocalPivot((object->GetMin() + object->GetMax()) * 0.5f);
+	/*collider->SetHalfExtents((object->GetMax() - object->GetMin()) * 0.5f);
+	collider->SetLocalPivot((object->GetMin() + object->GetMax()) * 0.5f);*/
+	collider->SetMinMax(object->GetMin(), object->GetMax());
 	collider->SetWorldTransform(object->GetWorldTransform());
 
 	// 配列に追加
@@ -130,7 +131,6 @@ void GameScene::HandleObjectDragAndDrop() {
 
 	// 終点を設定して描画（デバッグ用）
 	Vector3 mouseRayEnd = mouseRay.GetOrigin() + mouseRay.GetDirection() * mouseRay.GetLength();
-	LineDrawer::GetInstance()->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	LineDrawer::GetInstance()->RegisterPoint(mouseRay.GetOrigin(), mouseRayEnd);
 
 	///

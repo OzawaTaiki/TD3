@@ -65,7 +65,7 @@ private:
     
     // ドラッグによって動かせる複数のオブジェクトを配列で管理
 	std::vector<std::unique_ptr<ObjectModel>> movableObjects_;
-	std::vector<std::unique_ptr<OBBCollider>> colliders_;
+	std::vector<std::unique_ptr<AABBCollider>> colliders_;
 
     // ドラッグによって動かせるオブジェクトを追加
 	void AddMovableObject(const Vector3& position);

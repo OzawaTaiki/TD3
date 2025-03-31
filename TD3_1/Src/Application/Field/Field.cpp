@@ -13,7 +13,7 @@ void Field::Update() {
 
 	// 全てのコライダーを登録
 	for (size_t i = 0; i < colliders_.size(); i++) {
-		/*CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());*/
+		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
 	}
 }
 
@@ -43,10 +43,11 @@ void Field::LoadBlocksFromCSV(const std::string& filename) {
 		std::stringstream ss(line);
 		uint32_t blockType;
 		float x, y, z;
+		float scaleX, scaleY, scaleZ;
 		char comma;
 
 		// CSVのブロックデータのフォーマットを解析
-		if (!(ss >> blockType >> comma >> x >> comma >> y >> comma >> z)) {
+		if (!(ss >> blockType >> comma >> x >> comma >> y >> comma >> z >> comma >> scaleX >> comma >> scaleY >> comma >> scaleZ)) {
 			std::cerr << "Invalid CSV format: " << line << std::endl;
 			continue;
 		}
@@ -55,10 +56,12 @@ void Field::LoadBlocksFromCSV(const std::string& filename) {
 		auto block = std::make_unique<ObjectModel>("Block_" + std::to_string(blocks_.size()));
 		block->Initialize("Cube/cube.obj");
 		block->translate_ = Vector3(x, y + 1, z);
+		block->scale_ = Vector3(scaleX, scaleZ, scaleY); // blenderに合わせてYとZを入れ替え
 
 		// ブロック用コライダーを生成
 		auto collider = std::make_unique<AABBCollider>("BlockCollider_" + std::to_string(colliders_.size()));
 		collider->SetLayer("Block");
+		collider->SetLayerMask("Block");
 		collider->SetMinMax(block->GetMin(), block->GetMax());
 		collider->SetWorldTransform(block->GetWorldTransform());
 
