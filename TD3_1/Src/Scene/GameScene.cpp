@@ -8,8 +8,8 @@ GameScene::~GameScene() {
 
 void GameScene::Initialize() {
 	SceneCamera_.Initialize();
-	SceneCamera_.translate_ = {0, 30, -40};
-	SceneCamera_.rotate_ = {0.66f, 0, 0};
+	SceneCamera_.translate_ = {0, 50, -50};
+	SceneCamera_.rotate_ = {0.81f, 0, 0};
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
 
@@ -68,10 +68,13 @@ void GameScene::Draw() {
 void GameScene::DrawShadow() {}
 
 void GameScene::InitializeGameObjects() {
-
+	// フィールド初期化
+	field_ = std::make_unique<Field>();
+	field_->Initialize("mapData.csv");
 }
 
 void GameScene::UpdateGameObjects() { 
+	// ドラッグ移動可能オブジェクト更新
 	for (size_t i = 0; i < movableObjects_.size(); i++) {
 		movableObjects_[i]->Update();
 
@@ -83,13 +86,20 @@ void GameScene::UpdateGameObjects() {
 		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
 	}
 
+	// フィールド更新
+	field_->Update();
+
 	CollisionManager::GetInstance()->Update();
 }
 
 void GameScene::DrawGameObjects() { 
+	// ドラッグ移動可能オブジェクト描画
 	for (const auto& object : movableObjects_) {
 		object->Draw(&SceneCamera_, {1, 1, 1, 1});
 	}
+
+	// フィールド描画
+	field_->Draw(&SceneCamera_, {1, 1, 1, 1});
 }
 
 void GameScene::AddMovableObject(const Vector3& position) { 
@@ -170,6 +180,7 @@ void GameScene::HandleObjectDragAndDrop() {
 
 	// デバッグ表示
 	ImGui::Begin("hoge");
+	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({0, 1, 0});
 	}

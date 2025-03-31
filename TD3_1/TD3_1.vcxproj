@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EdgeDetection.cpp" />
+    <ClCompile Include="Src\Application\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Essential\SampleFramework.cpp" />
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EdgeDetection.h" />
+    <ClInclude Include="Src\Application\Field\Field.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />

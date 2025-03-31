@@ -12,6 +12,9 @@
 #include <Features/Collision/Manager/CollisionManager.h>
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 
+// Application
+#include <Application/Field/Field.h>
+
 class GameScene : public BaseScene
 {
 public:
@@ -52,6 +55,9 @@ private:
 	void InitializeGameObjects();
 	void UpdateGameObjects();
 	void DrawGameObjects();
+
+    // フィールド
+	std::unique_ptr<Field> field_;
 
     /// <summary>
 	/// オブジェクトのドラッグ&ドロップ関連
