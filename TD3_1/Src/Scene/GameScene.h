@@ -15,6 +15,7 @@
 // Application
 #include <Application/MovableObject/MovableObjectManager.h>
 #include <Application/Field/Field.h>
+#include <Application/Tower/Tower.h>
 
 class GameScene : public BaseScene
 {
@@ -50,7 +51,8 @@ private:
 private:
     // フィールド
 	std::unique_ptr<Field> field_;
-
-    // 動かせるオブジェクトを管理
-    std::unique_ptr<MobableObjectManager> movableObjectManager_;
+    // 動かせるオブジェクトを管理するクラス
+    std::unique_ptr<MovableObjectManager> movableObjectManager_;
+    // タワー
+    std::unique_ptr<Tower> tower_;
 };

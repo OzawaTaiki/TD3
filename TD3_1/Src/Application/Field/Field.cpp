@@ -1,8 +1,13 @@
 #include "Field.h"
 
+// Engine
+#include <Core/DXCommon/TextureManager/TextureManager.h>
+
 void Field::Initialize(const std::string& filename) {
 	// CSVからマップデータの読み込み
 	LoadBlocksFromCSV(filename);
+
+	texture_ = TextureManager::GetInstance()->Load("cube.jpg");
 }
 
 void Field::Update() {
@@ -20,7 +25,7 @@ void Field::Update() {
 void Field::Draw(const Camera* _camera, const Vector4& _color) {
 	// 全てのブロックを描画
 	for (auto& block : blocks_) {
-		block->Draw(_camera, _color);
+		block->Draw(_camera, texture_, _color);
 	}
 }
 

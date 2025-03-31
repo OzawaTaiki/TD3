@@ -11,12 +11,12 @@
 // Externals
 #include <imgui.h>
 
-void MobableObjectManager::Initialize()
+void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();
 }
 
-void MobableObjectManager::Update(const Camera& camera)
+void MovableObjectManager::Update(const Camera& camera)
 {
 	// オブジェクト更新
 	for (size_t i = 0; i < objects_.size(); i++) {
@@ -28,7 +28,7 @@ void MobableObjectManager::Update(const Camera& camera)
 	HandleObjectDragAndDrop(camera);
 }
 
-void MobableObjectManager::Draw(const Camera& camera)
+void MovableObjectManager::Draw(const Camera& camera)
 {
 	// オブジェクト描画
 	for (const auto& object : objects_) {
@@ -36,7 +36,7 @@ void MobableObjectManager::Draw(const Camera& camera)
 	}
 }
 
-void MobableObjectManager::AddMovableObject(const Vector3& position)
+void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成
 	auto object = std::make_unique<ObjectModel>("cube" + std::to_string(objects_.size()));
@@ -55,7 +55,7 @@ void MobableObjectManager::AddMovableObject(const Vector3& position)
 	colliders_.push_back(std::move(collider));
 }
 
-void MobableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
+void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 {
 	///
 	///	マウスレイの生成と描画
@@ -65,7 +65,7 @@ void MobableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 	// 終点を設定して描画（デバッグ用）
 	Vector3 mouseRayEnd = mouseRay.GetOrigin() + mouseRay.GetDirection() * mouseRay.GetLength();
-	LineDrawer::GetInstance()->RegisterPoint(mouseRay.GetOrigin(), mouseRayEnd);
+	/*LineDrawer::GetInstance()->RegisterPoint(mouseRay.GetOrigin(), mouseRayEnd);*/
 
 	///
 	///	オブジェクトをドラッグで移動
@@ -112,17 +112,18 @@ void MobableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		isDragging = false;
 	}
 
-	// デバッグ表示
+#ifdef _DEBUG
 	ImGui::Begin("movableObject");
 	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	if (ImGui::Button("AddObject")) {
-		AddMovableObject({ 0, 1, 0 });
+		AddMovableObject({ 0, 1, -6 });
 	}
 	ImGui::Checkbox("isDragging", &isDragging);
 	ImGui::End();
+#endif
 }
 
-Ray MobableObjectManager::CreateMouseRay(const Camera& camera)
+Ray MovableObjectManager::CreateMouseRay(const Camera& camera)
 {
 	// マウスカーソル位置の取得
 	Vector2 mousePos = input_->GetMousePosition();
@@ -156,7 +157,7 @@ Ray MobableObjectManager::CreateMouseRay(const Camera& camera)
 	return ray;
 }
 
-bool MobableObjectManager::IntersectRayWithPlane(const Ray& ray, const Vector3& planeNormal, float planeD, Vector3& outIntersection)
+bool MovableObjectManager::IntersectRayWithPlane(const Ray& ray, const Vector3& planeNormal, float planeD, Vector3& outIntersection)
 {
 	float denom = Dot(ray.GetDirection(), planeNormal);
 	if (fabs(denom) > 1e-6f) { // 平行でないことを確認

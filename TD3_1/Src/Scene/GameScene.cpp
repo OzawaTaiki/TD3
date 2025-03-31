@@ -39,8 +39,12 @@ void GameScene::Initialize() {
 	field_->Initialize("mapData.csv");
 
 	// 動かせるオブジェクトを管理するクラスの生成と初期化
-	movableObjectManager_ = std::make_unique<MobableObjectManager>();
+	movableObjectManager_ = std::make_unique<MovableObjectManager>();
 	movableObjectManager_->Initialize();
+
+	// タワーの生成と初期化
+	tower_ = std::make_unique<Tower>();
+	tower_->Initialize({ 0, 1, -2 });
 }
 
 void GameScene::Update() {
@@ -68,6 +72,8 @@ void GameScene::Update() {
 	field_->Update();
 	// 動かせるオブジェクト更新
 	movableObjectManager_->Update(SceneCamera_);
+	// タワー更新
+	tower_->Update();
 
 	CollisionManager::GetInstance()->Update();
 }
@@ -81,6 +87,8 @@ void GameScene::Draw() {
 	field_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
 	// 動かせるオブジェクト描画
 	movableObjectManager_->Draw(SceneCamera_);
+	// タワー描画
+	tower_->Draw(SceneCamera_);
 }
 
 void GameScene::DrawShadow() {}

@@ -31,4 +31,6 @@ private:
 	/// ブロックオブジェクト用コライダーの配列
 	/// </summary>
 	std::vector<std::unique_ptr<AABBCollider>> colliders_;
+
+	uint32_t texture_;
 };

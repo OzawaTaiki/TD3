@@ -12,7 +12,7 @@
 
 class Camera;
 
-class MobableObjectManager
+class MovableObjectManager
 {
 public:
 	void Initialize();
@@ -25,16 +25,16 @@ public:
 	/// <param name="position">オブジェクト生成位置</param>
 	void AddMovableObject(const Vector3& position);
 
-	/// <summary>
-	/// オブジェクトをドラッグアンドドロップで動かす処理
-	/// </summary>
-	void HandleObjectDragAndDrop(const Camera& camera);
-
 private:
 	std::vector<std::unique_ptr<ObjectModel>> objects_;
 	std::vector<std::unique_ptr<AABBCollider>> colliders_;
 
 	Input* input_ = nullptr;
+
+	/// <summary>
+	/// オブジェクトをドラッグアンドドロップで動かす処理
+	/// </summary>
+	void HandleObjectDragAndDrop(const Camera& camera);
 
 	/// <summary>
 	/// マウスレイの生成（オブジェクトとの衝突判定用）
