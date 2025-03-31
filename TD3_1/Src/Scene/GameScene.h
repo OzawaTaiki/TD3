@@ -13,6 +13,7 @@
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 
 // Application
+#include <Application/MovableObject/MovableObjectManager.h>
 #include <Application/Field/Field.h>
 
 class GameScene : public BaseScene
@@ -47,33 +48,9 @@ private:
 /// アプリケーション
 /// </summary>
 private:
-	/// <summary>
-	/// ゲームシーン用オブジェクト関連
-	/// </summary>
-    
-    // 初期化・更新・描画
-	void InitializeGameObjects();
-	void UpdateGameObjects();
-	void DrawGameObjects();
-
     // フィールド
 	std::unique_ptr<Field> field_;
 
-    /// <summary>
-	/// オブジェクトのドラッグ&ドロップ関連
-	/// </summary>
-    
-    // ドラッグによって動かせる複数のオブジェクトを配列で管理
-	std::vector<std::unique_ptr<ObjectModel>> movableObjects_;
-	std::vector<std::unique_ptr<AABBCollider>> colliders_;
-
-    // ドラッグによって動かせるオブジェクトを追加
-	void AddMovableObject(const Vector3& position);
-    // オブジェクトのドラッグアンドドロップ処理
-    void HandleObjectDragAndDrop();
-
-    // マウスレイの生成（オブジェクトとの衝突判定用）
-    Ray CreateMouseRay();
-    // マウスレイと平面の交差判定（オブジェクトが地面を貫通して奥に移動するのを防ぐ用）
-    bool IntersectRayWithPlane(const Ray& ray, const Vector3& planeNormal, float planeD, Vector3& outIntersection);
+    // 動かせるオブジェクトを管理
+    std::unique_ptr<MobableObjectManager> movableObjectManager_;
 };
