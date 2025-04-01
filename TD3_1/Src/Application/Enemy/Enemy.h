@@ -20,6 +20,7 @@ public:
 
 	void SetTarget(const Vector3& target) { targetPosition_ = target; }
 	bool IsDead() const { return isDead_; }
+	void Dead() { isDead_ = true; }
 
 protected:
 	std::unique_ptr<ObjectModel> object_;

@@ -39,14 +39,14 @@ void MovableObjectManager::Draw(const Camera& camera)
 void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成
-	auto object = std::make_unique<ObjectModel>("cube" + std::to_string(objects_.size()));
+	auto object = std::make_unique<ObjectModel>("movableObject" + std::to_string(objects_.size()));
 	object->Initialize("Cube/cube.obj");
 	object->translate_ = position;
 	object->useQuaternion_ = true;
 
 	// オブジェクト用コライダーを生成
 	auto collider = std::make_unique<AABBCollider>();
-	collider->SetLayer("cube");
+	collider->SetLayer("movableObject");
 	collider->SetMinMax(object->GetMin(), object->GetMax());
 	collider->SetWorldTransform(object->GetWorldTransform());
 

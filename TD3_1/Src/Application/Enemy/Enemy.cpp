@@ -11,34 +11,32 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 
 	collider_ = std::make_unique<SphereCollider>("enemyCollider");
 	collider_->SetLayer("enemy");
+	/*衝突判定を行わないコライダーを設定*/
+	collider_->SetLayerMask("enemy");
+	collider_->SetLayerMask("movableObject");
+	/*----------------------------*/
 	collider_->SetRadius(1.0f);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
+	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
+		this->Dead();
+		});
 
 	speed_ = 4.0f;
 }
 
 void NormalEnemy::Update()
 {
-	///
-	/// タワーへ移動させる
-	/// 
-
+	// ターゲットの位置まで移動
 	Vector3 direction = targetPosition_ - object_->translate_;
 	direction = Normalize(direction);
-
+	direction.y = 0; // 高さを固定するため、Y成分を無効化
 	object_->translate_ += direction * speed_ * kDeltaTime;
 
-	if (isDead_) {
-		object_->translate_.z += 10.0f;
-	}
-
-	// 衝突したら死亡させる
-	if (collider_->IsColliding()) {
-		isDead_ = true;
-	}
 
 	object_->Update();
-	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+	if (!isDead_) {
+		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+	}
 }
 
 void NormalEnemy::Draw(const Camera* camera)
