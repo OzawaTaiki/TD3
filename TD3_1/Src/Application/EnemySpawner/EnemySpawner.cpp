@@ -65,6 +65,7 @@ void EnemySpawner::Draw(const Camera* camera)
 }
 
 void EnemySpawner::DrawImGui(const std::string& name) {
+#ifdef _DEBUG
 	ImGui::Begin(name.c_str());
 	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
 
@@ -76,4 +77,5 @@ void EnemySpawner::DrawImGui(const std::string& name) {
 	}
 
 	ImGui::End();
+#endif
 }

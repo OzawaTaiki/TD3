@@ -509,6 +509,18 @@
             "Block",
             "Tower",
             "movableObject",
+            "enemy",
+            "Block",
+            "Tower",
+            "movableObject",
+            "enemy",
+            "Block",
+            "movableObject",
+            "Tower",
+            "enemy",
+            "Block",
+            "movableObject",
+            "Tower",
             "enemy"
         ]
     }

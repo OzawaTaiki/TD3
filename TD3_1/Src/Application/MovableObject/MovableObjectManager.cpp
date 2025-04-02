@@ -14,6 +14,8 @@
 void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();
+
+	AddMovableObject({0, 1, -6});
 }
 
 void MovableObjectManager::Update(const Camera& camera)
