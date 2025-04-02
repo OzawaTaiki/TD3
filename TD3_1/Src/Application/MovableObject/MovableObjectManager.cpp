@@ -15,7 +15,7 @@ void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();
 
-	AddMovableObject({0, 1, -6});
+	AddMovableObject({ 0, 1, -6 });
 }
 
 void MovableObjectManager::Update(const Camera& camera)
@@ -116,7 +116,6 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 #ifdef _DEBUG
 	ImGui::Begin("movableObject");
-	ImGui::Text("fps:%.2f", ImGui::GetIO().Framerate);
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({ 0, 1, -6 });
 	}

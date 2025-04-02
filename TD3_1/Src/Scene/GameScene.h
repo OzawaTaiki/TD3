@@ -16,7 +16,7 @@
 #include <Application/MovableObject/MovableObjectManager.h>
 #include <Application/Field/Field.h>
 #include <Application/Tower/Tower.h>
-#include <Application/EnemySpawner/EnemySpawner.h>
+#include <Application/EnemySpawnManager/EnemySpawnManager.h>
 
 class GameScene : public BaseScene
 {
@@ -50,14 +50,15 @@ private:
 /// Application
 /// </summary>
 private:
+    // ゲームシーン経過時間
+	uint32_t elapsedTime_ = 0;
+
     // フィールド
 	std::unique_ptr<Field> field_;
     // 動かせるオブジェクトを管理するクラス
     std::unique_ptr<MovableObjectManager> movableObjectManager_;
     // タワー
     std::unique_ptr<Tower> tower_;
-    // 敵スポナー
-    std::unique_ptr<EnemySpawner> enemySpawner1_;
-	std::unique_ptr<EnemySpawner> enemySpawner2_;
-	std::unique_ptr<EnemySpawner> enemySpawner3_;
+    // 敵を管理するクラス
+	std::unique_ptr<EnemySpawnManager> enemySpawnManager_;
 };

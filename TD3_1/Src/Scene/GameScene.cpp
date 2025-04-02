@@ -48,21 +48,26 @@ void GameScene::Initialize() {
 	tower_ = std::make_unique<Tower>();
 	tower_->Initialize({ 0, 0, -2 });
 
-	// 敵スポナー
-	enemySpawner1_ = std::make_unique<EnemySpawner>();
-	enemySpawner1_->Initialize({1, 1, 21}, tower_->GetTranslate());
-
-	enemySpawner2_ = std::make_unique<EnemySpawner>();
-	enemySpawner2_->Initialize({-26, 1, -4}, tower_->GetTranslate());
-	enemySpawner3_ = std::make_unique<EnemySpawner>();
-	enemySpawner3_->Initialize({24, 1, 0}, tower_->GetTranslate());
+	// 敵を管理するクラス
+	enemySpawnManager_ = std::make_unique<EnemySpawnManager>();
+	enemySpawnManager_->Initialize();
+	// ターゲットの位置を設定（動かないオブジェクトはここ、動くオブジェクトは更新）
+	enemySpawnManager_->SetTowerPosition(tower_->GetTranslate());
 }
 
 void GameScene::Update() {
+	// ゲームシーン経過時間
+	elapsedTime_++;
+
 #ifdef _DEBUG
 
 	if (input_->IsKeyTriggered(DIK_RETURN) && input_->IsKeyPressed(DIK_RSHIFT))
 		enableDebugCamera_ = !enableDebugCamera_;
+
+	ImGui::Begin("GameSceneInfo");
+	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
+	ImGui::Text("elapsedTime : %d", elapsedTime_);
+	ImGui::End();
 
 #endif // _DEBUG
 
@@ -85,17 +90,8 @@ void GameScene::Update() {
 	movableObjectManager_->Update(SceneCamera_);
 	// タワー更新
 	tower_->Update();
-	// 敵スポナー更新
-	enemySpawner1_->Update();
-
-	enemySpawner2_->Update();
-	enemySpawner3_->Update();
-
-	//
-	enemySpawner1_->DrawImGui("enemySpawner1");
-	enemySpawner2_->DrawImGui("enemySpawner2");
-	enemySpawner3_->DrawImGui("enemySpawner3");
-	//
+	// 敵管理クラス更新
+	enemySpawnManager_->Update();
 
 	CollisionManager::GetInstance()->Update();
 }
@@ -111,11 +107,8 @@ void GameScene::Draw() {
 	movableObjectManager_->Draw(SceneCamera_);
 	// タワー描画
 	tower_->Draw(SceneCamera_);
-	// 敵スポナー描画
-	enemySpawner1_->Draw(&SceneCamera_);
-
-	enemySpawner2_->Draw(&SceneCamera_);
-	enemySpawner3_->Draw(&SceneCamera_);
+	// 敵管理クラス描画
+	enemySpawnManager_->Draw(&SceneCamera_);
 }
 
 void GameScene::DrawShadow() {}
