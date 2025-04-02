@@ -14,6 +14,18 @@ void EnemySpawner::Initialize(const Vector3& position, const Vector3 towerPositi
 
 void EnemySpawner::Update()
 {
+	// 自動スポーン
+	elapsedTime_ += 1.0f / 60.0f;
+	if (elapsedTime_ > spawnInterval_) {
+		auto enemy = std::make_unique<NormalEnemy>();
+		enemy->Initialize(this->object_->translate_); // スポナー位置からスポーン
+		enemy->SetTarget(towetPositon_);              // ターゲットにタワーを設定
+		enemies_.push_back(std::move(enemy));
+
+		elapsedTime_ = 0.0f;
+	}
+
+
 	for (auto& enemy : enemies_) {
 		enemy->Update();
 	}
@@ -27,17 +39,17 @@ void EnemySpawner::Update()
 #ifdef _DEBUG
 	object_->Update();
 
-	ImGui::Begin("enemySpawner");
-	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
+	//ImGui::Begin("enemySpawner");
+	//ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
 
-	if (ImGui::Button("Spawn")) {
-		auto enemy = std::make_unique<NormalEnemy>();
-		enemy->Initialize(this->object_->translate_); // スポナー位置からスポーン
-		enemy->SetTarget(towetPositon_); // ターゲットにタワーを設定
-		enemies_.push_back(std::move(enemy));
-	}
+	//if (ImGui::Button("Spawn")) {
+	//	auto enemy = std::make_unique<NormalEnemy>();
+	//	enemy->Initialize(this->object_->translate_); // スポナー位置からスポーン
+	//	enemy->SetTarget(towetPositon_); // ターゲットにタワーを設定
+	//	enemies_.push_back(std::move(enemy));
+	//}
 
-	ImGui::End();
+	//ImGui::End();
 #endif 
 }
 
@@ -50,4 +62,18 @@ void EnemySpawner::Draw(const Camera* camera)
 #ifdef _DEBUG
 	object_->Draw(camera, { 1, 1, 1, 1 });
 #endif 
+}
+
+void EnemySpawner::DrawImGui(const std::string& name) {
+	ImGui::Begin(name.c_str());
+	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
+
+	if (ImGui::Button("Spawn")) {
+		auto enemy = std::make_unique<NormalEnemy>();
+		enemy->Initialize(this->object_->translate_); // スポナー位置からスポーン
+		enemy->SetTarget(towetPositon_);              // ターゲットにタワーを設定
+		enemies_.push_back(std::move(enemy));
+	}
+
+	ImGui::End();
 }

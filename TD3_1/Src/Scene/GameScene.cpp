@@ -49,8 +49,13 @@ void GameScene::Initialize() {
 	tower_->Initialize({ 0, 0, -2 });
 
 	// 敵スポナー
-	enemySpawner_ = std::make_unique<EnemySpawner>();
-	enemySpawner_->Initialize({1, 1, 21}, tower_->GetTranslate());
+	enemySpawner1_ = std::make_unique<EnemySpawner>();
+	enemySpawner1_->Initialize({1, 1, 21}, tower_->GetTranslate());
+
+	enemySpawner2_ = std::make_unique<EnemySpawner>();
+	enemySpawner2_->Initialize({-26, 1, -4}, tower_->GetTranslate());
+	enemySpawner3_ = std::make_unique<EnemySpawner>();
+	enemySpawner3_->Initialize({24, 1, 0}, tower_->GetTranslate());
 }
 
 void GameScene::Update() {
@@ -81,7 +86,16 @@ void GameScene::Update() {
 	// タワー更新
 	tower_->Update();
 	// 敵スポナー更新
-	enemySpawner_->Update();
+	enemySpawner1_->Update();
+
+	enemySpawner2_->Update();
+	enemySpawner3_->Update();
+
+	//
+	enemySpawner1_->DrawImGui("enemySpawner1");
+	enemySpawner2_->DrawImGui("enemySpawner2");
+	enemySpawner3_->DrawImGui("enemySpawner3");
+	//
 
 	CollisionManager::GetInstance()->Update();
 }
@@ -98,7 +112,10 @@ void GameScene::Draw() {
 	// タワー描画
 	tower_->Draw(SceneCamera_);
 	// 敵スポナー描画
-	enemySpawner_->Draw(&SceneCamera_);
+	enemySpawner1_->Draw(&SceneCamera_);
+
+	enemySpawner2_->Draw(&SceneCamera_);
+	enemySpawner3_->Draw(&SceneCamera_);
 }
 
 void GameScene::DrawShadow() {}

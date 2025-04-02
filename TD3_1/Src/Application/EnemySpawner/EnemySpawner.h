@@ -15,11 +15,16 @@ public:
 	void Update();
 	void Draw(const Camera* camera);
 
+	void DrawImGui(const std::string& name);
+
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	std::unique_ptr<ObjectModel> object_; // スポナーを可視化するためだけなので消してもよい
 
 	Vector3 towetPositon_;
+
+	float spawnInterval_ = 4.0f;
+	float elapsedTime_ = 0.0f;
 };
 

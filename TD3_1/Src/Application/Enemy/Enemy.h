@@ -24,7 +24,7 @@ public:
 
 protected:
 	std::unique_ptr<ObjectModel> object_;
-	std::unique_ptr<SphereCollider> collider_;
+	std::unique_ptr<AABBCollider> collider_;
 
 	const float kDeltaTime = 1.0f / 60.0f;
 

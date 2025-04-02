@@ -9,13 +9,12 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	object_->Initialize("Sphere/sphere.obj");
 	object_->translate_ = spawnPosition;
 
-	collider_ = std::make_unique<SphereCollider>("enemyCollider");
+	collider_ = std::make_unique<AABBCollider>("enemyCollider");
 	collider_->SetLayer("enemy");
 	/*衝突判定を行わないコライダーを設定*/
 	collider_->SetLayerMask("enemy");
-	collider_->SetLayerMask("movableObject");
 	/*----------------------------*/
-	collider_->SetRadius(1.0f);
+	collider_->SetMinMax(object_->GetMin(), object_->GetMax());
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
 		this->Dead();

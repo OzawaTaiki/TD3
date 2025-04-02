@@ -57,5 +57,7 @@ private:
     // タワー
     std::unique_ptr<Tower> tower_;
     // 敵スポナー
-    std::unique_ptr<EnemySpawner> enemySpawner_;
+    std::unique_ptr<EnemySpawner> enemySpawner1_;
+	std::unique_ptr<EnemySpawner> enemySpawner2_;
+	std::unique_ptr<EnemySpawner> enemySpawner3_;
 };
