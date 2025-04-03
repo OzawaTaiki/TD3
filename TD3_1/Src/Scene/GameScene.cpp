@@ -56,9 +56,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	// ゲームシーン経過時間
-	elapsedTime_++;
-
 #ifdef _DEBUG
 
 	if (input_->IsKeyTriggered(DIK_RETURN) && input_->IsKeyPressed(DIK_RSHIFT))
@@ -66,7 +63,6 @@ void GameScene::Update() {
 
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
-	ImGui::Text("elapsedTime : %d", elapsedTime_);
 	ImGui::End();
 
 #endif // _DEBUG

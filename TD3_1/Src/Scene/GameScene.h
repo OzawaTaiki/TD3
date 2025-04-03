@@ -50,9 +50,6 @@ private:
 /// Application
 /// </summary>
 private:
-    // ゲームシーン経過時間
-	uint32_t elapsedTime_ = 0;
-
     // フィールド
 	std::unique_ptr<Field> field_;
     // 動かせるオブジェクトを管理するクラス

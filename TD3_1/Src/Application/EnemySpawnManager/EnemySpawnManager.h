@@ -6,6 +6,9 @@
 // Application
 #include <Application/Enemy/Enemy.h>
 
+// Externals
+#include <json.hpp>
+
 class Camera;
 
 class EnemySpawnManager {
@@ -27,13 +30,43 @@ private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	/// <summary>
+	/// 敵スポーンの情報
+	/// </summary>
+	struct SpawnData {
+		bool spawned = false; // スポーン済みかどうか
+		std::string type; // 種類
+		float spawnTime; // 出現時間（秒）
+		Vector3 position; // 出現位置
+		/*新しいパラメーターはここから追加*/
+	};
+
+	/// <summary>
+	/// 敵の出現データを格納
+	/// </summary>
+	std::vector<SpawnData> spawnData_;
+
+	/// <summary>
 	/// 敵のスポーン位置
 	/// </summary>
 	const Vector3 kLeftSpawnPos_ = {-26, 1, -4};
 	const Vector3 kTopSpawnPos_ = {1, 1, 22};
-	const Vector3 kRightSpawnPos_ = {28, 1, 0};
+	const Vector3 kRightSpawnPos_ = {26, 1, 0};
+
+	/// <summary>
+	/// スポーンエディタの表示
+	/// </summary>
+	void DrawSpawnEditor();
+
+	void SaveToFile(); // JSONファイルへ保存
+	void LoadFromFile(); // JSONファイルから読み込み
+
+	// 経過時間（仮なのであとで整理）
+	float elapsedTime_ = 0;
+	const float kDeltaTime = 1.0f / 60.0f;
+	bool isTimerActive_ = false;
 
 	#ifdef _DEBUG
+	// スポーン位置表示用のオブジェクト
 	std::vector<std::unique_ptr<ObjectModel>> debugSpawners_;
 	#endif
 
