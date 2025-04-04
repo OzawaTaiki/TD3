@@ -15,7 +15,7 @@ void Tower::Initialize(const Vector3& position)
 
 	texture_ = TextureManager::GetInstance()->Load("tower.png");
 	
-	collider_ = std::make_unique<AABBCollider>();
+	collider_ = std::make_unique<AABBCollider>("TowerCollider");
 	collider_->SetLayer("Tower");
 	collider_->SetMinMax(object_->GetMin(), object_->GetMax());
 	collider_->SetWorldTransform(object_->GetWorldTransform());

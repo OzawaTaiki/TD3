@@ -2,11 +2,12 @@
 
 // Engine
 #include <Math/Vector/VectorFunction.h>
+#include <Core/DXCommon/TextureManager/TextureManager.h>
 
 void NormalEnemy::Initialize(const Vector3& spawnPosition)
 {
 	object_ = std::make_unique<ObjectModel>("normalEnemy");
-	object_->Initialize("Sphere/sphere.obj");
+	object_->Initialize("Enemy/enemy.obj");
 	object_->translate_ = spawnPosition;
 
 	collider_ = std::make_unique<AABBCollider>("enemyCollider");

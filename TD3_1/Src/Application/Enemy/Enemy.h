@@ -44,5 +44,8 @@ public:
 	void Initialize(const Vector3& spawnPosition) override;
 	void Update() override; // ノーマルの敵はタワーへ向かう
 	void Draw(const Camera* camera) override;
+
+private:
+	uint32_t texture_;
 };
 

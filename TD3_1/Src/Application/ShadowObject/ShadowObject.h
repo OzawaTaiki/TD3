@@ -28,9 +28,13 @@ public:
 private:
 	std::unique_ptr<ObjectModel> object_;
 	uint32_t texture_;
+	std::unique_ptr<OBBCollider> collider_;
 
 	// 動かせるオブジェクトの位置を保持（寄生先）
 	Vector3 movableObjectPosition_;
 	// ポイントライトの位置を保持
 	Vector3 lightPosition_;
+
+private:
+	Matrix4x4 MakeRotateMatrix(const Quaternion& q);
 };

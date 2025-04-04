@@ -1,1 +1,11 @@
-null
+[
+    {
+        "spawn_position": [
+            1.0,
+            1.0,
+            22.0
+        ],
+        "spawn_time": 2.0,
+        "type": "Normal"
+    }
+]
