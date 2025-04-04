@@ -975,7 +975,15 @@
             "movableObject",
             "Tower",
             "ShadowObject",
-            "enemy"
+            "enemy",
+            "Block",
+            "movableObject",
+            "Tower",
+            "ShadowObject",
+            "Block",
+            "movableObject",
+            "Tower",
+            "ShadowObject"
         ]
     }
 }

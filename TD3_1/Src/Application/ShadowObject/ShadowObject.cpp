@@ -73,7 +73,7 @@ void ShadowObject::Update() {
 	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 
-	/*CollisionManager::GetInstance()->RegisterCollider(collider_.get());*/
+	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 
 #ifdef _DEBUG
 	ImGui::Begin("shadowObject");
