@@ -31,8 +31,11 @@ SamplerState gSampler : register(s0);
 Texture2D<float> gShadowMap : register(t1);
 SamplerComparisonState gShadowSampler : register(s1);
 
+TextureCube<float4> gCubeMap[MAX_POINT_LIGHT * 6] : register(t2);
+SamplerState gCubeMapSampler : register(s2);
+
 float3 CalculateDirectionalLighting(VertexShaderOutput _input, float3 _toEye, float4 _textureColor);
-float3 CalculatePointLighting(VertexShaderOutput _input, PointLight _PL, float3 _toEye, float4 _textureColor);
+float3 CalculatePointLighting(VertexShaderOutput _input, PointLight _PL, int _lightIndex, float3 _toEye, float4 _textureColor);
 float3 CalculateSpotLighting(VertexShaderOutput _input, SpotLight _SL, float3 _toEye, float4 _textureColor);
 
 float3 CalculateLightingWithMultiplePointLights(VertexShaderOutput _input, float3 _toEye, float4 _textureColor);
@@ -54,6 +57,45 @@ float ComputeShadow(float4 shadowCoord)
     float shadow = (currentDepth > closestDepth + 0.001f) ? 0.5f : 1.0f;
     return shadow;
 }
+float ComputePointLightShadow(int lightIndex, float3 worldPos, PointLight _PL)
+{
+    // 安全性のチェック
+    if (lightIndex < 0 || lightIndex >= MAX_POINT_LIGHT || !_PL.castShadow)
+        return 1.0f;
+
+    // ライト位置から現在のワールド座標へのベクトル計算
+    float3 lightToWorldVec = worldPos - _PL.position;
+
+    // キューブマップの適切な面を選択
+    float3 absVec = abs(lightToWorldVec);
+    float maxComponent = max(max(absVec.x, absVec.y), absVec.z);
+    int faceIndex = 0;
+
+    if (maxComponent == absVec.x)
+        faceIndex = lightToWorldVec.x > 0 ? 0 : 1;
+    else if (maxComponent == absVec.y)
+        faceIndex = lightToWorldVec.y > 0 ? 2 : 3;
+    else
+        faceIndex = lightToWorldVec.z > 0 ? 4 : 5;
+
+    // シャドウ計算のロジック
+    float currentDepth = length(lightToWorldVec) / _PL.radius;
+
+    // 対応するライトのシャドウマップをサンプリング
+    float closestDepth = gCubeMap[lightIndex].Sample(
+        gCubeMapSampler,
+        lightToWorldVec
+    ).r;
+
+    // シャドウバイアスを考慮
+    float bias = 0.005;
+    float shadow = currentDepth > closestDepth + bias ? 0.5 : 1.0;
+
+    
+    return shadow;
+}
+
+
 
 PixelShaderOutput main(VertexShaderOutput _input)
 {
@@ -111,7 +153,7 @@ float3 CalculateDirectionalLighting(VertexShaderOutput _input, float3 _toEye, fl
     return diffuse + specular;
 }
 
-float3 CalculatePointLighting(VertexShaderOutput _input,PointLight _PL, float3 _toEye, float4 _textureColor)
+float3 CalculatePointLighting(VertexShaderOutput _input,PointLight _PL, int _lightIndex,float3 _toEye, float4 _textureColor)
 {
     if (_PL.intensity <= 0.0f)
         return float3(0.0f, 0.0f, 0.0f);
@@ -127,10 +169,14 @@ float3 CalculatePointLighting(VertexShaderOutput _input,PointLight _PL, float3 _
     }
     float distance = length(_PL.position - _input.worldPosition);
     float factor = pow(saturate(-distance / _PL.radius + 1.0f), _PL.decay);
-    float3 diffuse = materialColor.rgb * _textureColor.rgb * _PL.color.rgb * cos * _PL.intensity * factor;
-    float3 specular = _PL.color.rgb * _PL.intensity * specularPow * float3(1.0f, 1.0f, 1.0f) * factor;
+
+    float shadowFactor = ComputePointLightShadow(_lightIndex, _input.worldPosition, _PL);
+
+    float3 diffuse = materialColor.rgb * _textureColor.rgb * _PL.color.rgb * cos * _PL.intensity * factor * shadowFactor;
+    float3 specular = _PL.color.rgb * _PL.intensity * specularPow * float3(1.0f, 1.0f, 1.0f) * factor * shadowFactor;
 
     return diffuse + specular;
+
 }
 
 float3 CalculateSpotLighting(VertexShaderOutput _input, SpotLight _SL, float3 _toEye, float4 _textureColor)
@@ -173,7 +219,7 @@ float3 CalculateLightingWithMultiplePointLights(VertexShaderOutput _input, float
     float3 lighting = float3(0.0f, 0.0f, 0.0f);
     for (int i = 0; i < numPointLight; i++)
     {
-        lighting += CalculatePointLighting(_input, PL[i], _toEye, _textureColor);;
+        lighting += CalculatePointLighting(_input, PL[i], i, _toEye, _textureColor);
     }
     return lighting;
 }
