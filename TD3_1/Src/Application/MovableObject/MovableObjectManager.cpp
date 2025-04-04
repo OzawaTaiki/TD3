@@ -7,6 +7,7 @@
 #include <System/Input/Input.h>
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Matrix/MatrixFunction.h>
+#include <Math/Quaternion/Quaternion.h>
 
 // Externals
 #include <imgui.h>
@@ -55,6 +56,15 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 	// 配列に追加
 	objects_.push_back(std::move(object));
 	colliders_.push_back(std::move(collider));
+}
+
+Vector3 MovableObjectManager::GetObjectPosition(size_t index) const {
+	// インデックス範囲外判定
+	if (index >= objects_.size()) {
+		throw std::out_of_range("指定されたインデックスはオブジェクトリストの範囲外です");
+	}
+	// オブジェクト位置を返す
+	return objects_[index]->translate_;
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)

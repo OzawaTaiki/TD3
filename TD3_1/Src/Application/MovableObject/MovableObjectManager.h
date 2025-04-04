@@ -25,6 +25,11 @@ public:
 	/// <param name="position">オブジェクト生成位置</param>
 	void AddMovableObject(const Vector3& position);
 
+	/// <summary>
+	/// 指定したインデックスのオブジェクト位置を返す
+	/// </summary>
+	Vector3 GetObjectPosition(size_t index) const;
+
 private:
 	std::vector<std::unique_ptr<ObjectModel>> objects_;
 	std::vector<std::unique_ptr<AABBCollider>> colliders_;
