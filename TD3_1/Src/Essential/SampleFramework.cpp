@@ -24,6 +24,8 @@ void SampleFramework::Update()
 {
     Framework::Update();
 
+    rtvManager_->ClearAllRenderTarget();
+
 
     //========== 更新処理 =========
 

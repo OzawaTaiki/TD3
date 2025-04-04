@@ -52,7 +52,7 @@ private:
 
     std::unique_ptr <Sprite> sprite_ = nullptr;
 
-    std::unique_ptr<LightGroup> lights_;
+    std::shared_ptr<LightGroup> lights_;
     std::list<std::pair<float, Vector4>> colors;
 
     std::unique_ptr<AnimationSequence> sequence_ = nullptr;
