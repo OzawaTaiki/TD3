@@ -9,13 +9,19 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	object_ = std::make_unique<ObjectModel>("normalEnemy");
 	object_->Initialize("Enemy/enemy.obj");
 	object_->translate_ = spawnPosition;
+	object_->useQuaternion_ = true;
 
-	collider_ = std::make_unique<AABBCollider>("enemyCollider");
+	collider_ = std::make_unique<OBBCollider>("enemyCollider");
 	collider_->SetLayer("enemy");
 	/*衝突判定を行わないコライダーを設定*/
 	collider_->SetLayerMask("enemy");
 	/*----------------------------*/
-	collider_->SetMinMax(object_->GetMin(), object_->GetMax());
+	Vector3 localMin = object_->GetMin();
+	Vector3 localMax = object_->GetMax();
+	Vector3 halfExtents = (localMax - localMin) * 0.5f;
+	collider_->SetHalfExtents(halfExtents);
+	Vector3 localPivot = (localMin - localMax) * 0.5f;
+	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
 		this->Dead();
@@ -32,9 +38,22 @@ void NormalEnemy::Update()
 	direction.y = 0; // 高さを固定するため、Y成分を無効化
 	object_->translate_ += direction * speed_ * kDeltaTime;
 
+	// ターゲット方向に回転を設定
+	Vector3 forward = Vector3(0, 0, 1);
+	Vector3 targetDirection = Normalize(targetPosition_ - object_->translate_);
+	targetDirection.y = 0.0f;
+	object_->quaternion_ = Quaternion::FromToRotation(forward, targetDirection);
 
 	object_->Update();
 	if (!isDead_) {
+		// 生きている間はコライダー更新
+		Vector3 localMin = object_->GetMin();
+		Vector3 localMax = object_->GetMax();
+		Vector3 halfExtents = (localMax - localMin) * 0.5f;
+		collider_->SetHalfExtents(halfExtents);
+		Vector3 localPivot = (localMin - localMax) * 0.5f;
+		collider_->SetLocalPivot(localPivot);
+		collider_->SetWorldTransform(object_->GetWorldTransform());
 		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 	}
 }
