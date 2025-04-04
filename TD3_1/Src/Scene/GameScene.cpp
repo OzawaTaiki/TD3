@@ -27,9 +27,9 @@ void GameScene::Initialize()
 
     particleManager_ = ParticleManager::GetInstance();
 
-    lights_ = std::make_unique<LightGroup>();
+    lights_ = std::make_shared<LightGroup>();
     lights_->Initialize();
-    LightingSystem::GetInstance()->SetLightGroup(lights_.get());
+    LightingSystem::GetInstance()->SetActiveGroup(lights_);
 
 
 }
