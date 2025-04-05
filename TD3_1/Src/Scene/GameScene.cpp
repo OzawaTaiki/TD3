@@ -54,13 +54,13 @@ void GameScene::Initialize() {
 	// ターゲットの位置を設定（動かないオブジェクトはここ、動くオブジェクトは更新）
 	enemySpawnManager_->SetTowerPosition(tower_->GetTranslate());
 
-	// ポイントライトオブジェクト
-	pointLightObject_ = std::make_unique<PointLightObject>();
-	pointLightObject_->Initialize(Vector3(5, 5, -5));
+	// ポイントライトオブジェクトを管理するクラス
+	pointLightObjectManager_ = std::make_unique<PointLightObjectManager>();
+	pointLightObjectManager_->Initialize();
 
-	// 影オブジェクト
-	shadowObject_ = std::make_unique<ShadowObject>();
-	shadowObject_->Initialize();
+	// 影オブジェクトを管理するクラス
+	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
+	shadowObjectManager_->Initialize();
 }
 
 void GameScene::Update() {
@@ -97,11 +97,9 @@ void GameScene::Update() {
 	// 敵管理クラス更新
 	enemySpawnManager_->Update();
 	// ポイントライトオブジェクト更新
-	pointLightObject_->Update();
+	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
-	shadowObject_->Update();
-	shadowObject_->SetMovableObjectPosition(movableObjectManager_->GetObjectPosition(0)); // 寄生先の動かせるオブジェクト位置を設定
-	shadowObject_->SetLightPosition(pointLightObject_->GetTranslate()); // ライト位置を設定
+	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
 
 	CollisionManager::GetInstance()->Update();
 }
@@ -120,9 +118,9 @@ void GameScene::Draw() {
 	// 敵管理クラス描画
 	enemySpawnManager_->Draw(&SceneCamera_);
 	// ポイントライトオブジェクト描画
-	pointLightObject_->Draw(SceneCamera_);
+	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
-	shadowObject_->Draw(SceneCamera_);
+	shadowObjectManager_->Draw(SceneCamera_);
 }
 
 void GameScene::DrawShadow() {}

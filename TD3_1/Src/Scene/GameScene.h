@@ -17,8 +17,8 @@
 #include <Application/Field/Field.h>
 #include <Application/Tower/Tower.h>
 #include <Application/EnemySpawnManager/EnemySpawnManager.h>
-#include <Application/PointLightObject/PointLightObject.h>
-#include <Application/ShadowObject/ShadowObject.h>
+#include <Application/PointLightObject/PointLightObjectManager.h>
+#include <Application/ShadowObject/ShadowObjectManager.h>
 
 class GameScene : public BaseScene
 {
@@ -60,8 +60,8 @@ private:
     std::unique_ptr<Tower> tower_;
     // 敵を管理するクラス
 	std::unique_ptr<EnemySpawnManager> enemySpawnManager_;
-    // ポイントライトオブジェクト
-	std::unique_ptr<PointLightObject> pointLightObject_;
-    // 影オブジェクト
-	std::unique_ptr<ShadowObject> shadowObject_;
+    // ポイントライトオブジェクトを管理するクラス
+    std::unique_ptr<PointLightObjectManager> pointLightObjectManager_;
+    // 影オブジェクトを管理するクラス
+    std::unique_ptr<ShadowObjectManager> shadowObjectManager_;
 };

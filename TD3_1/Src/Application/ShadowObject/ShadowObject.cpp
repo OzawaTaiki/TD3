@@ -16,7 +16,11 @@ void ShadowObject::Initialize() {
 
 	collider_ = std::make_unique<OBBCollider>("ShadowObjectCollider");
 	collider_->SetLayer("ShadowObject");
-	collider_->SetLayerMask("movableObject"); // 動かせるオブジェクトとは判定を取らない
+	/*判定を取らないオブジェクトを設定*/
+	collider_->SetLayerMask("ShadowObject");
+	collider_->SetLayerMask("movableObject");
+	collider_->SetLayerMask("Wall");
+	collider_->SetLayerMask("Tower");
 
 	// OBBColliderの設定
 	Vector3 localMin = object_->GetMin();
@@ -73,7 +77,7 @@ void ShadowObject::Update() {
 	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 
-	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+	//CollisionManager::GetInstance()->RegisterCollider(collider_.get()); // 攻撃時のみ判定を取るようにする予定
 
 #ifdef _DEBUG
 	ImGui::Begin("shadowObject");

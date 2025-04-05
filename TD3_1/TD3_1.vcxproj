@@ -153,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EdgeDetection.cpp" />
+    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
+    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp" />
     <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp" />
     <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp" />
     <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp" />
@@ -173,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EdgeDetection.h" />
+    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h" />
+    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h" />
     <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h" />
     <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h" />
     <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h" />

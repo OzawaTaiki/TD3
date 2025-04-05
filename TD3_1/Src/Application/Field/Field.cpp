@@ -64,9 +64,9 @@ void Field::LoadBlocksFromCSV(const std::string& filename) {
 		block->scale_ = Vector3(scaleX, scaleZ, scaleY); // blenderに合わせてYとZを入れ替え
 
 		// ブロック用コライダーを生成
-		auto collider = std::make_unique<AABBCollider>("BlockCollider_" + std::to_string(colliders_.size()));
-		collider->SetLayer("Block");
-		collider->SetLayerMask("Block");
+		auto collider = std::make_unique<AABBCollider>("WallCollider_" + std::to_string(colliders_.size()));
+		collider->SetLayer("Wall");
+		collider->SetLayerMask("Wall");
 		collider->SetMinMax(block->GetMin(), block->GetMax());
 		collider->SetWorldTransform(block->GetWorldTransform());
 

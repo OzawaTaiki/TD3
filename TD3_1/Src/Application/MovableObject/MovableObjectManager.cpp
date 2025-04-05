@@ -58,13 +58,13 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 	colliders_.push_back(std::move(collider));
 }
 
-Vector3 MovableObjectManager::GetObjectPosition(size_t index) const {
-	// インデックス範囲外判定
-	if (index >= objects_.size()) {
-		throw std::out_of_range("指定されたインデックスはオブジェクトリストの範囲外です");
+std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
+{
+	std::vector<Vector3> positions;
+	for (const auto& object : objects_) {
+		positions.push_back(object->translate_);
 	}
-	// オブジェクト位置を返す
-	return objects_[index]->translate_;
+	return positions;
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)

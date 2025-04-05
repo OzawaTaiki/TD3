@@ -26,9 +26,9 @@ public:
 	void AddMovableObject(const Vector3& position);
 
 	/// <summary>
-	/// 指定したインデックスのオブジェクト位置を返す
+	/// 全てのオブジェクト位置を返す
 	/// </summary>
-	Vector3 GetObjectPosition(size_t index) const;
+	std::vector<Vector3> GetAllObjectPosition() const;
 
 private:
 	std::vector<std::unique_ptr<ObjectModel>> objects_;
