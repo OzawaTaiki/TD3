@@ -41,6 +41,14 @@ private:
 	/// </summary>
 	void HandleObjectDragAndDrop(const Camera& camera);
 
+	// ドラッグ関連のメンバ変数
+	bool isDragging_ = false;
+	Vector3 dragOffset_;
+	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
+	ObjectModel* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
+
+
+
 	/// <summary>
 	/// マウスレイの生成（オブジェクトとの衝突判定用）
 	/// </summary>

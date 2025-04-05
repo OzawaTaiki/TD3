@@ -1,9 +1,14 @@
+#define NOMINMAX
 #include "ShadowObject.h"
+
+// C++
+#include <algorithm>
 
 // Engine
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Quaternion/Quaternion.h>
+#include <Math/Easing.h>
 
 // Externals
 #include <imgui.h>
@@ -23,18 +28,39 @@ void ShadowObject::Initialize() {
 	collider_->SetLayerMask("Tower");
 
 	// OBBColliderの設定
-	Vector3 localMin = object_->GetMin();
-	Vector3 localMax = object_->GetMax();
-	Vector3 halfExtents = (localMax - localMin) * 0.5f;
-	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (localMin + localMax) * 0.5f;
-	collider_->SetLocalPivot(localPivot);
+	collider_->SetHalfExtents(collider_->GetHalfExtents());
+	collider_->SetLocalPivot(collider_->GetLocalPivot());
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 }
 
 void ShadowObject::Update() { 
 	object_->Update(); 
+	CalculateShadowTransform();
 
+	// SPACE押下で実体化
+	HandleAttackInput();
+
+	// OBBColliderの更新
+	collider_->SetHalfExtents(collider_->GetHalfExtents());
+	collider_->SetLocalPivot(collider_->GetLocalPivot());
+	collider_->SetWorldTransform(object_->GetWorldTransform());
+	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+
+#ifdef _DEBUG
+	ImGui::Begin("shadowObject");
+	ImGui::DragFloat3("translate", &this->object_->translate_.x);
+	ImGui::DragFloat3("quaternion", &this->object_->quaternion_.x);
+	ImGui::DragFloat3("scale", &this->object_->scale_.x);
+	ImGui::End();
+#endif
+}
+
+void ShadowObject::Draw(const Camera& camera) { 
+	object_->Draw(&camera, texture_, {0, 0, 0, 1}); 
+}
+
+void ShadowObject::CalculateShadowTransform()
+{
 	/*ポイントライトの位置を考慮し、動かせるオブジェクトの影の位置に常に影オブジェクトが配置されるように設定*/
 	// 動かせるオブジェクトの中心位置
 	Vector3 objectCenter = movableObjectPosition_;
@@ -56,7 +82,7 @@ void ShadowObject::Update() {
 	this->object_->quaternion_ = Quaternion::FromToRotation(Vector3(0, 0, 1), shadowDirection);
 
 	// オフセット（影オブジェクトの原点が端になるようにずらす）
-	Vector3 localOffset = {0.0f, 0.0f, -shadowLength / 2.0f};
+	Vector3 localOffset = { 0.0f, 0.0f, -shadowLength / 2.0f };
 
 	// 回転を考慮してローカルオフセットをワールド空間に変換
 	Matrix4x4 rotationMatrix = MakeRotateMatrix(this->object_->quaternion_);
@@ -65,34 +91,53 @@ void ShadowObject::Update() {
 	// 最終的なワールド座標
 	this->object_->translate_ = objectCenter + worldOffset;
 	this->object_->translate_.y = -0.99f; // 高さを固定
-
-
-
-	// OBBColliderの更新
-	Vector3 localMin = object_->GetMin();
-	Vector3 localMax = object_->GetMax();
-	Vector3 halfExtents = (localMax - localMin) * 0.5f;
-	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (localMin + localMax) * 0.5f;
-	collider_->SetLocalPivot(localPivot);
-	collider_->SetWorldTransform(object_->GetWorldTransform());
-
-	//CollisionManager::GetInstance()->RegisterCollider(collider_.get()); // 攻撃時のみ判定を取るようにする予定
-
-#ifdef _DEBUG
-	ImGui::Begin("shadowObject");
-	ImGui::DragFloat3("translate", &this->object_->translate_.x);
-	ImGui::DragFloat3("quaternion", &this->object_->quaternion_.x);
-	ImGui::DragFloat3("scale", &this->object_->scale_.x);
-	ImGui::End();
-#endif
 }
 
-void ShadowObject::Draw(const Camera& camera) { 
-	object_->Draw(&camera, texture_, {0, 0, 0, 1}); 
+void ShadowObject::HandleAttackInput()
+{
+	if (Input::GetInstance()->IsKeyTriggered(DIK_SPACE)) {
+		if (!isScaling_) {
+			isScaling_ = true;
+			isReturning_ = false;
+			scaleYStart_ = object_->scale_.y; // 現在のスケールを取得
+			scaleYTarget_ = 5.0f; // 増加後のスケール
+			animationTime_ = 0.0f; // アニメーションタイマーをリセット
+			animationDuration_ = scaleUpDuration_; // 増加時間を設定
+		}
+	}
+
+	// アニメーション処理
+	if (isScaling_) {
+		const float kDeltaTime = 1.0f / 60.0f;
+		animationTime_ += kDeltaTime;
+
+		// アニメーション割合を計算
+		float t = std::min(animationTime_ / animationDuration_, 1.0f);
+		// 増加時と戻り時で別のイージング関数を仕様
+		float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseInQuad(t); // 戻り時 : 増加時
+
+		// 現在のスケールを計算
+		scaleYCurrent_ = scaleYStart_ + (scaleYTarget_ - scaleYStart_) * easedT;
+		object_->scale_.y = scaleYCurrent_;
+
+		// アニメーションが完了した場合
+		if (t >= 1.0f) {
+			if (!isReturning_) {
+				// 戻りアニメーションの準備
+				isReturning_ = true;
+				scaleYStart_ = 5.0f;
+				scaleYTarget_ = 1.0f;
+				animationTime_ = 0.0f;
+				animationDuration_ = scaleDownDuration_; // 戻る時間を設定
+			} else {
+				// 全アニメーション終了
+				isScaling_ = false;
+			}
+		}
+	}
 }
 
-Matrix4x4 ShadowObject::MakeRotateMatrix(const Quaternion& q) { 
+Matrix4x4 ShadowObject::MakeRotateMatrix(const Quaternion& q) {
 	Matrix4x4 result;
 
 	float x = q.x;

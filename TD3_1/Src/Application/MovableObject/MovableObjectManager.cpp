@@ -83,11 +83,6 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	///	オブジェクトをドラッグで移動
 	///
 
-	static bool isDragging = false;
-	static Vector3 dragOffset;
-	static float dragStartHeight = 0.0f;          // オブジェクトの元の高さを保持
-	static ObjectModel* draggingObject = nullptr; // ドラッグ中のオブジェクト
-
 	// マウスレイとキューブオブジェクトの衝突判定
 	RayCastHit hit;
 	ObjectModel* hitObject = nullptr;
@@ -100,28 +95,28 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	// 左クリックした瞬間
 	if (input_->IsMouseTriggered(0)) {
 		if (hitObject) {
-			isDragging = true;
-			draggingObject = hitObject;
-			dragStartHeight = draggingObject->translate_.y; // 掴んだ際の高さを記録
-			dragOffset = draggingObject->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
+			isDragging_ = true;
+			draggingObject_ = hitObject;
+			dragStartHeight_ = draggingObject_->translate_.y; // 掴んだ際の高さを記録
+			dragOffset_ = draggingObject_->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
 		}
 	}
 
-	if (isDragging) {
-		if (draggingObject) {
+	if (isDragging_) {
+		if (draggingObject_) {
 			// マウスレイとオブジェクトの初期高さの平面との交点を求める
 			Vector3 intersection;
-			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight, intersection)) {
-				draggingObject->translate_.x = intersection.x + dragOffset.x;
-				draggingObject->translate_.y = dragStartHeight;
-				draggingObject->translate_.z = intersection.z + dragOffset.z;
+			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
+				draggingObject_->translate_.x = intersection.x + dragOffset_.x;
+				draggingObject_->translate_.y = dragStartHeight_;
+				draggingObject_->translate_.z = intersection.z + dragOffset_.z;
 			}
 		}
 	}
 
 	// 左クリックを離したら終了
 	if (input_->IsMouseReleased(0)) {
-		isDragging = false;
+		isDragging_ = false;
 	}
 
 #ifdef _DEBUG
@@ -129,7 +124,7 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({ 0, 1, -6 });
 	}
-	ImGui::Checkbox("isDragging", &isDragging);
+	ImGui::Checkbox("isDragging", &isDragging_);
 	ImGui::End();
 #endif
 }

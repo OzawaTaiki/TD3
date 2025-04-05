@@ -30,10 +30,33 @@ private:
 	uint32_t texture_;
 	std::unique_ptr<OBBCollider> collider_;
 
-	// 動かせるオブジェクトの位置を保持（寄生先）
+	// 動かせるオブジェクトの位置を保持
 	Vector3 movableObjectPosition_;
 	// ポイントライトの位置を保持
 	Vector3 lightPosition_;
+
+	/// <summary>
+	/// 動かせるオブジェクトとポイントライトの位置を考慮して、影オブジェクトのTransformを計算して設定
+	/// </summary>
+	void CalculateShadowTransform();
+
+	/// <summary>
+	/// 実体化関連パラメーター
+	/// </summary>
+	bool isScaling_ = false; // 攻撃アニメーション中かどうか
+	float scaleYStart_ = 1.0f; // 開始スケール
+	float scaleYTarget_ = 1.0f; // 目標スケール
+	float scaleYCurrent_ = 1.0f; // 現在のスケール
+	float animationTime_ = 0.0f; // アニメーション経過時間
+	float animationDuration_ = 0.0f; // アニメーション全体の時間
+	float scaleUpDuration_ = 0.2f; // 増加の時間 :（SPACEを押してから最大値まで実体化する時間）
+	float scaleDownDuration_ = 1.6f; // 戻る時間 :（最大値まで実体化してから元の位置まで戻るまでの時間）
+	bool isReturning_ = false; // 戻りアニメーション中かどうか
+
+	/// <summary>
+	/// スペース押下時、影オブジェクトの実体化（コライダー設定、アニメーション処理含む）
+	/// </summary>
+	void HandleAttackInput();
 
 private:
 	Matrix4x4 MakeRotateMatrix(const Quaternion& q);
