@@ -27,9 +27,9 @@ void Tower::Update()
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 
 #ifdef _DEBUG
-	ImGui::Begin("tower");
+	/*ImGui::Begin("tower");
 	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
-	ImGui::End();
+	ImGui::End();*/
 #endif
 }
 
