@@ -41,13 +41,15 @@ void ShadowObject::Update(const float maxDistance) {
 
 	// 影オブジェクトが有効な場合のみ
 	if (this->isActive_) {
-		// OBBColliderの更新
-		Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
-		collider_->SetHalfExtents(halfExtents);
-		Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
-		collider_->SetLocalPivot(localPivot);
-		collider_->SetWorldTransform(object_->GetWorldTransform());
-		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+		if (!this->isReturning_) { // 実体化して、スケールの増加中のみコライダー登録を行う : 減少中（戻り中）に敵が衝突した際の処理も必要なため、ここは見直し予定
+			// OBBColliderの更新
+			Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+			collider_->SetHalfExtents(halfExtents);
+			Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+			collider_->SetLocalPivot(localPivot);
+			collider_->SetWorldTransform(object_->GetWorldTransform());
+			CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+		}
 	}
 
 	// SPACE押下で実体化

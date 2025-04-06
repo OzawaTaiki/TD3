@@ -3,6 +3,7 @@
 // Engine
 #include <Math/Vector/VectorFunction.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
+#include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
 
 void NormalEnemy::Initialize(const Vector3& spawnPosition)
 {
@@ -22,7 +23,18 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
-		this->Dead();
+		// 影オブジェクトとの衝突
+		uint32_t shadowObjectLayer = CollisionLayerManager::GetInstance()->GetLayer("ShadowObject"); // 影オブジェクトのレイヤーを取得
+		if (_other->GetLayer() == shadowObjectLayer) {
+			this->Launched(); // 衝突した敵を打ち上げる
+		}
+
+		// タワーとの衝突
+		uint32_t towerObjectLayer = CollisionLayerManager::GetInstance()->GetLayer("Tower");
+		if (_other->GetLayer() == towerObjectLayer) {
+			this->Dead();
+		}
+
 		});
 
 	speed_ = 4.0f;
@@ -52,9 +64,31 @@ void NormalEnemy::Update()
 		collider_->SetWorldTransform(object_->GetWorldTransform());
 		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 	}
+
+	// 打ち上げられたら重力の影響を受ける
+	if (isLaunched_) {
+		// 垂直速度の更新（重力の影響）
+		verticalVelocity_ += kGravity * kDeltaTime;
+		// オブジェクトの高さ更新
+		object_->translate_.y += verticalVelocity_ * kDeltaTime;
+
+		// 打ち上げられ後、着地したら落下を止めて死亡させる
+		if (object_->translate_.y <= 1.0f) {
+			object_->translate_.y = 1.0f; // 地面に固定
+		}
+	}
 }
 
 void NormalEnemy::Draw(const Camera* camera)
 {
 	object_->Draw(camera, { 1, 1, 1, 1 });
+}
+
+void Enemy::Launched()
+{
+	/*敵を打ち上げる処理*/
+	if (!isLaunched_) {
+		verticalVelocity_ = 20.0f; // 初期垂直初速を設定
+		isLaunched_ = true; // 打ち上げられたことを記録
+	}
 }
