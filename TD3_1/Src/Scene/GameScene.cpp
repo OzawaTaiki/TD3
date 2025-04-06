@@ -8,8 +8,8 @@ GameScene::~GameScene() {
 
 void GameScene::Initialize() {
 	SceneCamera_.Initialize();
-	SceneCamera_.translate_ = {0, 30, -40};
-	SceneCamera_.rotate_ = {0.66f, 0, 0};
+	SceneCamera_.translate_ = {0, 50, -50};
+	SceneCamera_.rotate_ = {0.81f, 0, 0};
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
 
@@ -27,9 +27,40 @@ void GameScene::Initialize() {
 
 	lights_ = std::make_unique<LightGroup>();
 	lights_->Initialize();
-	LightingSystem::GetInstance()->SetLightGroup(lights_.get());
+	//LightingSystem::GetInstance()->SetActiveGroup(lights_.get());
 
-	InitializeGameObjects();
+
+	///
+	///	Application
+	/// 
+
+	/*---生成と初期化---*/
+	
+	// フィールド
+	field_ = std::make_unique<Field>();
+	field_->Initialize("mapData.csv");
+
+	// 動かせるオブジェクトを管理するクラス
+	movableObjectManager_ = std::make_unique<MovableObjectManager>();
+	movableObjectManager_->Initialize();
+
+	// タワー
+	tower_ = std::make_unique<Tower>();
+	tower_->Initialize({ 0, 0, -2 });
+
+	// 敵を管理するクラス
+	enemySpawnManager_ = std::make_unique<EnemySpawnManager>();
+	enemySpawnManager_->Initialize();
+	// ターゲットの位置を設定（動かないオブジェクトはここ、動くオブジェクトは更新）
+	enemySpawnManager_->SetTowerPosition(tower_->GetTranslate());
+
+	// ポイントライトオブジェクトを管理するクラス
+	pointLightObjectManager_ = std::make_unique<PointLightObjectManager>();
+	pointLightObjectManager_->Initialize();
+
+	// 影オブジェクトを管理するクラス
+	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
+	shadowObjectManager_->Initialize();
 }
 
 void GameScene::Update() {
@@ -38,12 +69,13 @@ void GameScene::Update() {
 	if (input_->IsKeyTriggered(DIK_RETURN) && input_->IsKeyPressed(DIK_RSHIFT))
 		enableDebugCamera_ = !enableDebugCamera_;
 
+	ImGui::Begin("GameSceneInfo");
+	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
+	ImGui::End();
+
 #endif // _DEBUG
 
 	ground_->Update();
-
-	UpdateGameObjects();
-	HandleObjectDragAndDrop();
 
 	if (enableDebugCamera_) {
 		debugCamera_.Update();
@@ -55,6 +87,21 @@ void GameScene::Update() {
 		SceneCamera_.UpdateMatrix();
 		particleManager_->Update(SceneCamera_.rotate_);
 	}
+
+	// フィールド更新
+	field_->Update();
+	// 動かせるオブジェクト更新
+	movableObjectManager_->Update(SceneCamera_);
+	// タワー更新
+	tower_->Update();
+	// 敵管理クラス更新
+	enemySpawnManager_->Update();
+	// ポイントライトオブジェクト更新
+	pointLightObjectManager_->Update();
+	// 影オブジェクト更新
+	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
+
+	CollisionManager::GetInstance()->Update();
 }
 
 void GameScene::Draw() {
@@ -62,159 +109,18 @@ void GameScene::Draw() {
 
 	ground_->Draw(&SceneCamera_, {1, 1, 1, 1});
 
-	DrawGameObjects();
+	// フィールド描画
+	field_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
+	// 動かせるオブジェクト描画
+	movableObjectManager_->Draw(SceneCamera_);
+	// タワー描画
+	tower_->Draw(SceneCamera_);
+	// 敵管理クラス描画
+	enemySpawnManager_->Draw(&SceneCamera_);
+	// ポイントライトオブジェクト描画
+	pointLightObjectManager_->Draw(SceneCamera_);
+	// 影オブジェクト描画
+	shadowObjectManager_->Draw(SceneCamera_);
 }
 
 void GameScene::DrawShadow() {}
-
-void GameScene::InitializeGameObjects() {
-
-}
-
-void GameScene::UpdateGameObjects() { 
-	for (size_t i = 0; i < movableObjects_.size(); i++) {
-		movableObjects_[i]->Update();
-		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get());
-	}
-
-	CollisionManager::GetInstance()->Update();
-}
-
-void GameScene::DrawGameObjects() { 
-	for (const auto& object : movableObjects_) {
-		object->Draw(&SceneCamera_, {1, 1, 1, 1});
-	}
-}
-
-void GameScene::AddMovableObject(const Vector3& position) { 
-	// オブジェクトを生成
-	auto object = std::make_unique<ObjectModel>("cube" + std::to_string(movableObjects_.size()));
-	object->Initialize("Cube/cube.obj");
-	object->translate_ = position;
-	object->useQuaternion_ = true;
-
-	// オブジェクト用コライダーを生成
-	auto collider = std::make_unique<OBBCollider>();
-	collider->SetLayer("cube");
-	collider->SetHalfExtents((object->GetMax() - object->GetMin()) * 0.5f);
-	collider->SetLocalPivot((object->GetMin() + object->GetMax()) * 0.5f);
-	collider->SetWorldTransform(object->GetWorldTransform());
-
-	// 配列に追加
-	movableObjects_.push_back(std::move(object));
-	colliders_.push_back(std::move(collider));
-}
-
-void GameScene::HandleObjectDragAndDrop() {
-	///
-	///	マウスレイの生成と描画
-	/// 
-	
-	Ray mouseRay = CreateMouseRay();
-
-	// 終点を設定して描画（デバッグ用）
-	Vector3 mouseRayEnd = mouseRay.GetOrigin() + mouseRay.GetDirection() * mouseRay.GetLength();
-	LineDrawer::GetInstance()->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-	LineDrawer::GetInstance()->RegisterPoint(mouseRay.GetOrigin(), mouseRayEnd);
-
-	///
-	///	オブジェクトをドラッグで移動
-	///
-
-	static bool isDragging = false;
-	static Vector3 dragOffset;
-	static float dragStartHeight = 0.0f;          // オブジェクトの元の高さを保持
-	static ObjectModel* draggingObject = nullptr; // ドラッグ中のオブジェクト
-
-	// マウスレイとキューブオブジェクトの衝突判定
-	RayCastHit hit;
-	ObjectModel* hitObject = nullptr;
-	for (size_t i = 0; i < movableObjects_.size(); i++) {
-		if (RayCollisionManager::GetInstance()->RayCast(mouseRay, colliders_[i].get(), hit)) {
-			hitObject = movableObjects_[i].get();
-		}
-	}
-
-	// 左クリックした瞬間
-	if (input_->IsMouseTriggered(0)) {
-		if (hitObject) {
-			isDragging = true;
-			draggingObject = hitObject;
-			dragStartHeight = draggingObject->translate_.y; // 掴んだ際の高さを記録
-			dragOffset = draggingObject->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
-		}
-	}
-
-	if (isDragging) {
-		if (draggingObject) {
-			// マウスレイとオブジェクトの初期高さの平面との交点を求める
-			Vector3 intersection;
-			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight, intersection)) {
-				draggingObject->translate_.x = intersection.x + dragOffset.x;
-				draggingObject->translate_.y = dragStartHeight;
-				draggingObject->translate_.z = intersection.z + dragOffset.z;
-			}
-		}
-	}
-
-	// 左クリックを離したら終了
-	if (input_->IsMouseReleased(0)) {
-		isDragging = false;
-	}
-
-	// デバッグ表示
-	ImGui::Begin("hoge");
-	if (ImGui::Button("AddObject")) {
-		AddMovableObject({0, 1, 0});
-	}
-
-	ImGui::Checkbox("isDragging", &isDragging);
-	ImGui::End();
-}
-
-Ray GameScene::CreateMouseRay()
-{
-	// マウスカーソル位置の取得
-	Vector2 mousePos = input_->GetMousePosition();
-
-	// 0~1の範囲に正規化
-	float normalizedX = mousePos.x / WinApp::kWindowWidth_;
-	float normalizedY = mousePos.y / WinApp::kWindowHeight_;
-
-	// -1~1の範囲に変換（NDC）
-	float ndcX = normalizedX * 2.0f - 1.0f;
-	float ndcY = 1.0f - normalizedY * 2.0f;
-
-	// 視錐台の遠近の計算
-	float tanFovY = std::tanf(SceneCamera_.fovY_ * 0.5f);
-	float tanfovX = tanFovY * SceneCamera_.aspectRatio_; // X方向のFOV計算
-
-	// レイの方向を視錐台の形に合わせる
-	Vector3 rayDir(ndcX * tanfovX, ndcY * tanFovY, 1.0f);
-	rayDir.Normalize();
-
-	// カメラの向いている方向に変換
-	Matrix4x4 viewMatrix = MakeRotateMatrix(SceneCamera_.rotate_);
-	rayDir = Transform(rayDir, viewMatrix).Normalize();
-
-	// レイの生成
-	Ray ray;
-	ray.SetOrigin(SceneCamera_.translate_);
-	ray.SetDirection(rayDir.Normalize());
-	ray.SetLength(100.0f);
-
-	return ray;
-}
-
-bool GameScene::IntersectRayWithPlane(const Ray& ray, const Vector3& planeNormal, float planeD, Vector3& outIntersection)
-{
-	float denom = Dot(ray.GetDirection(), planeNormal);
-	if (fabs(denom) > 1e-6f) { // 平行でないことを確認
-		float t = (planeD - Dot(ray.GetOrigin(), planeNormal)) / denom;
-		if (t >= 0) { // 交差点がレイの正方向にある
-			outIntersection = ray.GetOrigin() + ray.GetDirection() * t;
-			return true;
-		}
-	}
-	return false;
-}

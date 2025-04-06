@@ -5,6 +5,7 @@
 #include <Features/Sprite/Sprite.h>
 #include <Features/Model/Manager/ModelManager.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
+#include <Core/DXCommon/RTV/RTVManager.h>
 #include <Features/Collision/Manager/CollisionManager.h>
 #include <Debug/ImguITools.h>
 
@@ -28,7 +29,6 @@ void SampleScene::Initialize()
 
 
     lineDrawer_ = LineDrawer::GetInstance();
-    lineDrawer_->Initialize();
     lineDrawer_->SetCameraPtr(&SceneCamera_);
 
     input_ = Input::GetInstance();
@@ -51,8 +51,11 @@ void SampleScene::Initialize()
     uint32_t textureHandle = TextureManager::GetInstance()->Load("uvChecker.png");
     sprite_ = Sprite::Create("uvChecker", textureHandle);
 
-    lights_ = std::make_unique<LightGroup>();
+    lights_ = std::make_shared<LightGroup>();
     lights_->Initialize();
+    auto pl = std::make_shared<PointLightComponent>();
+    lights_->AddPointLight("a", pl);
+    LightingSystem::GetInstance()->SetActiveGroup(lights_);
 
     sequence_ = std::make_unique<AnimationSequence>("test");
     sequence_->Initialize("Resources/Data/");
@@ -61,7 +64,6 @@ void SampleScene::Initialize()
     bunnyCollider_->SetLayer("bunny");
     bunnyCollider_->SetMinMax({ -1,-1,-1 }, { 1,1,1 });
     bunnyCollider_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
-        Debug::Log("bunny Collision\n");
         });
 
     cubeCollider_ = new SphereCollider();
@@ -77,7 +79,6 @@ void SampleScene::Initialize()
     cubeCollider2_->SetHeight(5);
     cubeCollider2_->SetWorldTransform(aModel_->GetWorldTransform());
     cubeCollider2_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
-        Debug::Log("cube2 Collision\n");
         });
 
 
@@ -103,7 +104,7 @@ void SampleScene::Update()
 
     ImGuiTool::TimeLine("TimeLine", sequence_.get());
 
-    lights_->DrawDebugWindow();
+    //lights_->DrawDebugWindow();
 
     static bool play = false;
     if (ImGui::Button("Play"))
@@ -114,9 +115,11 @@ void SampleScene::Update()
     if (play)
         oModel_->translate_ = sequence_->GetValue<Vector3>("a");
 
-#endif // _DEBUG
-    LightingSystem::GetInstance()->SetLightGroup(lights_.get());
 
+#endif // _DEBUG
+    //LightingSystem::GetInstance()->SetLightGroup(lights_.get());
+
+    lights_->ImGui();
 
     oModel_->Update();
     oModel2_->Update();
@@ -146,27 +149,27 @@ void SampleScene::Update()
 
 #pragma region 半直線との衝突判定
 
-    if(input_->IsMouseTriggered(0))
-    {
-        // カーソルからRayを生成 (うまくいかない
-        Ray ray = Ray::CreateFromMouseCursor(SceneCamera_, input_->GetMousePosition());
+    //if(input_->IsMouseTriggered(0))
+    //{
+    //    // カーソルからRayを生成 (うまくいかない
+    //    Ray ray = Ray::CreateFromMouseCursor(SceneCamera_, input_->GetMousePosition());
 
-        Ray ray2 = Ray::CreateFromPointAndTarget(SceneCamera_.translate_, oModel2_->GetWorldTransform()->GetWorldPosition());
-        RayCollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
+    //    Ray ray2 = Ray::CreateFromPointAndTarget(SceneCamera_.translate_, oModel2_->GetWorldTransform()->GetWorldPosition());
+    //    RayCollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
 
-        std::vector<RayCastHit> hits;
-        RayCollisionManager::GetInstance()->RayCastAll(ray2, hits, 0xffffffff);
+    //    std::vector<RayCastHit> hits;
+    //    RayCollisionManager::GetInstance()->RayCastAll(ray2, hits, 0xffffffff);
 
-        RayCastHit hit2;
-        // 個々での衝突判定
-        if (RayCollisionManager::GetInstance()->RayCast(ray, cubeCollider_, hit2))
-        {
-            // 衝突した
-            Debug::Log("Ray Hit\n");
-        }
-        else
-            Debug::Log("Ray Not Hit\n");
-    }
+    //    RayCastHit hit2;
+    //    // 個々での衝突判定
+    //    if (RayCollisionManager::GetInstance()->RayCast(ray, cubeCollider_, hit2))
+    //    {
+    //        // 衝突した
+    //        Debug::Log("Ray Hit\n");
+    //    }
+    //    else
+    //        Debug::Log("Ray Not Hit\n");
+    //}
 
 #pragma endregion
 
@@ -199,8 +202,6 @@ void SampleScene::Draw()
 
 void SampleScene::DrawShadow()
 {
-    PSOManager::GetInstance()->SetPipeLineStateObject(PSOFlags::Type_ShadowMap);
-    PSOManager::GetInstance()->SetRootSignature(PSOFlags::Type_ShadowMap);
 
     oModel_->DrawShadow(&SceneCamera_, 0);
     oModel2_->DrawShadow(&SceneCamera_, 1);

@@ -1,7 +1,7 @@
 Texture2D<float> ShadowMap : register(t0);
 Texture2D<float4> IDTexture : register(t1); // 影のIDを持っているテクスチャ
 RWBuffer<uint> EdgeBuffer : register(u0); // 輪郭を格納するバッファ 配列
-RWBuffer<uint> CounterBuffer : register(u1); // 輪郭の数を格納するバッファ（u1→u2に変更）
+RWBuffer<uint> CounterBuffer : register(u1); // 輪郭の数を格納するバッファ
 
 cbuffer Constants : register(b0)
 {

@@ -153,11 +153,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EdgeDetection.cpp" />
+    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
+    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp" />
+    <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp" />
+    <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp" />
+    <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp" />
+    <ClCompile Include="Src\Application\Enemy\Enemy.cpp" />
+    <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp" />
+    <ClCompile Include="Src\Application\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Essential\SampleFramework.cpp" />
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\Application\Tower\Tower.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
@@ -166,10 +175,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EdgeDetection.h" />
+    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h" />
+    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h" />
+    <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h" />
+    <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h" />
+    <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h" />
+    <ClInclude Include="Src\Application\Enemy\Enemy.h" />
+    <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h" />
+    <ClInclude Include="Src\Application\Field\Field.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\Application\Tower\Tower.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
