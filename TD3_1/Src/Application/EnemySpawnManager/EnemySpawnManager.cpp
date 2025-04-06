@@ -22,33 +22,82 @@ void EnemySpawnManager::Initialize() {
 
 #endif
 
+    currentWaveIndex_ = 0; // 現在のウェーブのインデックス
+    
+
 	// 敵スポーンデータをロード
 	LoadFromFile();
 }
 
 void EnemySpawnManager::Update() {
 	if (isTimerActive_) {
-		elapsedTime_ += kDeltaTime;
+		if (kDeltaTime == 0.0f)
+			elapsedTime_ += 1.0f / 60.0f;
+		else
+			elapsedTime_ += kDeltaTime;
 	}
 
-	// 敵のスポーン
-	for (auto& data : spawnData_) {
-		// 経過時間が出現時間に達しており、まだスポーンしていない場合
-		if (elapsedTime_ >= data.spawnTime && !data.spawned) {
-			// 敵を生成
-			if (data.type == "Normal") { // タイプがノーマルの場合
-				auto enemy = std::make_unique<NormalEnemy>();
-				enemy->Initialize(data.position);
-				enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
-				enemies_.push_back(std::move(enemy));
+	for (auto& data : nSpawnData_)
+	{
+        // ウェーブの開始時間が経過している場合、ウェーブをアクティブにする
+        if (elapsedTime_ >= data.startTime) {
+            data.isActive = true;
+            currentWaveIndex_ = data.waveNumber; // 現在のウェーブインデックスを更新
+        }
+	}
 
-			} else if (data.type == "Empty") { // タイプを追加した場合ここに記述
-				continue;
-			}
-			// スポーン済みとしてマーク
-			data.spawned = true;
+    auto& wave = nSpawnData_[currentWaveIndex_];
+
+	if (wave.isActive) {
+		// ウェーブがアクティブな場合、敵のスポーンを行う
+		for (auto& group : wave.enemyGroups) {
+            // グループのスポーン時間が経過している場合、敵をスポーン
+            float waveElapsedTime = elapsedTime_ - wave.startTime; // ウェーブ開始からの経過時間 ウェーブの経過時間
+            if (waveElapsedTime >= group.spawnTime) {
+                float groupActiveTime = waveElapsedTime - group.spawnTime; // グループの経過時間
+				for (auto i = 0; i < group.spawnData.size(); ++i) {
+                    // スポーンデータを取得
+                    auto& spawnData = group.spawnData[i];
+                    // 敵の種類に応じてスポーン
+					if (spawnData.delayTime <= groupActiveTime && !spawnData.spawned)
+					{
+						if (spawnData.enemyType == "normal"|| spawnData.enemyType == "Normal") { // ノーマル敵の場合
+							auto enemy = std::make_unique<NormalEnemy>();
+							Vector3 spawnPos = group.spawnPosition + spawnData.spawnOffset;
+							enemy->Initialize(spawnPos);
+							enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
+
+							enemies_.push_back(std::move(enemy));
+						}
+						else if (spawnData.enemyType == "Empty")
+							continue;
+
+						spawnData.spawned = true; // スポーン済みとしてマーク
+					}
+                }
+            }
 		}
 	}
+
+
+	//// 敵のスポーン
+	//for (auto& data : spawnData_) {
+	//	// 経過時間が出現時間に達しており、まだスポーンしていない場合
+	//	if (elapsedTime_ >= data.spawnTime && !data.spawned) {
+	//		// 敵を生成
+	//		if (data.type == "Normal") { // タイプがノーマルの場合
+	//			auto enemy = std::make_unique<NormalEnemy>();
+	//			enemy->Initialize(data.position);
+	//			enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
+	//			enemies_.push_back(std::move(enemy));
+
+	//		} else if (data.type == "Empty") { // タイプを追加した場合ここに記述
+	//			continue;
+	//		}
+	//		// スポーン済みとしてマーク
+	//		data.spawned = true;
+	//	}
+	//}
 
 	// 敵全ての更新
 	for (auto& enemy : enemies_) {
@@ -77,6 +126,14 @@ void EnemySpawnManager::Update() {
 		// 出現してる敵を全て死亡させる
 		for (auto& enemy : enemies_) {
 			enemy->Dead();
+		}
+		for (auto& data : nSpawnData_) {
+			data.isActive = false;
+			for (auto& group : data.enemyGroups) {
+				for (auto& spawnData : group.spawnData) {
+					spawnData.spawned = false;
+				}
+			}
 		}
 	}
 	ImGui::End();
@@ -274,6 +331,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 		{
 			//ImGui::InputInt("Wave Number", &wave.waveNumber);
 			ImGui::Checkbox("Is Active", &wave.isActive);
+			ImGui::DragFloat("Start Time", &wave.startTime, 0.01f, 0.0f, 10000000.0f);
 
 			int groupCount = static_cast<int>(wave.enemyGroups.size());
 
@@ -299,6 +357,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 			if (ImGui::Button("+ Add Group"))
 			{
 				EnemySpawnGroup newGroup;
+				newGroup.spawnPosition = kLeftSpawnPos_;
 				wave.enemyGroups.push_back(newGroup);
 				selectedGroup_ = wave.enemyGroups.end() - 1;
 				selectedEnemy_ = selectedGroup_->spawnData.end();
@@ -443,12 +502,15 @@ void EnemySpawnManager::SaveToFile()
 	file << jsonData.dump(4);
     file.close();*/
 
+	SortSpawnData();
+
 	nlohmann::json j;
 
 	for (const auto& spawnData : nSpawnData_)
 	{
         nlohmann::json waveJson;
         waveJson["wave_number"] = spawnData.waveNumber;
+        waveJson["start_time"] = spawnData.startTime;
         for (const auto& group : spawnData.enemyGroups)
         {
             nlohmann::json groupJson;
@@ -486,20 +548,28 @@ void EnemySpawnManager::LoadFromFile()
 	spawnData_.clear();
 	for (const auto& entry : jsonData["waves"]) {
 		SpawnWave wave;
-		wave.waveNumber = entry["wave_number"];
+		if (entry.contains("wave_number")) wave.waveNumber = entry["wave_number"];
+        if (entry.contains("start_time"))        wave.startTime = entry["start_time"];
+
 		if (entry.contains("enemy_groups")) {
 			for (const auto& groupEntry : entry["enemy_groups"]) {
 				EnemySpawnGroup group;
-				group.groupName = groupEntry["group_name"];
-				group.enemyCount = groupEntry["enemy_count"];
-				group.spawnTime = groupEntry["spawn_time"];
-				group.spawnPosition = { groupEntry["spawn_position"][0], groupEntry["spawn_position"][1], groupEntry["spawn_position"][2] };
+                if (groupEntry.contains("group_name")) group.groupName = groupEntry["group_name"];
+                if (groupEntry.contains("enemy_count")) group.enemyCount = groupEntry["enemy_count"];
+                if (groupEntry.contains("spawn_time")) group.spawnTime = groupEntry["spawn_time"];
+                if (groupEntry.contains("spawn_position")) {
+                    group.spawnPosition = { groupEntry["spawn_position"][0], groupEntry["spawn_position"][1], groupEntry["spawn_position"][2] };
+					if (group.spawnPosition == Vector3{ 0,0,0 }) group.spawnPosition = kLeftSpawnPos_;
+                }
                 if (groupEntry.contains("spawn_data")) {
                     for (const auto& enemyEntry : groupEntry["spawn_data"]) {
                         EnemySpawnData enemy;
-                        enemy.enemyType = enemyEntry["enemy_type"];
-                        enemy.spawnOffset = { enemyEntry["spawn_offset"][0], enemyEntry["spawn_offset"][1], enemyEntry["spawn_offset"][2] };
-                        enemy.delayTime = enemyEntry["delay_time"];
+                        if (enemyEntry.contains("enemy_type")) enemy.enemyType = enemyEntry["enemy_type"];
+                        if (enemyEntry.contains("spawn_offset")) {
+                            enemy.spawnOffset = { enemyEntry["spawn_offset"][0], enemyEntry["spawn_offset"][1], enemyEntry["spawn_offset"][2] };
+                        }
+                        if (enemyEntry.contains("delay_time")) enemy.delayTime = enemyEntry["delay_time"];
+
                         group.spawnData.push_back(enemy);
                     }
                 }
@@ -509,6 +579,8 @@ void EnemySpawnManager::LoadFromFile()
 		nSpawnData_.push_back(wave);
 	}
 
+    SortSpawnData();
+
 	/*for (const auto& entry : jsonData) {
 		SpawnData data;
 		data.type = entry["type"];
@@ -516,4 +588,17 @@ void EnemySpawnManager::LoadFromFile()
 		data.spawnTime = entry["spawn_time"];
 		spawnData_.push_back(data);
 	}*/
+}
+
+void EnemySpawnManager::SortSpawnData()
+{
+    // nSpawnData_をspawnTimeでソート
+    std::sort(nSpawnData_.begin(), nSpawnData_.end(), [](const SpawnWave& a, const SpawnWave& b) {
+        return a.startTime < b.startTime;
+        });
+
+    // wavenumberを振り直す
+    for (size_t i = 0; i < nSpawnData_.size(); ++i) {
+        nSpawnData_[i].waveNumber = static_cast<int>(i);
+    }
 }

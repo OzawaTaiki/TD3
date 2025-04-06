@@ -1292,7 +1292,12 @@
             "Wall",
             "movableObject",
             "Tower",
-            "ShadowObject"
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "ShadowObject",
+            "enemy"
         ]
     }
 }

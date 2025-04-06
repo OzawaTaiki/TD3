@@ -8,13 +8,40 @@
                     "spawn_data": [
                         {
                             "delay_time": 0.3700000047683716,
-                            "enemy_type": "normal",
+                            "enemy_type": "Normal",
                             "spawn_offset": [
                                 0.0,
                                 0.3799999952316284,
                                 0.0
                             ]
                         },
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "spawn_position": [
+                        -26.0,
+                        1.0,
+                        -4.0
+                    ],
+                    "spawn_time": 1.0
+                }
+            ],
+            "start_time": 0.0,
+            "wave_number": 0
+        },
+        {
+            "enemy_groups": [
+                {
+                    "enemy_count": 0,
+                    "group_name": "group",
+                    "spawn_data": [
                         {
                             "delay_time": 0.0,
                             "enemy_type": "normal",
@@ -26,19 +53,59 @@
                         }
                     ],
                     "spawn_position": [
-                        0.0,
-                        0.0,
-                        0.0
+                        1.0,
+                        1.0,
+                        22.0
                     ],
                     "spawn_time": 1.0
                 }
             ],
-            "wave_number": 0
-        },
-        {
+            "start_time": 2.0,
             "wave_number": 1
         },
         {
+            "enemy_groups": [
+                {
+                    "enemy_count": 0,
+                    "group_name": "group",
+                    "spawn_data": [
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 3.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 4.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "spawn_position": [
+                        26.0,
+                        1.0,
+                        0.0
+                    ],
+                    "spawn_time": 0.0
+                }
+            ],
+            "start_time": 5.0,
             "wave_number": 2
         }
     ]
