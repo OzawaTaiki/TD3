@@ -42,7 +42,7 @@ void MovableObjectManager::Draw(const Camera& camera)
 void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成
-	auto object = std::make_unique<ObjectModel>("movableObject" + std::to_string(objects_.size()));
+	auto object = std::make_unique<ObjectModel>("movableObjectManager" + std::to_string(objects_.size()));
 	object->Initialize("Cube/cube.obj");
 	object->translate_ = position;
 	object->useQuaternion_ = true;

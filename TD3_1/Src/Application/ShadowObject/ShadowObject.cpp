@@ -33,9 +33,9 @@ void ShadowObject::Initialize() {
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 }
 
-void ShadowObject::Update() { 
+void ShadowObject::Update(const float maxDistance) {
 	object_->Update(); 
-	CalculateShadowTransform();
+	CalculateShadowTransform(maxDistance);
 
 	// SPACE押下で実体化
 	HandleAttackInput();
@@ -45,21 +45,16 @@ void ShadowObject::Update() {
 	collider_->SetLocalPivot(collider_->GetLocalPivot());
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
-
-#ifdef _DEBUG
-	ImGui::Begin("shadowObject");
-	ImGui::DragFloat3("translate", &this->object_->translate_.x);
-	ImGui::DragFloat3("quaternion", &this->object_->quaternion_.x);
-	ImGui::DragFloat3("scale", &this->object_->scale_.x);
-	ImGui::End();
-#endif
 }
 
 void ShadowObject::Draw(const Camera& camera) { 
-	object_->Draw(&camera, texture_, {0, 0, 0, 1}); 
+	// アクティブな状態のときのみ描画
+	if (this->isActive_) {
+		object_->Draw(&camera, texture_, { 0, 0, 0, 1 });
+	}
 }
 
-void ShadowObject::CalculateShadowTransform()
+void ShadowObject::CalculateShadowTransform(const float maxDistance)
 {
 	/*ポイントライトの位置を考慮し、動かせるオブジェクトの影の位置に常に影オブジェクトが配置されるように設定*/
 	// 動かせるオブジェクトの中心位置
@@ -71,6 +66,14 @@ void ShadowObject::CalculateShadowTransform()
 	// 影の長さを光との距離から決定
 	float distanceToLight = Length(objectCenter - lightPosition_);
 	float shadowLength = 1.0f + distanceToLight * 0.15f; // どれくらい伸びるかをかける値で設定
+
+	// 距離チェックを行う : ライトから一定距離離れた場合には非アクティブ化する
+	if (distanceToLight > maxDistance) {
+		this->isActive_ = false;
+		return;
+	}
+	// 距離チェック成功時には有効化
+	this->isActive_ = true;
 
 	// 影オブジェクトの基準点をobjectCenterに設定し、ローカルZ+方向に向けてshadowLengthを伸ばす
 	this->object_->scale_.z = shadowLength;

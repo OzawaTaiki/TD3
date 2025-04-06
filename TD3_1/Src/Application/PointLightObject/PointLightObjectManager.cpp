@@ -38,11 +38,11 @@ void PointLightObjectManager::Update()
 		pointLightObjects_[i]->SetTranslate(position); // 位置の設定
 
 		// Deleteボタンを同じ行に配置
-		ImGui::SameLine();
+		/*ImGui::SameLine();
 		std::string deleteLabel = "Delete##" + std::to_string(i);
 		if (ImGui::Button(deleteLabel.c_str())) {
 			
-		}
+		}*/
 	}
 	ImGui::End();
 #endif
