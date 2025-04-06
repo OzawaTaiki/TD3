@@ -1,0 +1,26 @@
+{
+    "CollisionLayer": {
+        "layerNames": [
+            "Wall",
+            "movableObject",
+            "Tower",
+            "enemy",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "enemy",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "enemy",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "enemy",
+            "ShadowObject"
+        ]
+    }
+}
