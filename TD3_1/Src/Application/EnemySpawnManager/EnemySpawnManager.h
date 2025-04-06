@@ -45,6 +45,36 @@ private:
 	/// </summary>
 	std::vector<SpawnData> spawnData_;
 
+    // スポーンする敵毎のデータ
+	struct EnemySpawnData {
+		Vector3 spawnOffset = { 0,0,0 }; // スポーン位置のオフセット
+        std::string enemyType="normal"; // 敵の種類 (どのオブジェクトを攻撃するか
+        float delayTime=0.0f; // スポーンまでの遅延時間
+
+        //std::string targetId; // 攻撃対象の塔のID的なもの
+	};
+    // 敵のスポーングループ
+    struct EnemySpawnGroup {
+		std::string groupName = "group"; // グループ名
+		int enemyCount = 0; // 敵の数
+		float spawnTime = 1.0f; // スポーン時間
+		Vector3 spawnPosition = { 0,0,0 }; // スポーン位置
+		std::vector<EnemySpawnData> spawnData = {}; // スポーンデータ
+    };
+
+	struct SpawnWave {
+        int waveNumber; // ウェーブ番号
+        std::vector<EnemySpawnGroup> enemyGroups; // 敵のスポーングループ
+        bool isActive; // ウェーブがアクティブかどうか
+	};
+
+    std::vector<EnemySpawnData>::iterator selectedEnemy_; // 選択された敵
+    std::vector<EnemySpawnGroup>::iterator selectedGroup_; // 選択されたグループ
+    int selectedWaveIndex_ = 0; // 選択されたウェーブのインデックス
+
+	std::vector<SpawnWave> nSpawnData_; // スポーンデータ
+
+
 	/// <summary>
 	/// 敵のスポーン位置
 	/// </summary>
@@ -56,6 +86,8 @@ private:
 	/// スポーンエディタの表示
 	/// </summary>
 	void DrawSpawnEditor();
+
+	void nDrawSpawnEditor();
 
 	void SaveToFile(); // JSONファイルへ保存
 	void LoadFromFile(); // JSONファイルから読み込み
@@ -73,7 +105,7 @@ private:
 	/// <summary>
 	/// 各ターゲット位置を格納
 	/// </summary>
-	
+
 	// タワー位置（今は1つのみ）
 	Vector3 towerPositon_;
 };

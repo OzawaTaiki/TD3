@@ -1280,6 +1280,18 @@
             "Wall",
             "movableObject",
             "Tower",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
+            "ShadowObject",
+            "Wall",
+            "movableObject",
+            "Tower",
             "ShadowObject"
         ]
     }
