@@ -32,5 +32,11 @@ private:
 
 	// 各 movableObject　に対応する影オブジェクトのグループ
 	std::vector<ShadowGroup> shadowGroups_;
+
+	// 動かせるオブジェクトがポイントライトからこの距離離れていたら、影オブジェクトを非アクティブ化
+	float maxDistance_ = 30.0f;
+
+	void SaveToFile();
+	void LoadFromFile();
 };
 

@@ -15,6 +15,7 @@ public:
 	void Draw(const Camera& camera);
 
 	const Vector3& GetTranslate() { return object_->translate_; }
+	const void SetTranslate(Vector3 translate) { object_->translate_ = translate; }
 
 private:
 	std::unique_ptr<ObjectModel> object_;

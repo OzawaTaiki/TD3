@@ -28,38 +28,42 @@ void ShadowObject::Initialize() {
 	collider_->SetLayerMask("Tower");
 
 	// OBBColliderの設定
-	collider_->SetHalfExtents(collider_->GetHalfExtents());
-	collider_->SetLocalPivot(collider_->GetLocalPivot());
+	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+	collider_->SetHalfExtents(halfExtents);
+	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 }
 
-void ShadowObject::Update() { 
+void ShadowObject::Update(const float maxDistance) {
 	object_->Update(); 
-	CalculateShadowTransform();
+	CalculateShadowTransform(maxDistance);
+
+	// 影オブジェクトが有効な場合のみ
+	if (this->isActive_) {
+		if (!this->isReturning_) { // 実体化して、スケールの増加中のみコライダー登録を行う : 減少中（戻り中）に敵が衝突した際の処理も必要なため、ここは見直し予定
+			// OBBColliderの更新
+			Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+			collider_->SetHalfExtents(halfExtents);
+			Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+			collider_->SetLocalPivot(localPivot);
+			collider_->SetWorldTransform(object_->GetWorldTransform());
+			CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+		}
+	}
 
 	// SPACE押下で実体化
 	HandleAttackInput();
-
-	// OBBColliderの更新
-	collider_->SetHalfExtents(collider_->GetHalfExtents());
-	collider_->SetLocalPivot(collider_->GetLocalPivot());
-	collider_->SetWorldTransform(object_->GetWorldTransform());
-	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
-
-#ifdef _DEBUG
-	ImGui::Begin("shadowObject");
-	ImGui::DragFloat3("translate", &this->object_->translate_.x);
-	ImGui::DragFloat3("quaternion", &this->object_->quaternion_.x);
-	ImGui::DragFloat3("scale", &this->object_->scale_.x);
-	ImGui::End();
-#endif
 }
 
 void ShadowObject::Draw(const Camera& camera) { 
-	object_->Draw(&camera, texture_, {0, 0, 0, 1}); 
+	// アクティブな状態のときのみ描画
+	if (this->isActive_) {
+		object_->Draw(&camera, texture_, { 0, 0, 0, 1 });
+	}
 }
 
-void ShadowObject::CalculateShadowTransform()
+void ShadowObject::CalculateShadowTransform(const float maxDistance)
 {
 	/*ポイントライトの位置を考慮し、動かせるオブジェクトの影の位置に常に影オブジェクトが配置されるように設定*/
 	// 動かせるオブジェクトの中心位置
@@ -71,6 +75,14 @@ void ShadowObject::CalculateShadowTransform()
 	// 影の長さを光との距離から決定
 	float distanceToLight = Length(objectCenter - lightPosition_);
 	float shadowLength = 1.0f + distanceToLight * 0.15f; // どれくらい伸びるかをかける値で設定
+
+	// 距離チェックを行う : ライトから一定距離離れた場合には非アクティブ化する
+	if (distanceToLight > maxDistance) {
+		this->isActive_ = false;
+		return;
+	}
+	// 距離チェック成功時には有効化
+	this->isActive_ = true;
 
 	// 影オブジェクトの基準点をobjectCenterに設定し、ローカルZ+方向に向けてshadowLengthを伸ばす
 	this->object_->scale_.z = shadowLength;

@@ -25,6 +25,14 @@ void MovableObjectManager::Update(const Camera& camera)
 	for (size_t i = 0; i < objects_.size(); i++) {
 		objects_[i]->Update();
 		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get()); // コライダー登録
+
+
+		// ドラッグ中のオブジェクトのみ敵との当たり判定を無効化
+		if (draggingObject_ == objects_[i].get()) {
+			colliders_[i]->SetLayerMask("enemy");
+		} else {
+			colliders_[i]->ExcludeLayerMask("enemy");
+		}
 	}
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
@@ -42,7 +50,7 @@ void MovableObjectManager::Draw(const Camera& camera)
 void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成
-	auto object = std::make_unique<ObjectModel>("movableObject" + std::to_string(objects_.size()));
+	auto object = std::make_unique<ObjectModel>("movableObjectManager" + std::to_string(objects_.size()));
 	object->Initialize("Cube/cube.obj");
 	object->translate_ = position;
 	object->useQuaternion_ = true;
@@ -117,6 +125,7 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	// 左クリックを離したら終了
 	if (input_->IsMouseReleased(0)) {
 		isDragging_ = false;
+		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 	}
 
 #ifdef _DEBUG

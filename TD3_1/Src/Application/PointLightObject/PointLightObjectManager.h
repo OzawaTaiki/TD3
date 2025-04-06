@@ -16,7 +16,14 @@ public:
 
 	const std::vector<std::unique_ptr<PointLightObject>>& GetLights() const { return pointLightObjects_; }
 
+	void AddLight();
+
 private:
 	std::vector<std::unique_ptr<PointLightObject>> pointLightObjects_;
+
+	// JSONファイルへ保存
+	void SaveToFile();
+	// JSONファイルから読み込み
+	void LoadFromFile();
 };
 

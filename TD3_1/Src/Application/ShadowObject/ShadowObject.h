@@ -13,7 +13,7 @@ class Camera;
 class ShadowObject {
 public:
 	void Initialize();
-	void Update();
+	void Update(const float maxDistance);
 	void Draw(const Camera& camera);
 
 	/// <summary>
@@ -35,10 +35,13 @@ private:
 	// ポイントライトの位置を保持
 	Vector3 lightPosition_;
 
+	// 有効化フラグ : ライトから一定距離離れた場合には描画やコライダー登録をしないために使用
+	bool isActive_ = false;
+
 	/// <summary>
 	/// 動かせるオブジェクトとポイントライトの位置を考慮して、影オブジェクトのTransformを計算して設定
 	/// </summary>
-	void CalculateShadowTransform();
+	void CalculateShadowTransform(const float maxDistance);
 
 	/// <summary>
 	/// 実体化関連パラメーター
