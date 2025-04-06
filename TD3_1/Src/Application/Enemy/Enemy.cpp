@@ -16,11 +16,9 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	/*衝突判定を行わないコライダーを設定*/
 	collider_->SetLayerMask("enemy");
 	/*----------------------------*/
-	Vector3 localMin = object_->GetMin();
-	Vector3 localMax = object_->GetMax();
-	Vector3 halfExtents = (localMax - localMin) * 0.5f;
+	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
 	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (localMin - localMax) * 0.5f;
+	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
 	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
@@ -47,11 +45,9 @@ void NormalEnemy::Update()
 	object_->Update();
 	if (!isDead_) {
 		// 生きている間はコライダー更新
-		Vector3 localMin = object_->GetMin();
-		Vector3 localMax = object_->GetMax();
-		Vector3 halfExtents = (localMax - localMin) * 0.5f;
+		Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
 		collider_->SetHalfExtents(halfExtents);
-		Vector3 localPivot = (localMin - localMax) * 0.5f;
+		Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
 		collider_->SetLocalPivot(localPivot);
 		collider_->SetWorldTransform(object_->GetWorldTransform());
 		CollisionManager::GetInstance()->RegisterCollider(collider_.get());

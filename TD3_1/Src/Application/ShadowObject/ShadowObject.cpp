@@ -28,8 +28,10 @@ void ShadowObject::Initialize() {
 	collider_->SetLayerMask("Tower");
 
 	// OBBColliderの設定
-	collider_->SetHalfExtents(collider_->GetHalfExtents());
-	collider_->SetLocalPivot(collider_->GetLocalPivot());
+	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+	collider_->SetHalfExtents(halfExtents);
+	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 }
 
@@ -41,8 +43,10 @@ void ShadowObject::Update(const float maxDistance) {
 	HandleAttackInput();
 
 	// OBBColliderの更新
-	collider_->SetHalfExtents(collider_->GetHalfExtents());
-	collider_->SetLocalPivot(collider_->GetLocalPivot());
+	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+	collider_->SetHalfExtents(halfExtents);
+	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+	collider_->SetLocalPivot(localPivot);
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 }
