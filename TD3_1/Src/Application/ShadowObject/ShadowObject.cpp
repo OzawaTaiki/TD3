@@ -39,16 +39,19 @@ void ShadowObject::Update(const float maxDistance) {
 	object_->Update(); 
 	CalculateShadowTransform(maxDistance);
 
+	// 影オブジェクトが有効な場合のみ
+	if (this->isActive_) {
+		// OBBColliderの更新
+		Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+		collider_->SetHalfExtents(halfExtents);
+		Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+		collider_->SetLocalPivot(localPivot);
+		collider_->SetWorldTransform(object_->GetWorldTransform());
+		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+	}
+
 	// SPACE押下で実体化
 	HandleAttackInput();
-
-	// OBBColliderの更新
-	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
-	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
-	collider_->SetLocalPivot(localPivot);
-	collider_->SetWorldTransform(object_->GetWorldTransform());
-	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 }
 
 void ShadowObject::Draw(const Camera& camera) { 
