@@ -37,6 +37,7 @@ private:
     Camera SceneCamera_ = {};
     DebugCamera debugCamera_ = {};
     bool enableDebugCamera_ = false;
+	Vector3 originalCameraTranslate_; // カメラの初期位置を保持しておく（シェイクでずれる対策）
 
     std::vector<Particle> particles_;
 

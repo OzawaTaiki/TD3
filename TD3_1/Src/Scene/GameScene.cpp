@@ -1,6 +1,10 @@
 #include "GameScene.h"
 
+// Engine
 #include <Features/Model/Manager/ModelManager.h>
+
+// Application
+#include <Application/CameraShake/CameraShake.h>
 
 GameScene::~GameScene() {
 	
@@ -12,6 +16,8 @@ void GameScene::Initialize() {
 	SceneCamera_.rotate_ = {0.81f, 0, 0};
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
+
+	originalCameraTranslate_ = SceneCamera_.translate_; // カメラの初期位置を保存
 
 	lineDrawer_ = LineDrawer::GetInstance();
 	lineDrawer_->Initialize();
@@ -61,6 +67,10 @@ void GameScene::Initialize() {
 	// 影オブジェクトを管理するクラス
 	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
 	shadowObjectManager_->Initialize();
+
+
+	// カメラシェイク初期化
+	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
 }
 
 void GameScene::Update() {
@@ -87,6 +97,10 @@ void GameScene::Update() {
 		SceneCamera_.UpdateMatrix();
 		particleManager_->Update(SceneCamera_.rotate_);
 	}
+
+	// カメラシェイク更新
+	CameraShake::GetInstance()->Update();
+	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
 
 	// フィールド更新
 	field_->Update();
