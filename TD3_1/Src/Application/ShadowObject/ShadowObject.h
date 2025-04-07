@@ -28,7 +28,8 @@ public:
 private:
 	std::unique_ptr<ObjectModel> object_;
 	uint32_t texture_;
-	std::unique_ptr<OBBCollider> collider_;
+	std::unique_ptr<OBBCollider> collider_; // SPACE押下の実体化時のコライダー
+	std::unique_ptr<OBBCollider> colliderReturning_; // 最大サイズまで実体化して、元に戻るとき用のコライダー
 
 	// 動かせるオブジェクトの位置を保持
 	Vector3 movableObjectPosition_;
