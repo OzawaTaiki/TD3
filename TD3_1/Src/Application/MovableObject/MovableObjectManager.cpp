@@ -4,6 +4,7 @@
 #include <Features/Camera/Camera/Camera.h>
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 #include <Features/LineDrawer/LineDrawer.h>
+#include <Features/Event/EventManager.h>
 #include <System/Input/Input.h>
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Matrix/MatrixFunction.h>
@@ -17,6 +18,9 @@ void MovableObjectManager::Initialize()
 	input_ = Input::GetInstance();
 
 	AddMovableObject({ 0, 1, -6 });
+
+    // イベントリスナーの登録
+    EventManager::GetInstance()->AddEventListener("EnemyLaunchKill", this);
 }
 
 void MovableObjectManager::Update(const Camera& camera)
@@ -73,6 +77,15 @@ std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
 		positions.push_back(object->translate_);
 	}
 	return positions;
+}
+
+void MovableObjectManager::OnEvent(const GameEvent& _event)
+{
+    // イベントの種類を確認
+    if (_event.GetEventType() == "EnemyLaunchKill") {
+        // オブジェクトを追加する処理
+        AddMovableObject({ 0, 1, -6 });
+    }
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
