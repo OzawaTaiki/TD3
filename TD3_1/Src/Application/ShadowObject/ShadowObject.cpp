@@ -19,6 +19,8 @@ void ShadowObject::Initialize() {
 	object_->useQuaternion_ = true;
 	texture_ = TextureManager::GetInstance()->Load("white.png");
 
+
+	// 実体化した瞬間のコライダーの設定
 	collider_ = std::make_unique<OBBCollider>("ShadowObjectCollider");
 	collider_->SetLayer("ShadowObject");
 	/*判定を取らないオブジェクトを設定*/
@@ -27,12 +29,15 @@ void ShadowObject::Initialize() {
 	collider_->SetLayerMask("Wall");
 	collider_->SetLayerMask("Tower");
 
-	// OBBColliderの設定
-	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
-	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
-	collider_->SetLocalPivot(localPivot);
-	collider_->SetWorldTransform(object_->GetWorldTransform());
+
+	// 実体化から元に戻るまでのコライダーの設定
+	colliderReturning_ = std::make_unique<OBBCollider>("ShadowObjectReturningCollider");
+	colliderReturning_->SetLayer("ShadowObjectReturning");
+	/*判定を取らないオブジェクトを設定*/
+	colliderReturning_->SetLayerMask("ShadowObjectReturning");
+	colliderReturning_->SetLayerMask("movableObject");
+	colliderReturning_->SetLayerMask("Wall");
+	colliderReturning_->SetLayerMask("Tower");
 }
 
 void ShadowObject::Update(const float maxDistance) {
@@ -41,7 +46,8 @@ void ShadowObject::Update(const float maxDistance) {
 
 	// 影オブジェクトが有効な場合のみ
 	if (this->isActive_) {
-		if (!this->isReturning_) { // 実体化して、スケールの増加中のみコライダー登録を行う : 減少中（戻り中）に敵が衝突した際の処理も必要なため、ここは見直し予定
+		// 実体化した瞬間のコライダー登録
+		if (!this->isReturning_) {
 			// OBBColliderの更新
 			Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
 			collider_->SetHalfExtents(halfExtents);
@@ -49,6 +55,14 @@ void ShadowObject::Update(const float maxDistance) {
 			collider_->SetLocalPivot(localPivot);
 			collider_->SetWorldTransform(object_->GetWorldTransform());
 			CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+		// 実体化から元に戻るときのコライダー登録
+		} else {
+			Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+			colliderReturning_->SetHalfExtents(halfExtents);
+			Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+			colliderReturning_->SetLocalPivot(localPivot);
+			colliderReturning_->SetWorldTransform(object_->GetWorldTransform());
+			CollisionManager::GetInstance()->RegisterCollider(colliderReturning_.get());
 		}
 	}
 

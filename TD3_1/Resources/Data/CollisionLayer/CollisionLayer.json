@@ -20,7 +20,8 @@
             "movableObject",
             "Tower",
             "enemy",
-            "ShadowObject"
+            "ShadowObject",
+            "ShadowObjectReturning"
         ]
     }
 }
