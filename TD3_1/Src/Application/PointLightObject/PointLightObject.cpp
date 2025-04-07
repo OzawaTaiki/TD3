@@ -3,10 +3,11 @@
 // Engine
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 
-void PointLightObject::Initialize(Vector3 position) { 
+void PointLightObject::Initialize(Vector3 position, float maxDistance) { 
 	object_ = std::make_unique<ObjectModel>("PointLightObject"); 
 	object_->Initialize("Sphere/sphere.obj");
 	object_->translate_ = position;
+	maxDistance_ = maxDistance;
 	texture_ = TextureManager::GetInstance()->Load("white.png");
 }
 
