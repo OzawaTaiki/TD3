@@ -13,7 +13,7 @@
 // Externals
 #include <imgui.h>
 
-void ShadowObject::Initialize() { 
+void ShadowObject::Initialize(float waitDuration) { 
 	object_ = std::make_unique<ObjectModel>("ShadowObject"); 
 	object_->Initialize("Cube/cube.obj");
 	object_->useQuaternion_ = true;
@@ -38,6 +38,9 @@ void ShadowObject::Initialize() {
 	colliderReturning_->SetLayerMask("movableObject");
 	colliderReturning_->SetLayerMask("Wall");
 	colliderReturning_->SetLayerMask("Tower");
+
+
+	waitDuration_ = waitDuration;
 }
 
 void ShadowObject::Update(const float maxDistance) {
@@ -135,30 +138,47 @@ void ShadowObject::HandleAttackInput()
 	// アニメーション処理
 	if (isScaling_) {
 		const float kDeltaTime = 1.0f / 60.0f;
-		animationTime_ += kDeltaTime;
 
-		// アニメーション割合を計算
-		float t = std::min(animationTime_ / animationDuration_, 1.0f);
-		// 増加時と戻り時で別のイージング関数を仕様
-		float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseInQuad(t); // 戻り時 : 増加時
-
-		// 現在のスケールを計算
-		scaleYCurrent_ = scaleYStart_ + (scaleYTarget_ - scaleYStart_) * easedT;
-		object_->scale_.y = scaleYCurrent_;
-
-		// アニメーションが完了した場合
-		if (t >= 1.0f) {
-			if (!isReturning_) {
-				// 戻りアニメーションの準備
-				isReturning_ = true;
+		// 最大値まで実体化した際の待機処理
+		if (isWaiting_) {
+			waitTime_ += kDeltaTime;
+			if (waitTime_ >= waitDuration_) {
+				isWaiting_ = false;
+				isReturning_ = true; // 戻りアニメーション開始
+				isWaiting_ = false; // 待機フラグのリセット
 				scaleYStart_ = 5.0f;
 				scaleYTarget_ = 1.0f;
-				animationTime_ = 0.0f;
-				animationDuration_ = scaleDownDuration_; // 戻る時間を設定
-			} else {
-				// 全アニメーション終了
-				isScaling_ = false;
+				animationTime_ = 0.0f; // 拡大->縮小の双方で使いまわしてるためリセット
+				animationDuration_ = scaleDownDuration_; // 元に戻るまでの時間を設定
+				waitTime_ = 0.0f; // 待機タイマーリセット
 			}
+		// 拡大 & 縮小の処理
+		} else {
+			animationTime_ += kDeltaTime;
+
+			// アニメーション割合を計算
+			float t = std::min(animationTime_ / animationDuration_, 1.0f);
+			float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseInQuad(t); // 縮小時 : 拡大時
+
+			// 現在のスケールを計算
+			scaleYCurrent_ = scaleYStart_ + (scaleYTarget_ - scaleYStart_) * easedT;
+			object_->scale_.y = scaleYCurrent_;
+
+			// 拡大・縮小それぞれが完了した場合
+			 if (t >= 1.0f) {
+				 // 拡大 終了時の処理
+				if (!isReturning_) {
+					isReturning_ = true;
+					scaleYStart_ = 5.0f;
+					scaleYTarget_ = 1.0f;
+					animationTime_ = 0.0f;
+					animationDuration_ = scaleDownDuration_; // 戻る時間を設定
+					isWaiting_ = true; // 待機状態にする
+				// 縮小 終了時の処理
+				} else {
+					isScaling_ = false;
+				}
+			 }
 		}
 	}
 }

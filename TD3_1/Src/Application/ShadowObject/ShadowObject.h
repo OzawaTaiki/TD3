@@ -12,7 +12,7 @@ class Camera;
 /// </summary>
 class ShadowObject {
 public:
-	void Initialize();
+	void Initialize(float waitDuration);
 	void Update(const float maxDistance);
 	void Draw(const Camera& camera);
 
@@ -24,6 +24,10 @@ public:
 	/// ライトの位置を設定
 	/// </summary>
 	void SetLightPosition(const Vector3& position) { lightPosition_ = position; }
+	/// <summary>
+	/// 最大値まで拡大->縮小を行うまでの待機時間を設定
+	/// </summary>
+	void SetWaitDuration(const float& duration) { waitDuration_ = duration; }
 
 private:
 	std::unique_ptr<ObjectModel> object_;
@@ -56,6 +60,10 @@ private:
 	float scaleUpDuration_ = 0.2f; // 増加の時間 :（SPACEを押してから最大値まで実体化する時間）
 	float scaleDownDuration_ = 1.6f; // 戻る時間 :（最大値まで実体化してから元の位置まで戻るまでの時間）
 	bool isReturning_ = false; // 戻りアニメーション中かどうか
+
+	float waitDuration_ = 0.0f; // 最大値で待機する秒数を格納
+	float waitTime_ = 0.0f; // 待機時間を計測するタイマー
+	bool isWaiting_ = false; // 最大まで拡大した際の待機処理を制御
 
 	/// <summary>
 	/// スペース押下時、影オブジェクトの実体化（コライダー設定、アニメーション処理含む）
