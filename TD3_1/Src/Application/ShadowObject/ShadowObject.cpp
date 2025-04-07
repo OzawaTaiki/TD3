@@ -10,6 +10,9 @@
 #include <Math/Quaternion/Quaternion.h>
 #include <Math/Easing.h>
 
+// Application
+#include <Application/CameraShake/CameraShake.h>
+
 // Externals
 #include <imgui.h>
 
@@ -132,6 +135,9 @@ void ShadowObject::HandleAttackInput()
 			scaleYTarget_ = 5.0f; // 増加後のスケール
 			animationTime_ = 0.0f; // アニメーションタイマーをリセット
 			animationDuration_ = scaleUpDuration_; // 増加時間を設定
+
+			// カメラシェイクを行う
+			CameraShake::GetInstance()->StartShake();
 		}
 	}
 
@@ -158,7 +164,7 @@ void ShadowObject::HandleAttackInput()
 
 			// アニメーション割合を計算
 			float t = std::min(animationTime_ / animationDuration_, 1.0f);
-			float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseInQuad(t); // 縮小時 : 拡大時
+			float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseOutQuad(t); // 縮小時 : 拡大時
 
 			// 現在のスケールを計算
 			scaleYCurrent_ = scaleYStart_ + (scaleYTarget_ - scaleYStart_) * easedT;

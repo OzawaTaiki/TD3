@@ -5,6 +5,7 @@
 
 class CameraShake {
 public:
+	static CameraShake* GetInstance();
 	void Initialize(float duration, float intensity);
 	void Update();
 

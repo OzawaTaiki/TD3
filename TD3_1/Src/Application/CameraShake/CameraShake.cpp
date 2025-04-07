@@ -6,6 +6,11 @@
 // Externals
 #include <imgui.h>
 
+CameraShake* CameraShake::GetInstance() {
+	static CameraShake instance;
+	return &instance;
+}
+
 void CameraShake::Initialize(float duration, float intensity) { 
 	duration_ = duration;
 	intensity_ = intensity;

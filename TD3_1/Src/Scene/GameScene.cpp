@@ -1,6 +1,10 @@
 #include "GameScene.h"
 
+// Engine
 #include <Features/Model/Manager/ModelManager.h>
+
+// Application
+#include <Application/CameraShake/CameraShake.h>
 
 GameScene::~GameScene() {
 	
@@ -65,9 +69,8 @@ void GameScene::Initialize() {
 	shadowObjectManager_->Initialize();
 
 
-
-	// カメラシェイク
-	cameraShake_.Initialize(1.0f, 0.5f); 
+	// カメラシェイク初期化
+	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
 }
 
 void GameScene::Update() {
@@ -96,8 +99,8 @@ void GameScene::Update() {
 	}
 
 	// カメラシェイク更新
-	cameraShake_.Update();
-	SceneCamera_.translate_ = originalCameraTranslate_ + cameraShake_.GetOffset();
+	CameraShake::GetInstance()->Update();
+	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
 
 	// フィールド更新
 	field_->Update();

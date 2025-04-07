@@ -20,8 +20,6 @@
 #include <Application/PointLightObject/PointLightObjectManager.h>
 #include <Application/ShadowObject/ShadowObjectManager.h>
 
-#include <Application/CameraShake/CameraShake.h>
-
 class GameScene : public BaseScene
 {
 public:
@@ -67,7 +65,4 @@ private:
     std::unique_ptr<PointLightObjectManager> pointLightObjectManager_;
     // 影オブジェクトを管理するクラス
     std::unique_ptr<ShadowObjectManager> shadowObjectManager_;
-
-    // カメラシェイク
-	CameraShake cameraShake_;
 };
