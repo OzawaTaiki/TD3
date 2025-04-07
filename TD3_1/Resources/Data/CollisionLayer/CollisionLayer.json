@@ -6,22 +6,7 @@
             "Tower",
             "enemy",
             "ShadowObject",
-            "Wall",
-            "movableObject",
-            "Tower",
-            "enemy",
-            "ShadowObject",
-            "Wall",
-            "movableObject",
-            "Tower",
-            "enemy",
-            "ShadowObject",
-            "Wall",
-            "movableObject",
-            "Tower",
-            "enemy",
-            "ShadowObject",
-            "ShadowObjectReturning"
+            "enemy_forward"
         ]
     }
 }

@@ -25,9 +25,14 @@ public:
 	// 実体化した影オブジェクトに打ち上げられた際の処理
 	void Launched();
 
+	void OnCollsion(Collider* _other, const ColliderInfo& _info);
+
 protected:
+	void InitialzeColliders();
+
 	std::unique_ptr<ObjectModel> object_;
 	std::unique_ptr<OBBCollider> collider_;
+	std::unique_ptr<SphereCollider> forwardCheckCollider_; // 目の前にブロックがあるか確認するためのコライダー
 
 	const float kDeltaTime = 1.0f / 60.0f;
 	const float kGravity = -30.0f;
@@ -36,6 +41,8 @@ protected:
 	float speed_;
 
 	bool isDead_ = false;
+
+	bool isBlocked = false; // ブロックに衝突して止まっているか
 
 	// 打ち上げられ時の垂直速度
 	float verticalVelocity_;
