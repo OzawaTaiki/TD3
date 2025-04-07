@@ -33,7 +33,8 @@ private:
 	// 各 movableObject　に対応する影オブジェクトのグループ
 	std::vector<ShadowGroup> shadowGroups_;
 
+	float waitDuration_ = 0.0f; // 最大値まで拡大->縮小を始めるまでの待機時間
+
 	void SaveToFile();
 	void LoadFromFile();
 };
-
