@@ -20,6 +20,8 @@
 #include <Application/PointLightObject/PointLightObjectManager.h>
 #include <Application/ShadowObject/ShadowObjectManager.h>
 
+#include <Application/CameraShake/CameraShake.h>
+
 class GameScene : public BaseScene
 {
 public:
@@ -37,6 +39,7 @@ private:
     Camera SceneCamera_ = {};
     DebugCamera debugCamera_ = {};
     bool enableDebugCamera_ = false;
+	Vector3 originalCameraTranslate_; // カメラの初期位置を保持しておく（シェイクでずれる対策）
 
     std::vector<Particle> particles_;
 
@@ -64,4 +67,7 @@ private:
     std::unique_ptr<PointLightObjectManager> pointLightObjectManager_;
     // 影オブジェクトを管理するクラス
     std::unique_ptr<ShadowObjectManager> shadowObjectManager_;
+
+    // カメラシェイク
+	CameraShake cameraShake_;
 };

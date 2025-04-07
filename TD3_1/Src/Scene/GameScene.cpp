@@ -13,6 +13,8 @@ void GameScene::Initialize() {
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
 
+	originalCameraTranslate_ = SceneCamera_.translate_; // カメラの初期位置を保存
+
 	lineDrawer_ = LineDrawer::GetInstance();
 	lineDrawer_->Initialize();
 	lineDrawer_->SetCameraPtr(&SceneCamera_);
@@ -61,6 +63,11 @@ void GameScene::Initialize() {
 	// 影オブジェクトを管理するクラス
 	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
 	shadowObjectManager_->Initialize();
+
+
+
+	// カメラシェイク
+	cameraShake_.Initialize(1.0f, 0.5f); 
 }
 
 void GameScene::Update() {
@@ -87,6 +94,10 @@ void GameScene::Update() {
 		SceneCamera_.UpdateMatrix();
 		particleManager_->Update(SceneCamera_.rotate_);
 	}
+
+	// カメラシェイク更新
+	cameraShake_.Update();
+	SceneCamera_.translate_ = originalCameraTranslate_ + cameraShake_.GetOffset();
 
 	// フィールド更新
 	field_->Update();
