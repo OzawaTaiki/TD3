@@ -29,21 +29,6 @@ private:
 	/// </summary>
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
-	/// <summary>
-	/// 敵スポーンの情報
-	/// </summary>
-	struct SpawnData {
-		bool spawned = false; // スポーン済みかどうか
-		std::string type; // 種類
-		float spawnTime; // 出現時間（秒）
-		Vector3 position; // 出現位置
-		/*新しいパラメーターはここから追加*/
-	};
-
-	/// <summary>
-	/// 敵の出現データを格納
-	/// </summary>
-	std::vector<SpawnData> spawnData_;
 
     // スポーンする敵毎のデータ
 	struct EnemySpawnData {
@@ -88,8 +73,6 @@ private:
 	/// <summary>
 	/// スポーンエディタの表示
 	/// </summary>
-	void DrawSpawnEditor();
-
 	void nDrawSpawnEditor();
 
 	void SaveToFile(); // JSONファイルへ保存
@@ -101,6 +84,11 @@ private:
 	float elapsedTime_ = 0;
 	const float kDeltaTime = 1.0f / 60.0f;
 	bool isTimerActive_ = false;
+
+    Vector3 forwardColliderOffset_ = { 0,0,1 }; // 前方コライダーのオフセット
+    float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
+
+
 
 	#ifdef _DEBUG
 	// スポーン位置表示用のオブジェクト
