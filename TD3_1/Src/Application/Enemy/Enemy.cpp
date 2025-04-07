@@ -142,5 +142,6 @@ void Enemy::InitialzeColliders()
 	forwardCheckCollider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
         OnForwardCollision(_other, _info);
 		});
+    forwardCheckCollider_->SetDrawFlag(false);
 
 }
