@@ -5,7 +5,7 @@
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
 
-void NormalEnemy::Initialize(const Vector3& spawnPosition)
+void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThreshold)
 {
 	object_ = std::make_unique<ObjectModel>("normalEnemy");
 	object_->Initialize("Enemy/enemy.obj");
@@ -15,6 +15,8 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	InitialzeColliders();
 
 	speed_ = 4.0f;
+
+	blockStopThreshold = _blockStopThreshold;
 }
 
 void NormalEnemy::Update()
@@ -22,10 +24,20 @@ void NormalEnemy::Update()
 	// ターゲットの位置まで移動
 	if (!isBlocked)
 	{
+		// 衝突していないとき
 		Vector3 direction = targetPosition_ - object_->translate_;
 		direction = Normalize(direction);
 		direction.y = 0; // 高さを固定するため、Y成分を無効化
 		object_->translate_ += direction * speed_ * kDeltaTime;
+	}
+	else
+	{
+        // 衝突しているとき
+        blockedTimer_ += kDeltaTime; // 衝突している時間を加算
+        if (blockedTimer_ >= blockStopThreshold) {
+            // 一定時間衝突していたら死亡
+            Dead();
+        }
 	}
 
 	// ターゲット方向に回転を設定
@@ -36,13 +48,8 @@ void NormalEnemy::Update()
 
 	object_->Update();
 	if (!isDead_) {
-		// 生きている間はコライダー更新
-		Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
-		collider_->SetHalfExtents(halfExtents);
-		Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
-		collider_->SetLocalPivot(localPivot);
-		collider_->SetWorldTransform(object_->GetWorldTransform());
 		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+		CollisionManager::GetInstance()->RegisterCollider(forwardCheckCollider_.get());
 	}
 
 	// 打ち上げられたら重力の影響を受ける
@@ -92,13 +99,22 @@ void Enemy::OnCollsion(Collider* _other, const ColliderInfo& _info)
 		this->Dead();
 	}
 
-	// 別のコライダーで行うべき
-	// 進行方向へ少しoffsetを適応したもの。
+}
+
+void Enemy::OnForwardCollision(Collider* _other, const ColliderInfo& _info)
+{
+	CollisionLayerManager* collisionManager = CollisionLayerManager::GetInstance();
+
 	uint32_t movableObjectLayer = collisionManager->GetLayer("movableObject");
 	if (_other->GetLayer() == movableObjectLayer) {
+
+		if (_info.state == CollisionState::Enter)
+		{
+            blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
+		}
+
 		isBlocked = true;
 	}
-
 }
 
 void Enemy::InitialzeColliders()
@@ -121,12 +137,10 @@ void Enemy::InitialzeColliders()
     forwardCheckCollider_->SetLayer("enemy_forward");
 	forwardCheckCollider_->SetCollisionLayer("movableObject"); // これだけに衝突するよ
     forwardCheckCollider_->SetRadius(1.0f);
-    forwardCheckCollider_->SetOffset(Vector3(0, 0, 1)); // 前方にオフセット
+	forwardCheckCollider_->SetOffset(Vector3(0, 0, 1));// 前方にオフセット
     forwardCheckCollider_->SetWorldTransform(object_->GetWorldTransform());
 	forwardCheckCollider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
-		// このコライダー用の関数を作る
-		//			or
-		// OnCollsion内でLayerで分岐させて処理を書く
+        OnForwardCollision(_other, _info);
 		});
 
 }

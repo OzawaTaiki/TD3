@@ -64,7 +64,7 @@ void EnemySpawnManager::Update() {
 						if (spawnData.enemyType == "normal"|| spawnData.enemyType == "Normal") { // ノーマル敵の場合
 							auto enemy = std::make_unique<NormalEnemy>();
 							Vector3 spawnPos = group.spawnPosition + spawnData.spawnOffset;
-							enemy->Initialize(spawnPos);
+							enemy->Initialize(spawnPos, blockStopThreshold);
 							enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
 
 							enemies_.push_back(std::move(enemy));
@@ -100,10 +100,6 @@ void EnemySpawnManager::Update() {
 	// リセットを行う（仮なので後で整理）
 	if (ImGui::Button("Reset")) {
 		elapsedTime_ = 0.0f;
-		// 敵の出現済みフラグをリセット
-		for (auto& data : spawnData_) {
-			data.spawned = false;
-		}
 		// 出現してる敵を全て死亡させる
 		for (auto& enemy : enemies_) {
 			enemy->Dead();
@@ -116,6 +112,14 @@ void EnemySpawnManager::Update() {
 				}
 			}
 		}
+	}
+	ImGui::DragFloat("blockStopThreshold", &blockStopThreshold, 0.01f);
+	if (ImGui::DragFloat3("forwardColliderOffset", &forwardColliderOffset_.x, 0.01f))
+	{
+        for (auto& enemy : enemies_)
+        {
+            enemy->SetForwardCheckColliderOffset(forwardColliderOffset_);
+        }
 	}
 	ImGui::End();
 
@@ -155,6 +159,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 	{
         SaveToFile();
 	}
+
 
 	// WAVE群の表示
 
@@ -376,6 +381,9 @@ void EnemySpawnManager::SaveToFile()
 
 	nlohmann::json j;
 
+    j["forward_collider_offset"] = { forwardColliderOffset_.x, forwardColliderOffset_.y, forwardColliderOffset_.z };
+    j["block_stop_threshold"] = blockStopThreshold;
+
 	for (const auto& spawnData : nSpawnData_)
 	{
         nlohmann::json waveJson;
@@ -415,10 +423,17 @@ void EnemySpawnManager::LoadFromFile()
 	nlohmann::json jsonData;
 	file >> jsonData;
 
-	spawnData_.clear();
+	nSpawnData_.clear();
+
+    if (jsonData.contains("forward_collider_offset"))
+		forwardColliderOffset_ = { jsonData["forward_collider_offset"][0], jsonData["forward_collider_offset"][1], jsonData["forward_collider_offset"][2] };
+	else        forwardColliderOffset_ = { 0,0,1 };
+
+	if (jsonData.contains("block_stop_threshold"))		jsonData["block_stop_threshold"] = blockStopThreshold;
+
 	for (const auto& entry : jsonData["waves"]) {
 		SpawnWave wave;
-		if (entry.contains("wave_number")) wave.waveNumber = entry["wave_number"];
+		if (entry.contains("wave_number"))		wave.waveNumber = entry["wave_number"];
         if (entry.contains("start_time"))        wave.startTime = entry["start_time"];
 
 		if (entry.contains("enemy_groups")) {

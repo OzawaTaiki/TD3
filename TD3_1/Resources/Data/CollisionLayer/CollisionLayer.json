@@ -6,7 +6,8 @@
             "Tower",
             "enemy",
             "ShadowObject",
-            "enemy_forward"
+            "enemy_forward",
+            "ShadowObjectReturning"
         ]
     }
 }
