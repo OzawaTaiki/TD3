@@ -12,30 +12,7 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 	object_->translate_ = spawnPosition;
 	object_->useQuaternion_ = true;
 
-	collider_ = std::make_unique<OBBCollider>("enemyCollider");
-	collider_->SetLayer("enemy");
-	/*衝突判定を行わないコライダーを設定*/
-	collider_->SetLayerMask("enemy");
-	/*----------------------------*/
-	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
-	collider_->SetHalfExtents(halfExtents);
-	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
-	collider_->SetLocalPivot(localPivot);
-	collider_->SetWorldTransform(object_->GetWorldTransform());
-	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
-		// 影オブジェクトとの衝突
-		uint32_t shadowObjectLayer = CollisionLayerManager::GetInstance()->GetLayer("ShadowObject"); // 影オブジェクトのレイヤーを取得
-		if (_other->GetLayer() == shadowObjectLayer) {
-			this->Launched(); // 衝突した敵を打ち上げる
-		}
-
-		// タワーとの衝突
-		uint32_t towerObjectLayer = CollisionLayerManager::GetInstance()->GetLayer("Tower");
-		if (_other->GetLayer() == towerObjectLayer) {
-			this->Dead();
-		}
-
-		});
+	InitialzeColliders();
 
 	speed_ = 4.0f;
 }
@@ -43,10 +20,13 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition)
 void NormalEnemy::Update()
 {
 	// ターゲットの位置まで移動
-	Vector3 direction = targetPosition_ - object_->translate_;
-	direction = Normalize(direction);
-	direction.y = 0; // 高さを固定するため、Y成分を無効化
-	object_->translate_ += direction * speed_ * kDeltaTime;
+	if (!isBlocked)
+	{
+		Vector3 direction = targetPosition_ - object_->translate_;
+		direction = Normalize(direction);
+		direction.y = 0; // 高さを固定するため、Y成分を無効化
+		object_->translate_ += direction * speed_ * kDeltaTime;
+	}
 
 	// ターゲット方向に回転を設定
 	Vector3 forward = Vector3(0, 0, 1);
@@ -75,8 +55,11 @@ void NormalEnemy::Update()
 		// 打ち上げられ後、着地したら落下を止めて死亡させる
 		if (object_->translate_.y <= 1.0f) {
 			object_->translate_.y = 1.0f; // 地面に固定
+			Dead();
 		}
 	}
+
+	isBlocked = false;
 }
 
 void NormalEnemy::Draw(const Camera* camera)
@@ -91,4 +74,59 @@ void Enemy::Launched()
 		verticalVelocity_ = 20.0f; // 初期垂直初速を設定
 		isLaunched_ = true; // 打ち上げられたことを記録
 	}
+}
+
+void Enemy::OnCollsion(Collider* _other, const ColliderInfo& _info)
+{
+	CollisionLayerManager* collisionManager = CollisionLayerManager::GetInstance();
+
+	// 影オブジェクトとの衝突
+	uint32_t shadowObjectLayer = collisionManager->GetLayer("ShadowObject"); // 影オブジェクトのレイヤーを取得
+	if (_other->GetLayer() == shadowObjectLayer) {
+		this->Launched(); // 衝突した敵を打ち上げる
+	}
+
+	// タワーとの衝突
+	uint32_t towerObjectLayer = collisionManager->GetLayer("Tower");
+	if (_other->GetLayer() == towerObjectLayer) {
+		this->Dead();
+	}
+
+	// 別のコライダーで行うべき
+	// 進行方向へ少しoffsetを適応したもの。
+	uint32_t movableObjectLayer = collisionManager->GetLayer("movableObject");
+	if (_other->GetLayer() == movableObjectLayer) {
+		isBlocked = true;
+	}
+
+}
+
+void Enemy::InitialzeColliders()
+{
+	collider_ = std::make_unique<OBBCollider>("enemyCollider");
+	collider_->SetLayer("enemy");
+	/*衝突判定を行わないコライダーを設定*/
+	collider_->SetLayerMask("enemy");
+	/*----------------------------*/
+	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
+	collider_->SetHalfExtents(halfExtents);
+	Vector3 localPivot = (object_->GetMax() + object_->GetMin()) * 0.5f;
+	collider_->SetLocalPivot(localPivot);
+	collider_->SetWorldTransform(object_->GetWorldTransform());
+	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
+		OnCollsion(_other, _info);
+		});
+
+	forwardCheckCollider_ = std::make_unique<SphereCollider>("enemy_forward");
+    forwardCheckCollider_->SetLayer("enemy_forward");
+	forwardCheckCollider_->SetCollisionLayer("movableObject"); // これだけに衝突するよ
+    forwardCheckCollider_->SetRadius(1.0f);
+    forwardCheckCollider_->SetOffset(Vector3(0, 0, 1)); // 前方にオフセット
+    forwardCheckCollider_->SetWorldTransform(object_->GetWorldTransform());
+	forwardCheckCollider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
+		// このコライダー用の関数を作る
+		//			or
+		// OnCollsion内でLayerで分岐させて処理を書く
+		});
+
 }
