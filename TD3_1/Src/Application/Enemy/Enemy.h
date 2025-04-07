@@ -14,7 +14,7 @@ class Enemy
 public:
 	virtual ~Enemy() = default;
 
-	virtual void Initialize(const Vector3& position) = 0;
+	virtual void Initialize(const Vector3& position,float _blockStopThreshold) = 0;
 	virtual void Update() = 0;
 	virtual void Draw(const Camera* camera) = 0;
 
@@ -26,6 +26,10 @@ public:
 	void Launched();
 
 	void OnCollsion(Collider* _other, const ColliderInfo& _info);
+
+	void OnForwardCollision(Collider* _other, const ColliderInfo& _info);
+
+    void SetForwardCheckColliderOffset(const Vector3& offset) { forwardCheckCollider_->SetOffset(offset); }
 
 protected:
 	void InitialzeColliders();
@@ -43,6 +47,8 @@ protected:
 	bool isDead_ = false;
 
 	bool isBlocked = false; // ブロックに衝突して止まっているか
+    float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
+    float blockedTimer_ = 0.0f; // 止まっている時間
 
 	// 打ち上げられ時の垂直速度
 	float verticalVelocity_;
@@ -59,7 +65,7 @@ protected:
 /// </summary>
 class NormalEnemy : public Enemy {
 public:
-	void Initialize(const Vector3& spawnPosition) override;
+	void Initialize(const Vector3& spawnPosition, float _blockStopThreshold) override;
 	void Update() override; // ノーマルの敵はタワーへ向かう
 	void Draw(const Camera* camera) override;
 
