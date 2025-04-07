@@ -353,6 +353,10 @@ void EnemySpawnManager::nDrawSpawnEditor()
 					// 敵の種類
 					static const char* enemyTypes[] = { "Normal" , "Empty" };
 					static int selectedEnemyTypeIndex = 0;
+
+                    if (enemy.enemyType == "Normal") selectedEnemyTypeIndex = 0;
+                    else if (enemy.enemyType == "Empty") selectedEnemyTypeIndex = 1;
+
 					if (ImGui::Combo("Type", &selectedEnemyTypeIndex, enemyTypes, IM_ARRAYSIZE(enemyTypes))) {
 						enemy.enemyType = enemyTypes[selectedEnemyTypeIndex];
 					}
