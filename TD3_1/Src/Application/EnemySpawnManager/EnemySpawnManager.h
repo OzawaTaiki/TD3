@@ -2,6 +2,7 @@
 
 // Engine
 #include <Features/Model/ObjectModel.h>
+#include <System/Audio/Audio.h>
 
 // Application
 #include <Application/Enemy/Enemy.h>
@@ -101,4 +102,8 @@ private:
 
 	// タワー位置（今は1つのみ）
 	Vector3 towerPositon_;
+
+    Audio* audio_ = nullptr; //
+    uint32_t deathSoundHandle_ = 0; // 敵の死亡音
+    float deathSoundVolume_ = 1.0f; // 敵の死亡音のボリューム
 };

@@ -29,6 +29,9 @@ public:
 	/// </summary>
 	void SetWaitDuration(const float& duration) { waitDuration_ = duration; }
 
+    void SetSoundHandle(uint32_t soundHandle) { soundHandle_ = soundHandle; } // サウンドハンドルをセット
+    void SetVolume(float volume) { volume_ = volume; } // ボリュームをセット
+
 private:
 	std::unique_ptr<ObjectModel> object_;
 	uint32_t texture_;
@@ -64,6 +67,11 @@ private:
 	float waitDuration_ = 0.0f; // 最大値で待機する秒数を格納
 	float waitTime_ = 0.0f; // 待機時間を計測するタイマー
 	bool isWaiting_ = false; // 最大まで拡大した際の待機処理を制御
+
+    uint32_t soundHandle_ = 0; // サウンドハンドル
+    uint32_t voiceHandle_ = 0; // ボイスハンドル
+
+    float volume_ = 0.5f; // 死亡時のサウンドボリューム
 
 	/// <summary>
 	/// スペース押下時、影オブジェクトの実体化（コライダー設定、アニメーション処理含む）

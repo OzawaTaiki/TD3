@@ -5,6 +5,7 @@
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
 #include <Features/Event/EventManager.h>
+#include <System/Audio/Audio.h>
 
 void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThreshold)
 {
@@ -75,6 +76,11 @@ void NormalEnemy::Update()
 void NormalEnemy::Draw(const Camera* camera)
 {
 	object_->Draw(camera, texture_, { 1, 1, 1, 1 });
+}
+
+void Enemy::PlayDeathSound() const 
+{
+    Audio::GetInstance()->SoundPlay(soundHandle_, deathSoundVolume_); // 死亡時のサウンドを再生
 }
 
 void Enemy::Launched()

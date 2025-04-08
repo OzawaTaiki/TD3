@@ -52,7 +52,11 @@ private:
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
 	ObjectModel* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
 
+    uint32_t haveSoundHandle_ = 0; // サウンドハンドル
+    uint32_t putSoundHandle_ = 0; // サウンドハンドル
 
+    float haveSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
+    float putSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
 
 	/// <summary>
 	/// マウスレイの生成（オブジェクトとの衝突判定用）

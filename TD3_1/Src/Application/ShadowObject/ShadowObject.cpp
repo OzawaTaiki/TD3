@@ -1,6 +1,7 @@
 #define NOMINMAX
 #include "ShadowObject.h"
 
+
 // C++
 #include <algorithm>
 
@@ -9,6 +10,7 @@
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Quaternion/Quaternion.h>
 #include <Math/Easing.h>
+#include <System/Audio/Audio.h>
 
 // Application
 #include <Application/CameraShake/CameraShake.h>
@@ -138,6 +140,8 @@ void ShadowObject::HandleAttackInput()
 
 			// カメラシェイクを行う
 			CameraShake::GetInstance()->StartShake();
+            // サウンドを再生
+            Audio::GetInstance()->SoundPlay(soundHandle_, volume_); // サウンドを再生
 		}
 	}
 

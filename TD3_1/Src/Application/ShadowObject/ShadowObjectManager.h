@@ -35,6 +35,9 @@ private:
 
 	float waitDuration_ = 0.0f; // 最大値まで拡大->縮小を始めるまでの待機時間
 
+    uint32_t materializationSoundHandle_ = 0; // 影オブジェクトの実体化時のサウンドハンドル
+    float materializationSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
+
 	void SaveToFile();
 	void LoadFromFile();
 };

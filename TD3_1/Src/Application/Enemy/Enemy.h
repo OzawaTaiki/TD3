@@ -20,10 +20,15 @@ public:
 
 	void SetTarget(const Vector3& target) { targetPosition_ = target; }
 	bool IsDead() const { return isDead_; }
-	void Dead() { isDead_ = true; }
+	void Dead() { isDead_ = true; PlayDeathSound(); }
+
 
 	// 実体化した影オブジェクトに打ち上げられた際の処理
 	void Launched();
+
+    void SetSoundHandle(uint32_t soundHandle) { soundHandle_ = soundHandle; } // サウンドハンドルをセット
+    void SetVolume(float volume) { deathSoundVolume_ = volume; } // ボリュームをセット
+	void PlayDeathSound() const;
 
 	void OnCollsion(Collider* _other, const ColliderInfo& _info);
 
@@ -56,6 +61,11 @@ protected:
 	bool isLaunched_ = false;
 	// 着地したか記録
 	bool isLanding_ = false;
+
+    uint32_t soundHandle_ = 0; // サウンドハンドル
+    uint32_t voiceHandle_ = 0; // ボイスハンドル
+
+    float deathSoundVolume_ = 0.5f; // 死亡時のサウンドボリューム
 };
 
 
