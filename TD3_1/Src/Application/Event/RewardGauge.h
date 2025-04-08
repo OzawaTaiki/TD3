@@ -10,9 +10,10 @@
 
 struct RewardGaugeData
 {
-    uint32_t count;
-    RewardItem item;
-    bool isGiven;
+    uint32_t count = 0;
+    RewardItem item = RewardItem::None;
+    bool isGiven = false;
+
 };
 
 class RewardGauge : public iEventListener
@@ -30,12 +31,18 @@ public:
 
     void OnEvent(const GameEvent& _event) override;
 
+    void Reset();
+
     // Eventを発行
     void EmitEvent();
 
 private:
 
+    void ImGui();
+
     void InitJsonBinder();
+
+    void SaveJsonBinder();
 
     std::unique_ptr<UISprite> gauge_ = nullptr;
     std::unique_ptr<UISprite> gaugeFrame_ = nullptr;

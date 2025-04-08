@@ -1,0 +1,38 @@
+{
+    "RewardGauge": {
+        "RewardCount": [
+            0,
+            3,
+            6
+        ],
+        "RewardGauge_anchor": {
+            "x": 0.039000000804662704,
+            "y": 0.5
+        },
+        "RewardGauge_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "RewardGauge_directoryPath": "Resources/images/game/ui/",
+        "RewardGauge_isActive": 257,
+        "RewardGauge_isVisible": 100663297,
+        "RewardGauge_label": "RewardGauge",
+        "RewardGauge_pos": {
+            "x": 788.0,
+            "y": 128.0
+        },
+        "RewardGauge_rotate": 0.0,
+        "RewardGauge_size": {
+            "x": 512.0,
+            "y": 256.0
+        },
+        "RewardGauge_textureName": "gauge.png",
+        "RewardItem": [
+            1,
+            1,
+            1
+        ]
+    }
+}

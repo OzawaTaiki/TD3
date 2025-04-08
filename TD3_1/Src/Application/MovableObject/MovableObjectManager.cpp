@@ -14,6 +14,10 @@
 // Externals
 #include <imgui.h>
 
+// Application
+#include <Application/Event/RewardEventData.h>
+
+
 void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();
@@ -85,10 +89,23 @@ std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
 void MovableObjectManager::OnEvent(const GameEvent& _event)
 {
     // イベントの種類を確認
-    if (_event.GetEventType() == "GiveReward") {
-        // オブジェクトを追加する処理
-        AddMovableObject({ 0, 1, -6 });
-    }
+	if (_event.GetEventType() == "GiveReward") {
+
+		ReawardEventData* eventData = static_cast<ReawardEventData*>(_event.GetData());
+
+		if (eventData->item == RewardItem::MovableObject) {
+			// オブジェクトを追加する処理
+			AddMovableObject({ 0, 1, -6 });
+		}
+        else if (eventData->item == RewardItem::Haelth) {
+            // ヘルスを追加する処理
+            // ここにヘルス追加の処理を書く
+        }
+		else {
+			// その他のアイテムに対する処理
+			// ここにその他のアイテムに対する処理を書く
+		}
+	}
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
