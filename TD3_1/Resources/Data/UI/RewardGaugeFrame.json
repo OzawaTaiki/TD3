@@ -1,7 +1,7 @@
 {
     "RewardGaugeFrame": {
         "RewardGaugeFrame_anchor": {
-            "x": 0.5,
+            "x": 0.0,
             "y": 0.5
         },
         "RewardGaugeFrame_color": {
@@ -10,19 +10,19 @@
             "y": 0.0,
             "z": 0.0
         },
-        "RewardGaugeFrame_directoryPath": "Resources/images/",
+        "RewardGaugeFrame_directoryPath": "Resources/images/game/ui/",
         "RewardGaugeFrame_isActive": 257,
-        "RewardGaugeFrame_isVisible": 1,
+        "RewardGaugeFrame_isVisible": 100663297,
         "RewardGaugeFrame_label": "RewardGaugeFrame",
         "RewardGaugeFrame_pos": {
-            "x": 192.0,
-            "y": 64.0
+            "x": 768.0,
+            "y": 128.0
         },
         "RewardGaugeFrame_rotate": 0.0,
         "RewardGaugeFrame_size": {
-            "x": 266.0,
-            "y": 42.0
+            "x": 512.0,
+            "y": 256.0
         },
-        "RewardGaugeFrame_textureName": "white.png"
+        "RewardGaugeFrame_textureName": "gaugeFrame.png"
     }
 }
