@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp" />
     <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp" />
     <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Application\Tower\Tower.cpp" />
+    <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
@@ -175,6 +177,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Transition\Fade\Fade.h" />
     <ClInclude Include="Src\Application\CameraShake\CameraShake.h" />
     <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Application\Tower\Tower.h" />
+    <ClInclude Include="Src\Scene\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
