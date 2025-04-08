@@ -34,6 +34,8 @@ private:
 	std::vector<std::unique_ptr<ObjectModel>> objects_;
 	std::vector<std::unique_ptr<AABBCollider>> colliders_;
 
+	uint32_t texture_;
+
 	Input* input_ = nullptr;
 
 	/// <summary>

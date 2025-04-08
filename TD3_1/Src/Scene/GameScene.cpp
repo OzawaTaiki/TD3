@@ -69,6 +69,9 @@ void GameScene::Initialize() {
 	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
 	shadowObjectManager_->Initialize();
 
+	// UI
+	gameUI_ = std::make_unique<GameUI>();
+	gameUI_->Initialize();
 
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
@@ -115,6 +118,8 @@ void GameScene::Update() {
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
 	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
+	// UI更新
+	gameUI_->Update();
 
 	CollisionManager::GetInstance()->Update();
 
@@ -142,6 +147,8 @@ void GameScene::Draw() {
 	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
+	// UI描画
+	gameUI_->Draw();
 }
 
 void GameScene::DrawShadow() {}
