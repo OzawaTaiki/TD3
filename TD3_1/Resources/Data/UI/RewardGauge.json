@@ -1,7 +1,7 @@
 {
     "RewardGauge": {
         "RewardGauge_anchor": {
-            "x": 0.5,
+            "x": 0.0,
             "y": 0.5
         },
         "RewardGauge_color": {
@@ -15,7 +15,7 @@
         "RewardGauge_isVisible": 1,
         "RewardGauge_label": "RewardGauge",
         "RewardGauge_pos": {
-            "x": 192.0,
+            "x": 64.0,
             "y": 64.0
         },
         "RewardGauge_rotate": 0.0,

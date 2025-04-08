@@ -16,19 +16,21 @@ void RewardGauge::Initialize()
     gauge_ = std::make_unique<UISprite>();
     gauge_->Initialize("RewardGauge");
 
+    defaultGaugeSize_ = gauge_->GetSize(); // ゲージのデフォルトサイズを取得
+    gauge_->SetSize({ 0, defaultGaugeSize_.y }); // ゲージのサイズを初期化
+
     gaugeFrame_ = std::make_unique<UISprite>();
     gaugeFrame_->Initialize("RewardGaugeFrame");
 
     count_ = 0;
 
-    RewardGaugeData data = { .count = 1, .item = RewardItem::MovableObject, .isGiven = false };
     RewardGaugeData data2 = { .count = 3, .item = RewardItem::MovableObject, .isGiven = false };
-    RewardGaugeData data3 = { .count = 5, .item = RewardItem::MovableObject, .isGiven = false };
-    rewardGaugeData_.push_back(data);
+    RewardGaugeData data3 = { .count = 6, .item = RewardItem::MovableObject, .isGiven = false };
     rewardGaugeData_.push_back(data2);
     rewardGaugeData_.push_back(data3);
 
     nextRewardGaugeData_ = rewardGaugeData_.begin();
+    rewardCooldown = nextRewardGaugeData_->count;
 
     InitJsonBinder();
 }
@@ -37,6 +39,8 @@ void RewardGauge::Update()
 {
     gauge_->Update();
     gaugeFrame_->Update();
+
+    EmitEvent();
 }
 
 void RewardGauge::Draw()
@@ -50,16 +54,49 @@ void RewardGauge::OnEvent(const GameEvent& _event)
     // 敵を倒したときに報酬ゲージを更新
     if (_event.GetEventType() == "EnemyLaunchKill")
     {
+        if (nextRewardGaugeData_ == rewardGaugeData_.end())
+        {
+            gauge_->SetSize(defaultGaugeSize_);
+            return;
+        }
+
         ++count_;
-        gauge_->SetSize({ static_cast<float>(count_), 1.0f });
+
+        float ratio = static_cast<float>( nextRewardGaugeData_->count - count_) / static_cast<float>(rewardCooldown);
+        float scaledX = defaultGaugeSize_.x * (1.0f - ratio);
+        gauge_->SetSize({ scaledX, defaultGaugeSize_.y });
     }
 }
 
 void RewardGauge::EmitEvent()
 {
+    // 最後のアイテムを受け取っていたらリターン
     if (nextRewardGaugeData_ == rewardGaugeData_.end())
         return;
 
+    // 次の報酬を受け取れないならリターン
+    if (count_ < nextRewardGaugeData_->count)
+        return;
+
+    // 報酬を受け取る
+    nextRewardGaugeData_->isGiven = true;
+
+    uint32_t count = nextRewardGaugeData_->count;
+
+    // 次の報酬を受け取るためにイテレータを進める
+    // エラーが出たら嫌なので念のため分岐
+    if (nextRewardGaugeData_ + 1 != rewardGaugeData_.end())
+    {
+        ++nextRewardGaugeData_;
+        rewardCooldown = nextRewardGaugeData_->count - count; // 次の報酬までのカウントを更新
+    }
+    else
+    {
+        nextRewardGaugeData_ = rewardGaugeData_.end();
+        rewardCooldown = 0;
+    }
+
+    gauge_->SetSize({ 0, defaultGaugeSize_.y });
 
     EventManager::GetInstance()->DispatchEvent(GameEvent("GiveReward", nullptr));
 }

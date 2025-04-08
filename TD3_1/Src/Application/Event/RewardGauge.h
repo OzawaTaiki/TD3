@@ -40,7 +40,12 @@ private:
     std::unique_ptr<UISprite> gauge_ = nullptr;
     std::unique_ptr<UISprite> gaugeFrame_ = nullptr;
 
+    Vector2 defaultGaugeSize_ = { 0, 0 }; // ゲージのデフォルトサイズ
+
     uint32_t count_ = 0; // ゲージのカウント
+
+    // 報酬を受け取るのに必要なカウント
+    uint32_t rewardCooldown = 0;
 
     // カウントとそのカウントでの報酬アイテム
     std::vector<RewardGaugeData> rewardGaugeData_;
