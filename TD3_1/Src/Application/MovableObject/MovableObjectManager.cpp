@@ -9,6 +9,7 @@
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Matrix/MatrixFunction.h>
 #include <Math/Quaternion/Quaternion.h>
+#include <Core/DXCommon/TextureManager/TextureManager.h>
 
 // Externals
 #include <imgui.h>
@@ -16,6 +17,8 @@
 void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();
+
+	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
 
 	AddMovableObject({ 0, 1, -6 });
 
@@ -47,7 +50,7 @@ void MovableObjectManager::Draw(const Camera& camera)
 {
 	// オブジェクト描画
 	for (const auto& object : objects_) {
-		object->Draw(&camera, { 1, 1, 1, 1 });
+		object->Draw(&camera, texture_, { 1, 1, 1, 1 });
 	}
 }
 
@@ -55,7 +58,7 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成
 	auto object = std::make_unique<ObjectModel>("movableObjectManager" + std::to_string(objects_.size()));
-	object->Initialize("Cube/cube.obj");
+	object->Initialize("movableObjects/objectBox.obj");
 	object->translate_ = position;
 	object->useQuaternion_ = true;
 

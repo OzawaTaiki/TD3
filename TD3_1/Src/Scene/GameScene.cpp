@@ -1,6 +1,11 @@
 #include "GameScene.h"
 
+// Engine
 #include <Features/Model/Manager/ModelManager.h>
+#include <Features/Scene/Manager/SceneManager.h>
+
+// Application
+#include <Application/CameraShake/CameraShake.h>
 
 GameScene::~GameScene() {
 	
@@ -12,6 +17,8 @@ void GameScene::Initialize() {
 	SceneCamera_.rotate_ = {0.81f, 0, 0};
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
+
+	originalCameraTranslate_ = SceneCamera_.translate_; // カメラの初期位置を保存
 
 	lineDrawer_ = LineDrawer::GetInstance();
 	lineDrawer_->Initialize();
@@ -66,6 +73,11 @@ void GameScene::Initialize() {
     rewardGauge_ = std::make_unique<RewardGauge>();
     rewardGauge_->Initialize();
 
+	gameUI_ = std::make_unique<GameUI>();
+	gameUI_->Initialize();
+
+	// カメラシェイク初期化
+	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
 }
 
 void GameScene::Update() {
@@ -93,6 +105,10 @@ void GameScene::Update() {
 		particleManager_->Update(SceneCamera_.rotate_);
 	}
 
+	// カメラシェイク更新
+	CameraShake::GetInstance()->Update();
+	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
+
 	// フィールド更新
 	field_->Update();
 	// 動かせるオブジェクト更新
@@ -105,10 +121,18 @@ void GameScene::Update() {
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
 	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
+	// UI更新
+	gameUI_->Update();
 
     rewardGauge_->Update();
 
 	CollisionManager::GetInstance()->Update();
+
+
+
+	if (input_->IsKeyTriggered(DIK_T)) {
+		SceneManager::GetInstance()->ReserveScene("Title");
+	}
 }
 
 void GameScene::Draw() {
@@ -129,8 +153,10 @@ void GameScene::Draw() {
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
 
+	// UI描画
 	Sprite::PreDraw();
 	rewardGauge_->Draw();
+	gameUI_->Draw();
 }
 
 void GameScene::DrawShadow() {}

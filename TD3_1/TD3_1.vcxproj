@@ -152,6 +152,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
+    <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp" />
+    <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp" />
     <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="Src\Application\Event\RewardGauge.cpp" />
     <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
@@ -168,6 +171,8 @@
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Application\Tower\Tower.cpp" />
+    <ClCompile Include="Src\Scene\TitleScene.cpp" />
+    <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
@@ -175,6 +180,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\UI\Game\GameUI.h" />
+    <ClInclude Include="Src\Application\Transition\Fade\Fade.h" />
+    <ClInclude Include="Src\Application\CameraShake\CameraShake.h" />
     <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="Src\Application\Event\RewardEventData.h" />
     <ClInclude Include="Src\Application\Event\RewardGauge.h" />
@@ -191,6 +199,8 @@
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Application\Tower\Tower.h" />
+    <ClInclude Include="Src\Scene\TitleScene.h" />
+    <ClInclude Include="Src\Application\UI\Title\TitleUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

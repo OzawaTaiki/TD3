@@ -24,7 +24,7 @@ void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, con
 
 			for (const auto& pointLight : pointLightObjects) {
 				auto shadowObject = std::make_unique<ShadowObject>();
-				shadowObject->Initialize();
+				shadowObject->Initialize(waitDuration_);
 				shadowObject->SetMovableObjectPosition(movable);
 				shadowObject->SetLightPosition(pointLight->GetTranslate());
 				group.shadowObjects_.push_back(std::move(shadowObject));
@@ -40,7 +40,9 @@ void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, con
 		for (size_t j = 0; j < shadowGroups_[i].shadowObjects_.size(); ++j) {
 			shadowGroups_[i].shadowObjects_[j]->SetMovableObjectPosition(movableObjects[i]);
 			shadowGroups_[i].shadowObjects_[j]->SetLightPosition(pointLightObjects[j]->GetTranslate());
-			
+
+			shadowGroups_[i].shadowObjects_[j]->SetWaitDuration(waitDuration_); // memo : waitDurationが確定したらこの更新はいらないので消す
+
 			// ライト毎に設定されている最大距離を適用
 			float maxDistance = pointLightObjects[j]->maxDistance_;
 			shadowGroups_[i].shadowObjects_[j]->Update(maxDistance);
@@ -48,9 +50,11 @@ void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, con
 	}
 
 #ifdef _DEBUG
-	/*ImGui::Begin("ShadowObjectManager");
-
-	ImGui::End();*/
+	ImGui::Begin("ShadowObjectManager");
+	ImGui::DragFloat("waitDuration", &waitDuration_, 0.01f);
+	if (ImGui::Button("Save"))
+		SaveToFile();
+	ImGui::End();
 #endif
 }
 
@@ -68,9 +72,9 @@ void ShadowObjectManager::SaveToFile()
 	const std::string filePath = "Resources/Data/ShadowObject/shadowObjectManager.json";
 	nlohmann::json jsonData;
 
-	/*jsonData.push_back({
-		{"maxDistance", maxDistance_}
-		});*/
+	jsonData.push_back({
+		{"waitDuration", waitDuration_}
+		});
 
 	std::ofstream file(filePath);
 	file << jsonData.dump(4);
@@ -84,5 +88,5 @@ void ShadowObjectManager::LoadFromFile()
 	nlohmann::json jsonData;
 	file >> jsonData;
 
-	/*maxDistance_ = jsonData[0]["maxDistance"].get<float>();*/
+	waitDuration_ = jsonData[0]["waitDuration"].get<float>();
 }

@@ -13,6 +13,8 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 	object_->translate_ = spawnPosition;
 	object_->useQuaternion_ = true;
 
+	texture_ = TextureManager::GetInstance()->Load("game/enemy/enemy.png");
+
 	InitialzeColliders();
 
 	speed_ = 4.0f;
@@ -72,7 +74,7 @@ void NormalEnemy::Update()
 
 void NormalEnemy::Draw(const Camera* camera)
 {
-	object_->Draw(camera, { 1, 1, 1, 1 });
+	object_->Draw(camera, texture_, { 1, 1, 1, 1 });
 }
 
 void Enemy::Launched()
