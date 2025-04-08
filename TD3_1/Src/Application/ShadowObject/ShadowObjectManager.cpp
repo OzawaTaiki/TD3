@@ -1,4 +1,6 @@
 #include "ShadowObjectManager.h"
+// Engine
+#include <System/Audio/Audio.h>
 
 // C++
 #include <fstream>
@@ -11,6 +13,10 @@ void ShadowObjectManager::Initialize()
 {
 	shadowGroups_.clear();
 	LoadFromFile();
+
+    materializationSoundHandle_ = Audio::GetInstance()->SoundLoadWave("Resources/audio/shadowMaterialization.wav");
+    materializationSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
+
 }
 
 void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects)

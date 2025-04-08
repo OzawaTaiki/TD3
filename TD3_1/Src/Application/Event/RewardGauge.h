@@ -60,5 +60,9 @@ private:
 
     std::unique_ptr<JsonBinder> jsonBinder_;
 
+    uint32_t gaugeMaxSoundHandle_ = 0; // サウンドハンドル
+    uint32_t gaugeUpSoundHandle_ = 0; // サウンドハンドル
+    float gaugeMaxSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
+    float gaugeUpSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
 
 };
