@@ -22,6 +22,8 @@
 #include <Application/Event/RewardGauge.h>
 #include <Application/UI/Game/GameUI.h>
 
+#include <Application/Transition/Fade/Fade.h>
+
 class GameScene : public BaseScene
 {
 public:
@@ -71,4 +73,14 @@ private:
     std::unique_ptr<RewardGauge> rewardGauge_ = nullptr;
     // UI
     std::unique_ptr<GameUI> gameUI_;
+
+private:
+    // フェード関連
+    enum class Phase {
+        kFadeIn,
+        kMain,
+        kFadeOut
+    };
+    std::unique_ptr<Fade> fade_;
+    Phase phase_ = Phase::kFadeIn;
 };

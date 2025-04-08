@@ -78,6 +78,12 @@ void GameScene::Initialize() {
 
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
+
+
+	// フェード初期化
+	fade_ = std::make_unique<Fade>();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, 1.0f);
 }
 
 void GameScene::Update() {
@@ -133,6 +139,32 @@ void GameScene::Update() {
 	if (input_->IsKeyTriggered(DIK_T)) {
 		SceneManager::GetInstance()->ReserveScene("Title");
 	}
+
+	// フェード更新
+	fade_->Update();
+	switch (phase_) {
+	case Phase::kFadeIn:
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kMain;
+		}
+
+		break;
+
+	case Phase::kMain:
+		// タワーのHPが0になったらフェード開始
+		if (tower_->GetHP() <= 0) {
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}
+
+		break;
+
+	case Phase::kFadeOut:
+		// 一旦タイトルに戻るようにしておく
+		if (fade_->IsFinished()) {
+			SceneManager::GetInstance()->ReserveScene("Title");
+		}
+	}
 }
 
 void GameScene::Draw() {
@@ -153,10 +185,18 @@ void GameScene::Draw() {
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
 
+	///
+	///	スプライト描画
+	/// 
+
 	// UI描画
 	Sprite::PreDraw();
 	rewardGauge_->Draw();
 	gameUI_->Draw();
+	tower_->DrawUI(SceneCamera_);
+
+	// フェード描画
+	fade_->Draw();
 }
 
 void GameScene::DrawShadow() {}

@@ -4,6 +4,9 @@
 #include <Features/Camera/Camera/Camera.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
+#include <Math/Matrix/MatrixFunction.h>
+#include <Math/Vector/VectorFunction.h>
+#include <Core/WinApp/WinApp.h>
 
 // Externals
 #include <imgui.h>
@@ -23,12 +26,20 @@ void Tower::Initialize(const Vector3& position)
 	collider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
 		OnCollision(_other, _info);
 		});
+
+	// スプライト初期化
+	uint32_t textureHP = TextureManager::GetInstance()->Load("white.png");
+	spriteHP_ = Sprite::Create("towerHP", textureHP);
+	spriteHP_->Initialize();
+	spriteHP_->SetColor(Vector4(0.25f, 1.0f, 0.0f, 1.0f));
 }
 
 void Tower::Update()
 {
 	object_->Update();
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
+
+	spriteHP_->Update();
 
 	// 終了時に追跡セットのリセット
 	processedColliders_.clear();
@@ -43,6 +54,33 @@ void Tower::Update()
 void Tower::Draw(const Camera& camera)
 {
 	object_->Draw(&camera, texture_, {1, 1, 1, 1});
+}
+
+void Tower::DrawUI(const Camera& camera)
+{
+	Sprite::PreDraw();
+
+#pragma region タワーHPのスプライト描画（汚いので後で整理）
+	// ワールド座標 -> スクリーン座標に変換して、スプライト位置を指定
+	Vector3 towerPosition = object_->translate_;
+	towerPosition.y = towerPosition.y + 6.0f; // いい感じにタワー上部になるよう指定
+
+	Matrix4x4 worldViewProjMatrix = Multiply(camera.matView_, camera.matProjection_);
+	Vector3 screenPosition = Transform(towerPosition, worldViewProjMatrix);
+	
+	screenPosition.x = (screenPosition.x + 1.0f) * 0.5f * WinApp::kWindowWidth_;
+	screenPosition.y = (1.0f - screenPosition.y) * 0.5f * WinApp::kWindowHeight_;
+
+	spriteHP_->translate_ = Vector2(screenPosition.x, screenPosition.y);
+
+	// 残りHPをもとに、スプライトサイズを変更
+	const float kMaxWidth = 80.0f;
+	const float kMaxHP = 10.0f;
+	float currentWidth = kMaxWidth * (static_cast<float>(hp_) / kMaxHP);
+	spriteHP_->SetSize({ currentWidth, 15.0f });
+
+	spriteHP_->Draw();
+#pragma endregion
 }
 
 void Tower::OnCollision(Collider* _other, const ColliderInfo& _info)

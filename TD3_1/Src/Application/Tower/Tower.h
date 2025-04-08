@@ -6,6 +6,7 @@
 // Engine
 #include <Features/Model/ObjectModel.h>
 #include <Features/Collision/Manager/CollisionManager.h>
+#include <Features/Sprite/Sprite.h>
 
 class Camera;
 
@@ -15,6 +16,7 @@ public:
 	void Initialize(const Vector3& position);
 	void Update();
 	void Draw(const Camera& camera);
+	void DrawUI(const Camera& camera);
 
 	void OnCollision(Collider* _other, const ColliderInfo& _info);
 
@@ -30,5 +32,8 @@ private:
 
 	// 敵と1度だけ衝突判定を行うよう、処理済みコライダーを追加
 	std::unordered_set<Collider*> processedColliders_;
+
+private:
+	std::unique_ptr<Sprite> spriteHP_;
 };
 
