@@ -1,5 +1,10 @@
 #include "EnemySpawnManager.h"
 
+// Engine
+#ifdef _DEBUG
+#include <Features/Event/EventManager.h>
+#endif // _DEBUG
+
 // C++
 #include <fstream>
 #include <unordered_set>
@@ -112,6 +117,8 @@ void EnemySpawnManager::Update() {
 				}
 			}
 		}
+
+        EventManager::GetInstance()->DispatchEvent(GameEvent("ResetEnemyManager", nullptr));
 	}
 	ImGui::DragFloat("blockStopThreshold", &blockStopThreshold, 0.01f);
 	if (ImGui::DragFloat3("forwardColliderOffset", &forwardColliderOffset_.x, 0.01f))

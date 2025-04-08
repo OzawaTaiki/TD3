@@ -5,6 +5,10 @@ RewardGauge::RewardGauge()
 {
     // イベントリスナーの登録
     EventManager::GetInstance()->AddEventListener("EnemyLaunchKill", this);
+#ifdef _DEBUG
+    EventManager::GetInstance()->AddEventListener("ResetEnemyManager", this);
+#endif // _DEBUG
+
 }
 
 RewardGauge::~RewardGauge()
@@ -24,19 +28,17 @@ void RewardGauge::Initialize()
 
     count_ = 0;
 
-    RewardGaugeData data2 = { .count = 3, .item = RewardItem::MovableObject, .isGiven = false };
-    RewardGaugeData data3 = { .count = 6, .item = RewardItem::MovableObject, .isGiven = false };
-    rewardGaugeData_.push_back(data2);
-    rewardGaugeData_.push_back(data3);
+    InitJsonBinder();
 
     nextRewardGaugeData_ = rewardGaugeData_.begin();
     rewardCooldown = nextRewardGaugeData_->count;
 
-    InitJsonBinder();
 }
 
 void RewardGauge::Update()
 {
+    ImGui();
+
     gauge_->Update();
     gaugeFrame_->Update();
 
@@ -66,6 +68,23 @@ void RewardGauge::OnEvent(const GameEvent& _event)
         float scaledX = defaultGaugeSize_.x * (1.0f - ratio);
         gauge_->SetSize({ scaledX, defaultGaugeSize_.y });
     }
+
+#ifdef _DEBUG
+    if (_event.GetEventType() == "ResetEnemyManager")
+    {
+        Reset();
+    }
+#endif // _DEBUG
+
+}
+
+void RewardGauge::Reset()
+{
+    count_ = 0;
+    gauge_->SetSize({ 0, defaultGaugeSize_.y }); // ゲージのサイズを初期化
+
+    nextRewardGaugeData_ = rewardGaugeData_.begin();
+    rewardCooldown = nextRewardGaugeData_->count;
 }
 
 void RewardGauge::EmitEvent()
@@ -83,6 +102,10 @@ void RewardGauge::EmitEvent()
 
     uint32_t count = nextRewardGaugeData_->count;
 
+    gauge_->SetSize({ 0, defaultGaugeSize_.y });
+
+    ReawardEventData eventData(nextRewardGaugeData_->item, count);
+
     // 次の報酬を受け取るためにイテレータを進める
     // エラーが出たら嫌なので念のため分岐
     if (nextRewardGaugeData_ + 1 != rewardGaugeData_.end())
@@ -96,9 +119,100 @@ void RewardGauge::EmitEvent()
         rewardCooldown = 0;
     }
 
-    gauge_->SetSize({ 0, defaultGaugeSize_.y });
+    EventManager::GetInstance()->DispatchEvent(GameEvent("GiveReward", &eventData));
+}
 
-    EventManager::GetInstance()->DispatchEvent(GameEvent("GiveReward", nullptr));
+void RewardGauge::ImGui()
+{
+#ifdef _DEBUG
+    ImGui::Begin("Data Editor");
+
+    // 新しいアイテムの追加用の一時変数
+    static int newCount = 0;
+    static int newRewardIndex = 0;
+
+    // 新規データの入力UI
+    ImGui::Text("Add New Data");
+    ImGui::InputInt("Count##new", &newCount);
+    ImGui::Combo("Reward##new", &newRewardIndex, rewardNames, IM_ARRAYSIZE(rewardNames));
+
+    if (ImGui::Button("Add")) {
+        RewardGaugeData newData;
+        newData.count = newCount;
+        newData.item = static_cast<RewardItem>(newRewardIndex);
+        newData.isGiven = false;
+        rewardGaugeData_.push_back(newData);
+
+        // countの値でソート
+        std::sort(rewardGaugeData_.begin(), rewardGaugeData_.end(),
+            [](const RewardGaugeData& _a, const RewardGaugeData& _b) {
+                return _a.count < _b.count;
+            });
+        newCount = 0;
+        newRewardIndex = 0;
+
+        nextRewardGaugeData_ = rewardGaugeData_.begin();
+    }
+
+    ImGui::Separator();
+
+    // 既存データの表示と編集
+    ImGui::Text("Data List");
+
+    for (size_t i = 0; i < rewardGaugeData_.size(); i++) {
+        ImGui::PushID(static_cast<int>(i));
+
+        char label[32];
+        sprintf_s(label, "Item %zu: Count=%d", i, rewardGaugeData_[i].count);
+
+        if (ImGui::TreeNode(label)) {
+            RewardGaugeData& item = rewardGaugeData_[i];
+
+            // 編集用UI
+            int previousCount = item.count;
+            ImGui::InputInt("Count", reinterpret_cast<int*>(&item.count));
+
+            // countが変更された場合、再ソートを行う
+            if (previousCount != item.count) {
+                std::sort(rewardGaugeData_.begin(), rewardGaugeData_.end(),
+                    [](const RewardGaugeData& _a, const RewardGaugeData& _b){
+                        return _a.count < _b.count;
+                    });
+            }
+
+            int currentRewardIndex = static_cast<int>(item.item);
+            if (ImGui::Combo("Reward", &currentRewardIndex, rewardNames, IM_ARRAYSIZE(rewardNames))) {
+                item.item = static_cast<RewardItem>(currentRewardIndex);
+            }
+
+            // 削除ボタン
+            if (ImGui::Button("Delete")) {
+                rewardGaugeData_.erase(rewardGaugeData_.begin() + i);
+                nextRewardGaugeData_ = rewardGaugeData_.begin();
+                ImGui::TreePop();
+                ImGui::PopID();
+                break;  // ループを抜ける（削除後のインデックスが無効になるため）
+            }
+
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
+
+    // データの合計表示
+    ImGui::Separator();
+    ImGui::Text("Total: %zu items", rewardGaugeData_.size());
+
+    ImGui::SameLine();
+    if (ImGui::Button("Save")) {
+        // JSONに保存
+        SaveJsonBinder();
+    }
+
+
+    ImGui::End();
+#endif // _DEBUG
 }
 
 void RewardGauge::InitJsonBinder()
@@ -107,8 +221,8 @@ void RewardGauge::InitJsonBinder()
 
     std::vector<uint32_t> rewardGaugeCount;
     std::vector<uint32_t> rewardGaugeItem;
-    jsonBinder_->RegisterVariable("RewardCount", &rewardGaugeCount);
-    jsonBinder_->RegisterVariable("RewardItem", &rewardGaugeItem);
+    jsonBinder_->GetVariableValue("RewardCount", rewardGaugeCount);
+    jsonBinder_->GetVariableValue("RewardItem", rewardGaugeItem);
 
     if (rewardGaugeCount.size() < rewardGaugeItem.size())
     {
@@ -130,4 +244,19 @@ void RewardGauge::InitJsonBinder()
 
         rewardGaugeData_.push_back(data);
     }
+}
+
+void RewardGauge::SaveJsonBinder()
+{
+    std::vector<uint32_t> rewardGaugeCount;
+    std::vector<uint32_t> rewardGaugeItem;
+    for (const auto& data : rewardGaugeData_)
+    {
+        rewardGaugeCount.push_back(data.count);
+        rewardGaugeItem.push_back(static_cast<uint32_t>(data.item));
+    }
+    jsonBinder_->SendVariable("RewardCount", rewardGaugeCount);
+    jsonBinder_->SendVariable("RewardItem", rewardGaugeItem);
+
+    jsonBinder_->Save();
 }

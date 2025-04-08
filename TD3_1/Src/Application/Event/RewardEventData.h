@@ -5,10 +5,19 @@
 
 enum class RewardItem
 {
+    None = 0 ,
     MovableObject,
+    Haelth,
 
     ItemCount
 };
+
+static const char* rewardNames[] = {
+    "None",
+    "MovableObject",
+    "Haelth"
+};
+
 
 struct ReawardEventData : public EventData
 {
@@ -18,3 +27,4 @@ struct ReawardEventData : public EventData
     RewardItem item;
     int count;
 };
+
