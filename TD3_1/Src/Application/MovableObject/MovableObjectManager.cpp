@@ -88,6 +88,8 @@ std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
 
 void MovableObjectManager::OnEvent(const GameEvent& _event)
 {
+	/*
+
     // イベントの種類を確認
 	if (_event.GetEventType() == "GiveReward") {
 
@@ -106,6 +108,8 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 			// ここにその他のアイテムに対する処理を書く
 		}
 	}
+
+	*/
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
