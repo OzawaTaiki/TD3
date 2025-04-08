@@ -19,6 +19,9 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{38b74c24-1577-4412-9da5-8125f4d19972}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{478f625b-526a-4ffe-9491-104b7d5d0263}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -69,8 +72,8 @@
     <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Event\LaunchKillEvent.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Src\Application\Event\RewardGauge.cpp">
+      <Filter>Event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,11 +119,11 @@
     <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Event\LaunchKillEvent.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Src\Application\Event\RewardEventData.h">
+      <Filter>Event</Filter>
     </ClInclude>
-    <ClInclude Include="LaunchKillEventData.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Src\Application\Event\RewardGauge.h">
+      <Filter>Event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

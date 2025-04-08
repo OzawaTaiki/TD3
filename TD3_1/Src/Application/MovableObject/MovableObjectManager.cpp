@@ -20,7 +20,7 @@ void MovableObjectManager::Initialize()
 	AddMovableObject({ 0, 1, -6 });
 
     // イベントリスナーの登録
-    EventManager::GetInstance()->AddEventListener("EnemyLaunchKill", this);
+    EventManager::GetInstance()->AddEventListener("GiveReward", this);
 }
 
 void MovableObjectManager::Update(const Camera& camera)
@@ -82,7 +82,7 @@ std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
 void MovableObjectManager::OnEvent(const GameEvent& _event)
 {
     // イベントの種類を確認
-    if (_event.GetEventType() == "EnemyLaunchKill") {
+    if (_event.GetEventType() == "GiveReward") {
         // オブジェクトを追加する処理
         AddMovableObject({ 0, 1, -6 });
     }
@@ -92,7 +92,7 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 {
 	///
 	///	マウスレイの生成と描画
-	/// 
+	///
 
 	Ray mouseRay = CreateMouseRay(camera);
 

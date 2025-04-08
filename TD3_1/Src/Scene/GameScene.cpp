@@ -61,6 +61,11 @@ void GameScene::Initialize() {
 	// 影オブジェクトを管理するクラス
 	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
 	shadowObjectManager_->Initialize();
+
+
+    rewardGauge_ = std::make_unique<RewardGauge>();
+    rewardGauge_->Initialize();
+
 }
 
 void GameScene::Update() {
@@ -101,6 +106,8 @@ void GameScene::Update() {
 	// 影オブジェクト更新
 	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
 
+    rewardGauge_->Update();
+
 	CollisionManager::GetInstance()->Update();
 }
 
@@ -121,6 +128,9 @@ void GameScene::Draw() {
 	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
+
+	Sprite::PreDraw();
+	rewardGauge_->Draw();
 }
 
 void GameScene::DrawShadow() {}
