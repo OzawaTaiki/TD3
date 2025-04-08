@@ -2,6 +2,7 @@
 
 // Engine
 #include <Features/Model/Manager/ModelManager.h>
+#include <Features/Scene/Manager/SceneManager.h>
 
 // Application
 #include <Application/CameraShake/CameraShake.h>
@@ -116,6 +117,12 @@ void GameScene::Update() {
 	shadowObjectManager_->Update(movableObjectManager_->GetAllObjectPosition(), pointLightObjectManager_->GetLights());
 
 	CollisionManager::GetInstance()->Update();
+
+
+
+	if (input_->IsKeyTriggered(DIK_T)) {
+		SceneManager::GetInstance()->ReserveScene("Title");
+	}
 }
 
 void GameScene::Draw() {
