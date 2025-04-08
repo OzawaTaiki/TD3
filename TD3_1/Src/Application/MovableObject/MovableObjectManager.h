@@ -9,10 +9,11 @@
 #include <Features/Collision/Manager/CollisionManager.h>
 #include <Features/Collision/RayCast/Ray.h>
 #include <System/Input/Input.h>
+#include <Features/Event/EventListener.h>
 
 class Camera;
 
-class MovableObjectManager
+class MovableObjectManager : public iEventListener
 {
 public:
 	void Initialize();
@@ -29,6 +30,8 @@ public:
 	/// 全てのオブジェクト位置を返す
 	/// </summary>
 	std::vector<Vector3> GetAllObjectPosition() const;
+
+	void OnEvent(const GameEvent& _event) override;
 
 private:
 	std::vector<std::unique_ptr<ObjectModel>> objects_;

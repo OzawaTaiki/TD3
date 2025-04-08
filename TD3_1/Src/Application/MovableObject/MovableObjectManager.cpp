@@ -4,6 +4,7 @@
 #include <Features/Camera/Camera/Camera.h>
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 #include <Features/LineDrawer/LineDrawer.h>
+#include <Features/Event/EventManager.h>
 #include <System/Input/Input.h>
 #include <Math/Vector/VectorFunction.h>
 #include <Math/Matrix/MatrixFunction.h>
@@ -20,6 +21,9 @@ void MovableObjectManager::Initialize()
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
 
 	AddMovableObject({ 0, 1, -6 });
+
+    // イベントリスナーの登録
+    EventManager::GetInstance()->AddEventListener("GiveReward", this);
 }
 
 void MovableObjectManager::Update(const Camera& camera)
@@ -78,11 +82,20 @@ std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
 	return positions;
 }
 
+void MovableObjectManager::OnEvent(const GameEvent& _event)
+{
+    // イベントの種類を確認
+    if (_event.GetEventType() == "GiveReward") {
+        // オブジェクトを追加する処理
+        AddMovableObject({ 0, 1, -6 });
+    }
+}
+
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 {
 	///
 	///	マウスレイの生成と描画
-	/// 
+	///
 
 	Ray mouseRay = CreateMouseRay(camera);
 

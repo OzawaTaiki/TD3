@@ -69,7 +69,10 @@ void GameScene::Initialize() {
 	shadowObjectManager_ = std::make_unique<ShadowObjectManager>();
 	shadowObjectManager_->Initialize();
 
-	// UI
+
+    rewardGauge_ = std::make_unique<RewardGauge>();
+    rewardGauge_->Initialize();
+
 	gameUI_ = std::make_unique<GameUI>();
 	gameUI_->Initialize();
 
@@ -121,6 +124,8 @@ void GameScene::Update() {
 	// UI更新
 	gameUI_->Update();
 
+    rewardGauge_->Update();
+
 	CollisionManager::GetInstance()->Update();
 
 
@@ -147,7 +152,10 @@ void GameScene::Draw() {
 	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
+
 	// UI描画
+	Sprite::PreDraw();
+	rewardGauge_->Draw();
 	gameUI_->Draw();
 }
 

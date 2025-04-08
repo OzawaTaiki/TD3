@@ -4,6 +4,7 @@
 #include <Math/Vector/VectorFunction.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 #include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
+#include <Features/Event/EventManager.h>
 
 void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThreshold)
 {
@@ -93,6 +94,8 @@ void Enemy::OnCollsion(Collider* _other, const ColliderInfo& _info)
 	uint32_t shadowObjectLayer = collisionManager->GetLayer("ShadowObject"); // 影オブジェクトのレイヤーを取得
 	if (_other->GetLayer() == shadowObjectLayer) {
 		this->Launched(); // 衝突した敵を打ち上げる
+		if (_info.state == CollisionState::Enter)
+			EventManager::GetInstance()->DispatchEvent(GameEvent("EnemyLaunchKill", nullptr)); // イベントを発行
 	}
 
 	// タワーとの衝突
