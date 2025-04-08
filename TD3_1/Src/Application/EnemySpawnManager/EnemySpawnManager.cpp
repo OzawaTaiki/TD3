@@ -29,6 +29,10 @@ void EnemySpawnManager::Initialize() {
 
     currentWaveIndex_ = 0; // 現在のウェーブのインデックス
 
+    audio_ = Audio::GetInstance();
+
+    deathSoundHandle_ = audio_->SoundLoadWave("Resources/audio/enemyDeath.wav");
+    deathSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
 
 	// 敵スポーンデータをロード
 	LoadFromFile();
@@ -71,6 +75,8 @@ void EnemySpawnManager::Update() {
 							Vector3 spawnPos = group.spawnPosition + spawnData.spawnOffset;
 							enemy->Initialize(spawnPos, blockStopThreshold);
 							enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
+                            enemy->SetSoundHandle(deathSoundHandle_); // サウンドハンドルをセット
+                            enemy->SetVolume(deathSoundVolume_); // ボリュームをセット
 
 							enemies_.push_back(std::move(enemy));
 						}

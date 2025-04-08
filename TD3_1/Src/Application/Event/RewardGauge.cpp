@@ -1,5 +1,6 @@
 #include "RewardGauge.h"
 #include <Features/Event/EventManager.h>
+#include <System/Audio/Audio.h>
 
 RewardGauge::RewardGauge()
 {
@@ -32,6 +33,9 @@ void RewardGauge::Initialize()
 
     nextRewardGaugeData_ = rewardGaugeData_.begin();
     rewardCooldown = nextRewardGaugeData_->count;
+
+    gaugeMaxSoundHandle_ = Audio::GetInstance()->SoundLoadWave("Resources/audio/gaugeMax.wav");
+    gaugeUpSoundHandle_ = Audio::GetInstance()->SoundLoadWave("Resources/audio/gaugeUp.wav");
 
 }
 
@@ -67,6 +71,7 @@ void RewardGauge::OnEvent(const GameEvent& _event)
         float ratio = static_cast<float>( nextRewardGaugeData_->count - count_) / static_cast<float>(rewardCooldown);
         float scaledX = defaultGaugeSize_.x * (1.0f - ratio);
         gauge_->SetSize({ scaledX, defaultGaugeSize_.y });
+        Audio::GetInstance()->SoundPlay(gaugeUpSoundHandle_, gaugeMaxSoundVolume_); // ゲージが上がったときのサウンドを再生
     }
 
 #ifdef _DEBUG
@@ -119,6 +124,7 @@ void RewardGauge::EmitEvent()
         rewardCooldown = 0;
     }
 
+    Audio::GetInstance()->SoundPlay(gaugeMaxSoundHandle_, gaugeMaxSoundVolume_); // ゲージが最大になったときのサウンドを再生
     EventManager::GetInstance()->DispatchEvent(GameEvent("GiveReward", &eventData));
 }
 

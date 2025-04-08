@@ -10,6 +10,7 @@
 #include <Math/Matrix/MatrixFunction.h>
 #include <Math/Quaternion/Quaternion.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
+#include <System/Audio/Audio.h>
 
 // Externals
 #include <imgui.h>
@@ -25,6 +26,11 @@ void MovableObjectManager::Initialize()
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
 
 	AddMovableObject({ 0, 1, -6 });
+
+    Audio* audio = Audio::GetInstance();
+
+    haveSoundHandle_ = audio->SoundLoadWave("Resources/audio/have.wav");
+    putSoundHandle_ = audio->SoundLoadWave("Resources/audio/put.wav");
 
     // イベントリスナーの登録
     EventManager::GetInstance()->AddEventListener("GiveReward", this);
@@ -140,6 +146,8 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 			draggingObject_ = hitObject;
 			dragStartHeight_ = draggingObject_->translate_.y; // 掴んだ際の高さを記録
 			dragOffset_ = draggingObject_->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
+
+            Audio::GetInstance()->SoundPlay(haveSoundHandle_,haveSoundVolume_); // サウンドを再生
 		}
 	}
 
@@ -157,8 +165,12 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 	// 左クリックを離したら終了
 	if (input_->IsMouseReleased(0)) {
+		if (isDragging_)
+			Audio::GetInstance()->SoundPlay(putSoundHandle_, putSoundVolume_); // サウンドを再生
+
 		isDragging_ = false;
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
+
 	}
 
 #ifdef _DEBUG
