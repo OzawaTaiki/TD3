@@ -30,9 +30,9 @@ public:
 	void AddMovableObject(const Vector3& position);
 
 	/// <summary>
-	/// 全てのオブジェクト位置を返す
+	/// 全てのオブジェクトを返す
 	/// </summary>
-	std::vector<Vector3> GetAllObjectPosition() const;
+	const std::vector<std::unique_ptr<MovableObject>>& GetAllObjects() const { return objects_; }
 
 	void OnEvent(const GameEvent& _event) override;
 

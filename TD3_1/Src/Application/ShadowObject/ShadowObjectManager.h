@@ -7,12 +7,13 @@
 #include <Application/ShadowObject/ShadowObject.h>
 
 class PointLightObject;
+class MovableObject;
 
 class ShadowObjectManager
 {
 public:
 	void Initialize();
-	void Update(const std::vector<Vector3>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects);
+	void Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects);
 	void Draw(const Camera& camera);
 
 private:

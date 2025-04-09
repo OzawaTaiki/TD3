@@ -7,6 +7,7 @@
 
 // Application
 #include <Application/PointLightObject/PointLightObject.h>
+#include <Application/MovableObject/MovableObject.h>
 
 // Externals
 #include <json.hpp>
@@ -21,19 +22,18 @@ void ShadowObjectManager::Initialize()
 
 }
 
-void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects)
-{
+void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects) {
 	// ポイントライトと影オブジェクトの数を同期
 	if (movableObjects.size() != shadowGroups_.size()) {
 		shadowGroups_.clear(); // クリアして再生成
 		for (const auto& movable : movableObjects) {
 			ShadowGroup group;
-			group.movableObjectPosition_ = movable;
+			group.movableObjectPosition_ = movable->GetTranslate();
 
 			for (const auto& pointLight : pointLightObjects) {
 				auto shadowObject = std::make_unique<ShadowObject>();
 				shadowObject->Initialize(waitDuration_);
-				shadowObject->SetMovableObjectPosition(movable);
+				shadowObject->SetMovableObjectPosition(movable->GetTranslate());
 				shadowObject->SetLightPosition(pointLight->GetTranslate());
 				group.shadowObjects_.push_back(std::move(shadowObject));
 			}
@@ -44,9 +44,9 @@ void ShadowObjectManager::Update(const std::vector<Vector3>& movableObjects, con
 
 	// 各グループ内の影オブジェクトを更新
 	for (size_t i = 0; i < shadowGroups_.size(); ++i) {
-		shadowGroups_[i].movableObjectPosition_ = movableObjects[i];
+		shadowGroups_[i].movableObjectPosition_ = movableObjects[i]->GetTranslate();
 		for (size_t j = 0; j < shadowGroups_[i].shadowObjects_.size(); ++j) {
-			shadowGroups_[i].shadowObjects_[j]->SetMovableObjectPosition(movableObjects[i]);
+			shadowGroups_[i].shadowObjects_[j]->SetMovableObjectPosition(movableObjects[i]->GetTranslate());
 			shadowGroups_[i].shadowObjects_[j]->SetLightPosition(pointLightObjects[j]->GetTranslate());
 
 			shadowGroups_[i].shadowObjects_[j]->SetWaitDuration(waitDuration_); // memo : waitDurationが確定したらこの更新はいらないので消す

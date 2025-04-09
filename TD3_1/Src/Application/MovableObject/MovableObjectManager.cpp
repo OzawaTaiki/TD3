@@ -65,15 +65,6 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 	objects_.push_back(std::move(object));
 }
 
-std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
-{
-	std::vector<Vector3> positions;
-	for (const auto& object : objects_) {
-		positions.push_back(object->GetTranslate());
-	}
-	return positions;
-}
-
 void MovableObjectManager::OnEvent(const GameEvent& _event)
 {
     // イベントの種類を確認

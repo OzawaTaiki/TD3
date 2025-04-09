@@ -15,6 +15,9 @@ public:
 	void SetTranslate(const Vector3& translate) { object_->translate_ = translate; }
 	Vector3 GetTranslate() const { return object_->translate_; }
 
+	void SetCanMove(bool canMove) { canMove_ = canMove; }
+	bool GetCanMove() const { return canMove_; }
+
 	AABBCollider* GetCollider() const { return collider_ ? collider_.get() : nullptr; }
 
 protected:
@@ -22,6 +25,8 @@ protected:
 	std::unique_ptr<AABBCollider> collider_;
 
 	uint32_t texture_;
+
+	bool canMove_ = true; // 初期は動かせる状態
 };
 
 /// <summary>
