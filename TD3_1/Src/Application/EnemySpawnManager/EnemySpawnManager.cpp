@@ -1,9 +1,7 @@
 #include "EnemySpawnManager.h"
 
 // Engine
-#ifdef _DEBUG
 #include <Features/Event/EventManager.h>
-#endif // _DEBUG
 
 // application
 #include <Application/UI/Game/Wave/WaveChangeData.h>
@@ -27,7 +25,8 @@ void EnemySpawnManager::Initialize() {
 	}
 
 	selectedWaveIndex_ = -1;
-
+#else
+	isTimerActive_ = true;
 #endif
 
     currentWaveIndex_ = -1; // 現在のウェーブのインデックス
