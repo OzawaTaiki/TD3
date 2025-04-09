@@ -16,6 +16,13 @@ void SampleFramework::Initialize()
 
     sceneManager_->SetSceneFactory(new SceneFactory());
 
+#ifdef _DEBUG
+    collisionManager_->SetDrawEnabled(true);
+#else
+    collisionManager_->SetDrawEnabled(false);
+#endif // DEBUG
+
+
     // 最初のシーンで初期化
     sceneManager_->Initialize("Game");
 }
