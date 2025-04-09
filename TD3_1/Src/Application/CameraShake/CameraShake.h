@@ -6,7 +6,7 @@
 class CameraShake {
 public:
 	static CameraShake* GetInstance();
-	void Initialize(float duration, float intensity);
+	void Initialize();
 	void Update();
 
 	// これを呼んでシェイク開始
@@ -22,4 +22,8 @@ private:
 	const float kDeltaTime = 1.0f / 60.0f;
 	bool isShaking_ = false; // シェイク中？
 	Vector3 offset_; // カメラに加えるオフセット
+
+private:
+	void SaveToFile();
+	void LoadToFile();
 };

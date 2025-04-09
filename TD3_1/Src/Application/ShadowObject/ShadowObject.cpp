@@ -168,7 +168,7 @@ void ShadowObject::HandleAttackInput()
 
 			// アニメーション割合を計算
 			float t = std::min(animationTime_ / animationDuration_, 1.0f);
-			float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseOutQuad(t); // 縮小時 : 拡大時
+			float easedT = isReturning_ ? Easing::EaseOutQuad(t) : Easing::EaseOutExpo(t); // 縮小時 : 拡大時
 
 			// 現在のスケールを計算
 			scaleYCurrent_ = scaleYStart_ + (scaleYTarget_ - scaleYStart_) * easedT;

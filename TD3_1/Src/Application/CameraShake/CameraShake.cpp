@@ -2,18 +2,20 @@
 
 // C++
 #include <random>
+#include <fstream>
 
 // Externals
 #include <imgui.h>
+#include <json.hpp>
 
 CameraShake* CameraShake::GetInstance() {
 	static CameraShake instance;
 	return &instance;
 }
 
-void CameraShake::Initialize(float duration, float intensity) { 
-	duration_ = duration;
-	intensity_ = intensity;
+void CameraShake::Initialize() { 
+	LoadToFile();
+
 	elapsedTime_ = 0.0f;
 	isShaking_ = false;
 }
@@ -36,7 +38,12 @@ void CameraShake::Update() {
 	if (ImGui::Button("StartShake")) {
 		StartShake();
 	}
-	ImGui::Text("x : %.2f, y : %.2f, z : %.2f", offset_.x, offset_.y, offset_.z);
+	ImGui::DragFloat("duration", &duration_, 0.01f);
+	ImGui::DragFloat("intensity", &intensity_, 0.01f);
+	if (ImGui::Button("Save")) {
+		SaveToFile();
+	}
+
 	ImGui::End();
 #endif
 }
@@ -55,4 +62,28 @@ void CameraShake::ApplyShake() {
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(-currentIntensity, currentIntensity);
 	offset_ = Vector3(dis(gen), dis(gen), dis(gen));
+}
+
+void CameraShake::SaveToFile() { 
+	const std::string filePath = "Resources/Data/CameraShake/cameraShakeData.json"; 
+	nlohmann::json jsonData;
+
+	jsonData.push_back({
+	    {"duration",  duration_ },
+        {"intensity", intensity_}
+    });
+
+	std::ofstream file(filePath);
+	file << jsonData.dump(4);
+}
+
+void CameraShake::LoadToFile() { 
+	const std::string filePath = "Resources/Data/CameraShake/cameraShakeData.json";
+
+	std::ifstream file(filePath);
+	nlohmann::json jsonData;
+	file >> jsonData;
+
+	duration_ = jsonData[0]["duration"].get<float>();
+	intensity_ = jsonData[0]["intensity"].get<float>();
 }
