@@ -16,7 +16,7 @@ public:
 	Vector3 GetTranslate() const { return object_->translate_; }
 
 	void SetCanMove(bool canMove) { canMove_ = canMove; }
-	bool GetCanMove() const { return canMove_; }
+	bool CanMove() const { return canMove_; }
 
 	AABBCollider* GetCollider() const { return collider_ ? collider_.get() : nullptr; }
 
@@ -26,7 +26,7 @@ protected:
 
 	uint32_t texture_;
 
-	bool canMove_ = true; // 初期は動かせる状態
+	bool canMove_ = true; // ドラッグで動かせるかどうか : 初期は動かせる状態
 };
 
 /// <summary>

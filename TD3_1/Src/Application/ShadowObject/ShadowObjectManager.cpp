@@ -44,6 +44,8 @@ void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject
 
 	// 各グループ内の影オブジェクトを更新
 	for (size_t i = 0; i < shadowGroups_.size(); ++i) {
+		bool isScalingAny = false; // グループ内のshadowObjectが1つでも実体化しているかどうか
+
 		shadowGroups_[i].movableObjectPosition_ = movableObjects[i]->GetTranslate();
 		for (size_t j = 0; j < shadowGroups_[i].shadowObjects_.size(); ++j) {
 			shadowGroups_[i].shadowObjects_[j]->SetMovableObjectPosition(movableObjects[i]->GetTranslate());
@@ -54,7 +56,14 @@ void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject
 			// ライト毎に設定されている最大距離を適用
 			float maxDistance = pointLightObjects[j]->maxDistance_;
 			shadowGroups_[i].shadowObjects_[j]->Update(maxDistance);
+
+			// グループ内で1つでも実体化しているか確認
+			if (shadowGroups_[i].shadowObjects_[j]->IsScaling()) {
+				isScalingAny = true;
+			}
 		}
+		// グループ内で1つでも実体化していれば、寄生先のmovableObjectが動かないように設定
+		movableObjects[i]->SetCanMove(!isScalingAny);
 	}
 
 #ifdef _DEBUG

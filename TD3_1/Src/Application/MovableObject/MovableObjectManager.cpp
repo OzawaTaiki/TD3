@@ -126,6 +126,11 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 	if (isDragging_) {
 		if (draggingObject_) {
+			// 衝突したオブジェクトが動かせない場合には処理をスキップ
+			if (!draggingObject_->CanMove()) {
+				return;
+			}
+
 			// マウスレイとオブジェクトの初期高さの平面との交点を求める
 			Vector3 intersection;
 			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
