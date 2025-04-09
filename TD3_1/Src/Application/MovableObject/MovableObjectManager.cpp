@@ -127,6 +127,11 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	// 左クリックした瞬間
 	if (input_->IsMouseTriggered(0)) {
 		if (hitObject) {
+			// 衝突したオブジェクトが動かせない場合には処理をスキップ
+			if (!hitObject->CanMove()) {
+				return;
+			}
+
 			isDragging_ = true;
 			draggingObject_ = hitObject;
 			dragStartHeight_ = draggingObject_->GetTranslate().y; // 掴んだ際の高さを記録
@@ -136,13 +141,9 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		}
 	}
 
+	// ドラッグ中のオブジェクト位置を更新
 	if (isDragging_) {
 		if (draggingObject_) {
-			// 衝突したオブジェクトが動かせない場合には処理をスキップ
-			if (!draggingObject_->CanMove()) {
-				return;
-			}
-
 			// マウスレイとオブジェクトの初期高さの平面との交点を求める
 			Vector3 intersection;
 			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
@@ -164,6 +165,14 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		isDragging_ = false;
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
+	}
+
+	// SPACEが押されたらドラッグ解除（ドラッグしながら実体化したらそのまま動かせてしまうため応急処置)
+	if (input_->IsKeyTriggered(DIK_SPACE)) {
+		if (isDragging_) {
+			isDragging_ = false;
+			draggingObject_ = nullptr;
+		}
 	}
 
 #ifdef _DEBUG
