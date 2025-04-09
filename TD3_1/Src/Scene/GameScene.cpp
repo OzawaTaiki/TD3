@@ -79,6 +79,7 @@ void GameScene::Initialize() {
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize();
 
+    clearChecker_ = std::make_unique<ClearChecker>();
 
 	// フェード初期化
 	fade_ = std::make_unique<Fade>();
@@ -135,7 +136,6 @@ void GameScene::Update() {
 	CollisionManager::GetInstance()->Update();
 
 
-
 	if (input_->IsKeyTriggered(DIK_T)) {
 		SceneManager::GetInstance()->ReserveScene("Title");
 	}
@@ -151,8 +151,11 @@ void GameScene::Update() {
 		break;
 
 	case Phase::kMain:
-		// タワーのHPが0になったらフェード開始
-		if (tower_->GetHP() <= 0) {
+		// タワーのHPが0になったら
+        // 敵が全て倒されたら
+		// フェード開始
+		if (tower_->GetHP() <= 0 ||
+			clearChecker_->IsCleared()) {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
 		}

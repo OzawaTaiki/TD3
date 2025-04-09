@@ -25,6 +25,9 @@
     <Filter Include="WaveUI">
       <UniqueIdentifier>{cb65d659-a9af-42d0-89d0-c2d2c33f017a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ClearChecker">
+      <UniqueIdentifier>{b0b05382-1cb9-40cc-81a1-6a111566904e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -81,9 +84,6 @@
     <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\TitleScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -95,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
       <Filter>WaveUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp">
+      <Filter>ClearChecker</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +155,6 @@
     <ClInclude Include="Src\Application\CameraShake\CameraShake.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\TitleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Transition\Fade\Fade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -166,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h">
       <Filter>WaveUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h">
+      <Filter>ClearChecker</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\TitleScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
