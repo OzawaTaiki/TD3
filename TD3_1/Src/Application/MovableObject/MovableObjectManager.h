@@ -19,6 +19,8 @@ class Camera;
 class MovableObjectManager : public iEventListener
 {
 public:
+    ~MovableObjectManager() override;
+
 	void Initialize();
 	void Update(const Camera& camera);
 	void Draw(const Camera& camera);

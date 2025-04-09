@@ -21,7 +21,7 @@
 #include <Application/ShadowObject/ShadowObjectManager.h>
 #include <Application/Event/RewardGauge.h>
 #include <Application/UI/Game/GameUI.h>
-
+#include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
 
 class GameScene : public BaseScene
@@ -73,6 +73,8 @@ private:
     std::unique_ptr<RewardGauge> rewardGauge_ = nullptr;
     // UI
     std::unique_ptr<GameUI> gameUI_;
+    // クリアチェック
+    std::unique_ptr<ClearChecker> clearChecker_ = nullptr;
 
 private:
     // フェード関連
