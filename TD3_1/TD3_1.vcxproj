@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp" />
+    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
     <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp" />
     <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp" />
@@ -183,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
+    <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />
     <ClInclude Include="Src\Application\UI\Game\GameUI.h" />
     <ClInclude Include="Src\Application\Transition\Fade\Fade.h" />
     <ClInclude Include="Src\Application\CameraShake\CameraShake.h" />

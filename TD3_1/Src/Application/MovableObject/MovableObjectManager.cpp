@@ -55,15 +55,6 @@ void MovableObjectManager::Update(const Camera& camera)
 	// オブジェクト更新
 	for (size_t i = 0; i < objects_.size(); i++) {
 		objects_[i]->Update();
-		CollisionManager::GetInstance()->RegisterCollider(colliders_[i].get()); // コライダー登録
-
-
-		// ドラッグ中のオブジェクトのみ敵との当たり判定を無効化
-		if (draggingObject_ == objects_[i].get()) {
-			colliders_[i]->SetLayerMask("enemy");
-		} else {
-			colliders_[i]->ExcludeLayerMask("enemy");
-		}
 	}
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
@@ -74,40 +65,19 @@ void MovableObjectManager::Draw(const Camera& camera)
 {
 	// オブジェクト描画
 	for (const auto& object : objects_) {
-		object->Draw(&camera, texture_, { 1, 1, 1, 1 });
+		object->Draw(camera);
 	}
 }
 
 void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
-	// オブジェクトを生成
-	auto object = std::make_unique<ObjectModel>("movableObjectManager" + std::to_string(objects_.size()));
-	object->Initialize("movableObjects/objectBox.obj");
-	object->translate_ = position;
-	object->useQuaternion_ = true;
-
-	// オブジェクト用コライダーを生成
-	auto collider = std::make_unique<AABBCollider>();
-	collider->SetLayer("movableObject");
-	collider->SetMinMax(object->GetMin(), object->GetMax());
-	collider->SetWorldTransform(object->GetWorldTransform());
+	// オブジェクトを生成（一旦箱型オブジェクトだけ）
+	auto object = std::make_unique<BoxObject>();
+	object->Initialize();
+	object->SetTranslate(position);
 
 	// 配列に追加
 	objects_.push_back(std::move(object));
-	colliders_.push_back(std::move(collider));
-
-	CollisionManager::GetInstance()->RegisterCollider(colliders_.back().get()); // コライダー登録
-
-
-}
-
-std::vector<Vector3> MovableObjectManager::GetAllObjectPosition() const
-{
-	std::vector<Vector3> positions;
-	for (const auto& object : objects_) {
-		positions.push_back(object->translate_);
-	}
-	return positions;
 }
 
 void MovableObjectManager::OnEvent(const GameEvent& _event)
@@ -135,7 +105,6 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 	if (_event.GetEventType() == "ResetEnemyManager") {
 		// 敵マネージャーのリセット処理
 		objects_.clear();
-		colliders_.clear();
 		AddMovableObject({ 0, 1, -6 });
 	}
 #endif // ?DEBUG
@@ -157,11 +126,11 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	///	オブジェクトをドラッグで移動
 	///
 
-	// マウスレイとキューブオブジェクトの衝突判定
+	// マウスレイとオブジェクトのコライダーとの衝突判定
 	RayCastHit hit;
-	ObjectModel* hitObject = nullptr;
+	MovableObject* hitObject = nullptr;
 	for (size_t i = 0; i < objects_.size(); i++) {
-		if (RayCollisionManager::GetInstance()->RayCast(mouseRay, colliders_[i].get(), hit)) {
+		if (RayCollisionManager::GetInstance()->RayCast(mouseRay, objects_[i]->GetCollider(), hit)) {
 			hitObject = objects_[i].get();
 		}
 	}
@@ -169,23 +138,32 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	// 左クリックした瞬間
 	if (input_->IsMouseTriggered(0)) {
 		if (hitObject) {
+			// 衝突したオブジェクトが動かせない場合には処理をスキップ
+			if (!hitObject->CanMove()) {
+				return;
+			}
+
 			isDragging_ = true;
 			draggingObject_ = hitObject;
-			dragStartHeight_ = draggingObject_->translate_.y; // 掴んだ際の高さを記録
-			dragOffset_ = draggingObject_->translate_ - hit.point; // マウスとオブジェクトのオフセット計算
+			dragStartHeight_ = draggingObject_->GetTranslate().y; // 掴んだ際の高さを記録
+			dragOffset_ = draggingObject_->GetTranslate() - hit.point; // マウスとオブジェクトのオフセット計算
 
             Audio::GetInstance()->SoundPlay(haveSoundHandle_,haveSoundVolume_); // サウンドを再生
 		}
 	}
 
+	// ドラッグ中のオブジェクト位置を更新
 	if (isDragging_) {
 		if (draggingObject_) {
 			// マウスレイとオブジェクトの初期高さの平面との交点を求める
 			Vector3 intersection;
 			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
-				draggingObject_->translate_.x = intersection.x + dragOffset_.x;
-				draggingObject_->translate_.y = dragStartHeight_;
-				draggingObject_->translate_.z = intersection.z + dragOffset_.z;
+				draggingObject_->SetTranslate(
+				{
+					intersection.x + dragOffset_.x, 
+					dragStartHeight_, 
+					intersection.z + dragOffset_.z}
+				);
 			}
 		}
 	}
@@ -198,6 +176,14 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		isDragging_ = false;
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
+	}
+
+	// SPACEが押されたらドラッグ解除（ドラッグしながら実体化したらそのまま動かせてしまうため応急処置)
+	if (input_->IsKeyTriggered(DIK_SPACE)) {
+		if (isDragging_) {
+			isDragging_ = false;
+			draggingObject_ = nullptr;
+		}
 	}
 
 #ifdef _DEBUG
