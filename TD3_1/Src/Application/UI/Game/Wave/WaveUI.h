@@ -21,6 +21,9 @@ private:
 
     std::unique_ptr<UISprite> waveUI_;
 
+    uint32_t soundHandle_ = 0;
+    float soundVolume_ = 0.5f;
+
     int currentWave_ = 0;
     std::vector<uint32_t> textureHandle_;
 

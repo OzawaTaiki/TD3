@@ -2,6 +2,7 @@
 
 #include <Features/Event/EventManager.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
+#include <System/Audio/Audio.h>
 
 #include <Application/UI/Game/Wave/WaveChangeData.h>
 
@@ -36,6 +37,9 @@ void WaveUI::Initialize(uint32_t _waveCount)
     // 初期状態では最初のウェーブを表示
     currentWave_ = 0;
     waveUI_->SetTextureHandle(textureHandle_[currentWave_]);
+
+    soundHandle_ = Audio::GetInstance()->SoundLoadWave("Resources/audio/nextWave.wav");
+    soundVolume_ = 0.5f; // デフォルトのボリュームを設定
 }
 
 void WaveUI::Update()
@@ -58,5 +62,7 @@ void WaveUI::OnEvent(const GameEvent& _event)
         currentWave_ = eventData->waveNumber;
         // テクスチャを変更
         waveUI_->SetTextureHandle(textureHandle_[currentWave_]);
+
+        Audio::GetInstance()->SoundPlay(soundHandle_, soundVolume_); // サウンドを再生
     }
 }
