@@ -5,6 +5,9 @@
 #include <Features/Event/EventManager.h>
 #endif // _DEBUG
 
+// application
+#include <Application/UI/Game/Wave/WaveChangeData.h>
+
 // C++
 #include <fstream>
 #include <unordered_set>
@@ -51,6 +54,12 @@ void EnemySpawnManager::Update() {
 			if (elapsedTime_ >= data.startTime && !data.isActive) {
 				data.isActive = true;
 				currentWaveIndex_ = data.waveNumber; // 現在のウェーブインデックスを更新
+
+				WaveChangeData WaveChangeData;
+				WaveChangeData.waveNumber = data.waveNumber;
+
+                // イベントを発行
+                EventManager::GetInstance()->DispatchEvent(GameEvent("WaveStart", &WaveChangeData));
 			}
 		}
 	}
