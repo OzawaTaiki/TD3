@@ -1,100 +1,221 @@
 {
+    "forward_collider_offset": [0.0, 0.0, 1.0],
     "block_stop_threshold": 3.0,
-    "forward_collider_offset": [
-        0.0,
-        0.0,
-        0.6000000238418579
-    ],
     "waves": [
         {
+            "wave_number": 0,
+            "start_time": 3.0,
             "enemy_groups": [
                 {
-                    "enemy_count": 0,
-                    "group_name": "group",
+                    "group_name": "LeftFirst",
+                    "enemy_count": 3,
+                    "spawn_time": 0.5,
+                    "spawn_position": [-26.0, 1.0, -4.0],
                     "spawn_data": [
                         {
-                            "delay_time": 0.0,
                             "enemy_type": "Normal",
-                            "spawn_offset": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ]
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
                         },
                         {
-                            "delay_time": 1.0,
                             "enemy_type": "Normal",
-                            "spawn_offset": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ]
+                            "spawn_offset": [2.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [4.0, 0.0, 0.0],
+                            "delay_time": 2.0
                         }
-                    ],
-                    "spawn_position": [
-                        -26.0,
-                        1.0,
-                        -4.0
-                    ],
-                    "spawn_time": 0.0
-                }
-            ],
-            "start_time": 0.0,
-            "wave_number": 0
-        },
-        {
-            "enemy_groups": [
+                    ]
+                },
                 {
-                    "enemy_count": 0,
-                    "group_name": "group",
+                    "group_name": "TopFirst",
+                    "enemy_count": 2,
+                    "spawn_time": 5.0,
+                    "spawn_position": [1.0, 1.0, 22.0],
                     "spawn_data": [
                         {
-                            "delay_time": 0.0,
                             "enemy_type": "Normal",
-                            "spawn_offset": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ]
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, -2.0],
+                            "delay_time": 1.5
                         }
-                    ],
-                    "spawn_position": [
-                        -26.0,
-                        1.0,
-                        -4.0
-                    ],
-                    "spawn_time": 0.0
+                    ]
                 }
-            ],
-            "start_time": 6.0,
-            "wave_number": 1
+            ]
         },
         {
+            "wave_number": 1,
+            "start_time": 25.0,
             "enemy_groups": [
                 {
-                    "enemy_count": 0,
-                    "group_name": "group",
+                    "group_name": "LeftRightPincer",
+                    "enemy_count": 2,
+                    "spawn_time": 0.5,
+                    "spawn_position": [-26.0, 1.0, -4.0],
                     "spawn_data": [
                         {
-                            "delay_time": 0.0,
                             "enemy_type": "Normal",
-                            "spawn_offset": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ]
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [2.0, 0.0, 0.0],
+                            "delay_time": 1.0
                         }
-                    ],
-                    "spawn_position": [
-                        -26.0,
-                        1.0,
-                        -4.0
-                    ],
-                    "spawn_time": 1.0
+                    ]
+                },
+                {
+                    "group_name": "RightFirst",
+                    "enemy_count": 2,
+                    "spawn_time": 0.5,
+                    "spawn_position": [26.0, 1.0, 0.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-2.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        }
+                    ]
+                },
+                {
+                    "group_name": "TopSecond",
+                    "enemy_count": 3,
+                    "spawn_time": 8.0,
+                    "spawn_position": [1.0, 1.0, 22.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-2.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [2.0, 0.0, 0.0],
+                            "delay_time": 2.0
+                        }
+                    ]
                 }
-            ],
-            "start_time": 10.359999656677246,
-            "wave_number": 2
+            ]
+        },
+        {
+            "wave_number": 2,
+            "start_time": 45.0,
+            "enemy_groups": [
+                {
+                    "group_name": "LeftFinal",
+                    "enemy_count": 3,
+                    "spawn_time": 0.5,
+                    "spawn_position": [-26.0, 1.0, -4.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [2.0, 0.0, 0.0],
+                            "delay_time": 0.5
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [4.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        }
+                    ]
+                },
+                {
+                    "group_name": "TopFinal",
+                    "enemy_count": 3,
+                    "spawn_time": 0.5,
+                    "spawn_position": [1.0, 1.0, 22.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-2.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.5
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [2.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        }
+                    ]
+                },
+                {
+                    "group_name": "RightFinal",
+                    "enemy_count": 3,
+                    "spawn_time": 0.5,
+                    "spawn_position": [26.0, 1.0, 0.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [0.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-2.0, 0.0, 0.0],
+                            "delay_time": 0.5
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-4.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        }
+                    ]
+                },
+                {
+                    "group_name": "FinalAssault",
+                    "enemy_count": 4,
+                    "spawn_time": 15.0,
+                    "spawn_position": [1.0, 1.0, 22.0],
+                    "spawn_data": [
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-3.0, 0.0, 0.0],
+                            "delay_time": 0.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [-1.0, 0.0, 0.0],
+                            "delay_time": 0.5
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [1.0, 0.0, 0.0],
+                            "delay_time": 1.0
+                        },
+                        {
+                            "enemy_type": "Normal",
+                            "spawn_offset": [3.0, 0.0, 0.0],
+                            "delay_time": 1.5
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

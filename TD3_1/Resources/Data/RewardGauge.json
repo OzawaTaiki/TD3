@@ -1,9 +1,8 @@
 {
     "RewardGauge": {
         "RewardCount": [
-            0,
-            2,
-            6
+            3,
+            9
         ],
         "RewardGauge_anchor": {
             "x": 0.039000000804662704,
@@ -30,7 +29,6 @@
         },
         "RewardGauge_textureName": "gauge.png",
         "RewardItem": [
-            1,
             1,
             1
         ]

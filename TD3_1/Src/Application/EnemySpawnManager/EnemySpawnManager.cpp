@@ -73,12 +73,12 @@ void EnemySpawnManager::Update() {
 	if (currentWaveIndex_ != -1 && nSpawnData_.size() > currentWaveIndex_)
 	{
 		auto& wave = nSpawnData_[currentWaveIndex_];
+		float waveElapsedTime = elapsedTime_ - wave.startTime; // ウェーブ開始からの経過時間 ウェーブの経過時間
 
 		if (wave.isActive) {
 			// ウェーブがアクティブな場合、敵のスポーンを行う
 			for (auto& group : wave.enemyGroups) {
 				// グループのスポーン時間が経過している場合、敵をスポーン
-				float waveElapsedTime = elapsedTime_ - wave.startTime; // ウェーブ開始からの経過時間 ウェーブの経過時間
 				if (waveElapsedTime >= group.spawnTime) {
 					float groupActiveTime = waveElapsedTime - group.spawnTime; // グループの経過時間
 					for (auto i = 0; i < group.spawnData.size(); ++i) {
