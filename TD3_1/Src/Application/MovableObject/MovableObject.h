@@ -20,6 +20,9 @@ public:
 
 	AABBCollider* GetCollider() const { return collider_ ? collider_.get() : nullptr; }
 
+	void SetLayerMask(std::string name) { collider_->SetLayerMask(name); }
+	void ExcludeLayerMask(std::string name) { collider_->ExcludeLayerMask(name); }
+
 protected:
 	std::unique_ptr<ObjectModel> object_;
 	std::unique_ptr<AABBCollider> collider_;

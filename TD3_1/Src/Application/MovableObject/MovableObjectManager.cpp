@@ -55,6 +55,15 @@ void MovableObjectManager::Update(const Camera& camera)
 	// オブジェクト更新
 	for (size_t i = 0; i < objects_.size(); i++) {
 		objects_[i]->Update();
+
+		// ドラッグ中のオブジェクトと敵は判定を取らないように
+		if (isDragging_) {
+			objects_[i]->SetLayerMask("enemy");
+			objects_[i]->SetLayerMask("enemy_forward");
+		} else {
+			objects_[i]->ExcludeLayerMask("enemy");
+			objects_[i]->ExcludeLayerMask("enemy_forward");
+		}
 	}
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
