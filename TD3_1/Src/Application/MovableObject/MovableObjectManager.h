@@ -11,6 +11,9 @@
 #include <System/Input/Input.h>
 #include <Features/Event/EventListener.h>
 
+// Application
+#include <Application/MovableObject/MovableObject.h>
+
 class Camera;
 
 class MovableObjectManager : public iEventListener
@@ -27,15 +30,14 @@ public:
 	void AddMovableObject(const Vector3& position);
 
 	/// <summary>
-	/// 全てのオブジェクト位置を返す
+	/// 全てのオブジェクトを返す
 	/// </summary>
-	std::vector<Vector3> GetAllObjectPosition() const;
+	const std::vector<std::unique_ptr<MovableObject>>& GetAllObjects() const { return objects_; }
 
 	void OnEvent(const GameEvent& _event) override;
 
 private:
-	std::vector<std::unique_ptr<ObjectModel>> objects_;
-	std::vector<std::unique_ptr<AABBCollider>> colliders_;
+	std::vector<std::unique_ptr<MovableObject>> objects_;
 
 	uint32_t texture_;
 
@@ -50,7 +52,7 @@ private:
 	bool isDragging_ = false;
 	Vector3 dragOffset_;
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
-	ObjectModel* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
+	MovableObject* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
 
     uint32_t haveSoundHandle_ = 0; // サウンドハンドル
     uint32_t putSoundHandle_ = 0; // サウンドハンドル

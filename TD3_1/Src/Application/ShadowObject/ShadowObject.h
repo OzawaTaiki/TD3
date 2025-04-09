@@ -29,6 +29,11 @@ public:
 	/// </summary>
 	void SetWaitDuration(const float& duration) { waitDuration_ = duration; }
 
+	/// <summary>
+	/// 実体化中かどうかを取得
+	/// </summary>
+	bool IsScaling() const { return isScaling_; }
+
     void SetSoundHandle(uint32_t soundHandle) { soundHandle_ = soundHandle; } // サウンドハンドルをセット
     void SetVolume(float volume) { volume_ = volume; } // ボリュームをセット
 

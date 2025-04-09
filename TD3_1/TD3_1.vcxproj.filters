@@ -93,6 +93,8 @@
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp">
+      <Filter>ソース ファイル</Filter>
     <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
       <Filter>WaveUI</Filter>
     </ClCompile>
@@ -161,6 +163,8 @@
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\MovableObject\MovableObject.h">
+      <Filter>ヘッダー ファイル</Filter>
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h">
       <Filter>WaveUI</Filter>
     </ClInclude>
