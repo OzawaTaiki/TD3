@@ -5,6 +5,9 @@
 #include <Features/Event/EventManager.h>
 #endif // _DEBUG
 
+// application
+#include <Application/UI/Game/Wave/WaveChangeData.h>
+
 // C++
 #include <fstream>
 #include <unordered_set>
@@ -27,7 +30,7 @@ void EnemySpawnManager::Initialize() {
 
 #endif
 
-    currentWaveIndex_ = 0; // 現在のウェーブのインデックス
+    currentWaveIndex_ = -1; // 現在のウェーブのインデックス
 
     audio_ = Audio::GetInstance();
 
@@ -44,49 +47,58 @@ void EnemySpawnManager::Update() {
 			elapsedTime_ += 1.0f / 60.0f;
 		else
 			elapsedTime_ += kDeltaTime;
+
+		for (auto& data : nSpawnData_)
+		{
+			// ウェーブの開始時間が経過している場合、ウェーブをアクティブにする
+			if (elapsedTime_ >= data.startTime && !data.isActive) {
+				data.isActive = true;
+				currentWaveIndex_ = data.waveNumber; // 現在のウェーブインデックスを更新
+
+				WaveChangeData WaveChangeData;
+				WaveChangeData.waveNumber = data.waveNumber;
+
+                // イベントを発行
+                EventManager::GetInstance()->DispatchEvent(GameEvent("WaveStart", &WaveChangeData));
+			}
+		}
 	}
 
-	for (auto& data : nSpawnData_)
+	if (currentWaveIndex_ != -1 && nSpawnData_.size() > currentWaveIndex_)
 	{
-        // ウェーブの開始時間が経過している場合、ウェーブをアクティブにする
-        if (elapsedTime_ >= data.startTime) {
-            data.isActive = true;
-            currentWaveIndex_ = data.waveNumber; // 現在のウェーブインデックスを更新
-        }
-	}
+		auto& wave = nSpawnData_[currentWaveIndex_];
 
-    auto& wave = nSpawnData_[currentWaveIndex_];
+		if (wave.isActive) {
+			// ウェーブがアクティブな場合、敵のスポーンを行う
+			for (auto& group : wave.enemyGroups) {
+				// グループのスポーン時間が経過している場合、敵をスポーン
+				float waveElapsedTime = elapsedTime_ - wave.startTime; // ウェーブ開始からの経過時間 ウェーブの経過時間
+				if (waveElapsedTime >= group.spawnTime) {
+					float groupActiveTime = waveElapsedTime - group.spawnTime; // グループの経過時間
+					for (auto i = 0; i < group.spawnData.size(); ++i) {
+						// スポーンデータを取得
+						auto& spawnData = group.spawnData[i];
+						// 敵の種類に応じてスポーン
+						if (spawnData.delayTime <= groupActiveTime && !spawnData.spawned)
+						{
+							if (spawnData.enemyType == "normal" || spawnData.enemyType == "Normal") { // ノーマル敵の場合
+								auto enemy = std::make_unique<NormalEnemy>();
+								Vector3 spawnPos = group.spawnPosition + spawnData.spawnOffset;
+								enemy->Initialize(spawnPos, blockStopThreshold);
+								enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
+								enemy->SetSoundHandle(deathSoundHandle_); // サウンドハンドルをセット
+								enemy->SetVolume(deathSoundVolume_); // ボリュームをセット
 
-	if (wave.isActive) {
-		// ウェーブがアクティブな場合、敵のスポーンを行う
-		for (auto& group : wave.enemyGroups) {
-            // グループのスポーン時間が経過している場合、敵をスポーン
-            float waveElapsedTime = elapsedTime_ - wave.startTime; // ウェーブ開始からの経過時間 ウェーブの経過時間
-            if (waveElapsedTime >= group.spawnTime) {
-                float groupActiveTime = waveElapsedTime - group.spawnTime; // グループの経過時間
-				for (auto i = 0; i < group.spawnData.size(); ++i) {
-                    // スポーンデータを取得
-                    auto& spawnData = group.spawnData[i];
-                    // 敵の種類に応じてスポーン
-					if (spawnData.delayTime <= groupActiveTime && !spawnData.spawned)
-					{
-						if (spawnData.enemyType == "normal"|| spawnData.enemyType == "Normal") { // ノーマル敵の場合
-							auto enemy = std::make_unique<NormalEnemy>();
-							Vector3 spawnPos = group.spawnPosition + spawnData.spawnOffset;
-							enemy->Initialize(spawnPos, blockStopThreshold);
-							enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
-                            enemy->SetSoundHandle(deathSoundHandle_); // サウンドハンドルをセット
-                            enemy->SetVolume(deathSoundVolume_); // ボリュームをセット
+								enemies_.push_back(std::move(enemy));
+							}
+							else if (spawnData.enemyType == "Empty")
+								continue;
 
-							enemies_.push_back(std::move(enemy));
+							spawnData.spawned = true; // スポーン済みとしてマーク
 						}
-						else if (spawnData.enemyType == "Empty")
-							continue;
-
-						spawnData.spawned = true; // スポーン済みとしてマーク
 					}
-                }
-            }
+				}
+			}
 		}
 	}
 
@@ -104,27 +116,16 @@ void EnemySpawnManager::Update() {
 
 	#ifdef _DEBUG
 
+	nDrawSpawnEditor();
+
 	ImGui::Begin("enemySpawnManager");
 	ImGui::Checkbox("elapsedTime :", &isTimerActive_);
 	ImGui::SameLine();
 	ImGui::Text("%.fs", elapsedTime_);
 	// リセットを行う（仮なので後で整理）
 	if (ImGui::Button("Reset")) {
-		elapsedTime_ = 0.0f;
-		// 出現してる敵を全て死亡させる
-		for (auto& enemy : enemies_) {
-			enemy->Dead();
-		}
-		for (auto& data : nSpawnData_) {
-			data.isActive = false;
-			for (auto& group : data.enemyGroups) {
-				for (auto& spawnData : group.spawnData) {
-					spawnData.spawned = false;
-				}
-			}
-		}
 
-        EventManager::GetInstance()->DispatchEvent(GameEvent("ResetEnemyManager", nullptr));
+		Reset();
 	}
 	ImGui::DragFloat("blockStopThreshold", &blockStopThreshold, 0.01f);
 	if (ImGui::DragFloat3("forwardColliderOffset", &forwardColliderOffset_.x, 0.01f))
@@ -135,6 +136,7 @@ void EnemySpawnManager::Update() {
         }
 	}
 	ImGui::End();
+
 
 	// デバッグ用スポナーの更新
 	for (auto& spawner : debugSpawners_) {
@@ -152,13 +154,32 @@ void EnemySpawnManager::Draw(const Camera* camera) {
 
 	#ifdef _DEBUG
 	//DrawSpawnEditor();
-    nDrawSpawnEditor();
 
 	// デバッグ用スポナーの描画
 	for (auto& spawner : debugSpawners_) {
 		spawner->Draw(camera, {1, 1, 1, 1});
 	}
 	#endif
+}
+
+void EnemySpawnManager::Reset()
+{
+    isTimerActive_ = false;
+	elapsedTime_ = 0.0f;
+	currentWaveIndex_ = -1;
+	// 出現してる敵を全て死亡させる
+	for (auto& enemy : enemies_) {
+		enemy->Dead();
+	}
+	for (auto& data : nSpawnData_) {
+		data.isActive = false;
+		for (auto& group : data.enemyGroups) {
+			for (auto& spawnData : group.spawnData) {
+				spawnData.spawned = false;
+			}
+		}
+	}
+	EventManager::GetInstance()->DispatchEvent(GameEvent("ResetEnemyManager", nullptr));
 }
 
 
@@ -173,7 +194,8 @@ void EnemySpawnManager::nDrawSpawnEditor()
         SaveToFile();
 	}
 
-
+	// 編集したか
+    bool isEdited = false;
 	// WAVE群の表示
 
     size_t waveCount = nSpawnData_.size();
@@ -199,6 +221,8 @@ void EnemySpawnManager::nDrawSpawnEditor()
 
 		selectedWaveIndex_ = newWave.waveNumber;
 		selectedGroup_ = nSpawnData_.back().enemyGroups.end();
+
+        isEdited = true;
 	}
 	ImGui::SameLine();
     if (ImGui::Button("- Remove Wave"))
@@ -216,8 +240,9 @@ void EnemySpawnManager::nDrawSpawnEditor()
 			{
 				selectedWaveIndex_ = -1;
 			}
+			isEdited = true;
 		}
-    }
+	}
 
     ImGui::EndChild();
     ImGui::SameLine();
@@ -263,6 +288,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 				wave.enemyGroups.push_back(newGroup);
 				selectedGroup_ = wave.enemyGroups.end() - 1;
 				selectedEnemy_ = selectedGroup_->spawnData.end();
+				isEdited = true;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("- Remove Group"))
@@ -279,6 +305,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 					{
 						selectedGroup_ = wave.enemyGroups.end();
 					}
+					isEdited = true;
 				}
 			}
 		}
@@ -339,6 +366,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 				EnemySpawnData newEnemy;
 				group.spawnData.push_back(newEnemy);
 				selectedEnemy_ = group.spawnData.end();
+				isEdited = true;
 			}
 			ImGui::SameLine();
 			if (!group.spawnData.empty())
@@ -352,6 +380,7 @@ void EnemySpawnManager::nDrawSpawnEditor()
 							selectedEnemy_ = group.spawnData.end() - 1;
 						else
 							selectedEnemy_ = group.spawnData.end();
+						isEdited = true;
 					}
 				}
 			}
@@ -381,6 +410,9 @@ void EnemySpawnManager::nDrawSpawnEditor()
 			}
 		}
 	}
+
+	if (isEdited)
+		Reset();
 
 
 	ImGui::EndChild();

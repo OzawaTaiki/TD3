@@ -25,6 +25,9 @@ public:
 	void SetTowerPosition(const Vector3& towerPosition) { towerPositon_ = towerPosition; }
 
 private:
+	void Reset();
+
+
 	/// <summary>
 	/// 全ての敵を格納
 	/// </summary>

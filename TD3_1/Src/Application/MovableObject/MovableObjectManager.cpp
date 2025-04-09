@@ -33,6 +33,10 @@ void MovableObjectManager::Initialize()
 
     // イベントリスナーの登録
     EventManager::GetInstance()->AddEventListener("GiveReward", this);
+
+#ifdef _DEBUG
+    EventManager::GetInstance()->AddEventListener("ResetEnemyManager", this);
+#endif // _DEBUG
 }
 
 void MovableObjectManager::Update(const Camera& camera)
@@ -67,7 +71,7 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 
 void MovableObjectManager::OnEvent(const GameEvent& _event)
 {
-    // イベントの種類を確認
+	// イベントの種類を確認
 	if (_event.GetEventType() == "GiveReward") {
 
 		ReawardEventData* eventData = static_cast<ReawardEventData*>(_event.GetData());
@@ -76,15 +80,24 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 			// オブジェクトを追加する処理
 			AddMovableObject({ 0, 1, -6 });
 		}
-        else if (eventData->item == RewardItem::Haelth) {
-            // ヘルスを追加する処理
-            // ここにヘルス追加の処理を書く
-        }
+		else if (eventData->item == RewardItem::Haelth) {
+			// ヘルスを追加する処理
+			// ここにヘルス追加の処理を書く
+		}
 		else {
 			// その他のアイテムに対する処理
 			// ここにその他のアイテムに対する処理を書く
 		}
 	}
+
+#ifdef _DEBUG
+	if (_event.GetEventType() == "ResetEnemyManager") {
+		// 敵マネージャーのリセット処理
+		objects_.clear();
+		colliders_.clear();
+		AddMovableObject({ 0, 1, -6 });
+	}
+#endif // ?DEBUG
 }
 
 void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)

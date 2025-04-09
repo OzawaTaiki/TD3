@@ -77,7 +77,7 @@ void RewardGauge::OnEvent(const GameEvent& _event)
 #ifdef _DEBUG
     if (_event.GetEventType() == "ResetEnemyManager")
     {
-        Reset();
+        //Reset();
     }
 #endif // _DEBUG
 

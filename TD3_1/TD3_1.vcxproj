@@ -167,6 +167,7 @@
     <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp" />
     <ClCompile Include="Src\Application\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp" />
     <ClCompile Include="Src\Essential\SampleFramework.cpp" />
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
@@ -196,6 +197,8 @@
     <ClInclude Include="Src\Application\Enemy\Enemy.h" />
     <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h" />
     <ClInclude Include="Src\Application\Field\Field.h" />
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h" />
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h" />
     <ClInclude Include="Src\Essential\SampleFramework.h" />
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />
