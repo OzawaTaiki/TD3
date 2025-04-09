@@ -22,6 +22,9 @@
     <Filter Include="Reward">
       <UniqueIdentifier>{478f625b-526a-4ffe-9491-104b7d5d0263}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WaveUI">
+      <UniqueIdentifier>{cb65d659-a9af-42d0-89d0-c2d2c33f017a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -90,6 +93,9 @@
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
+      <Filter>WaveUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Essential\SampleFramework.h">
@@ -154,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h">
+      <Filter>WaveUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h">
+      <Filter>WaveUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

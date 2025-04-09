@@ -36,7 +36,7 @@
                         1.0,
                         -4.0
                     ],
-                    "spawn_time": 2.0
+                    "spawn_time": 0.0
                 }
             ],
             "start_time": 0.0,
@@ -47,15 +47,26 @@
                 {
                     "enemy_count": 0,
                     "group_name": "group",
-                    "spawn_position": [
-                        1.0,
-                        1.0,
-                        22.0
+                    "spawn_data": [
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
                     ],
-                    "spawn_time": 1.0
+                    "spawn_position": [
+                        -26.0,
+                        1.0,
+                        -4.0
+                    ],
+                    "spawn_time": 0.0
                 }
             ],
-            "start_time": 2.0,
+            "start_time": 6.0,
             "wave_number": 1
         },
         {
@@ -63,15 +74,26 @@
                 {
                     "enemy_count": 0,
                     "group_name": "group",
-                    "spawn_position": [
-                        26.0,
-                        1.0,
-                        0.0
+                    "spawn_data": [
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
                     ],
-                    "spawn_time": 0.0
+                    "spawn_position": [
+                        -26.0,
+                        1.0,
+                        -4.0
+                    ],
+                    "spawn_time": 1.0
                 }
             ],
-            "start_time": 5.0,
+            "start_time": 8.0,
             "wave_number": 2
         }
     ]

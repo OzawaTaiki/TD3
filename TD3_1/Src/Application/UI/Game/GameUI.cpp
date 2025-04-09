@@ -17,6 +17,11 @@ void GameUI::Initialize()
 	spriteTextGauge_->Initialize();
 	spriteTextGauge_->translate_ = { 1015, 45 };
 
+    // WaveUI
+    WaveUI_ = std::make_unique<WaveUI>();
+    WaveUI_->Initialize(3); // ウェーブ数を指定（例: 3ウェーブ）
+
+
 	//// 打ち上げゲージ（内側 : ゲージ本体）
 	//uint32_t textureGauge = TextureManager::GetInstance()->Load("game/ui/gauge.png");
 	//spriteGauge_ = Sprite::Create("gauge", textureGauge);
@@ -32,6 +37,9 @@ void GameUI::Update()
 {
 	spriteTextGuide_->Update();
 	spriteTextGauge_->Update();
+
+    WaveUI_->Update();
+
 	/*spriteGauge_->Update();
 	spriteGaugeFrame_->Update();*/
 }
@@ -42,6 +50,9 @@ void GameUI::Draw()
 
 	spriteTextGuide_->Draw();
 	spriteTextGauge_->Draw();
+
+    WaveUI_->Draw();
+
 	/*spriteGauge_->Draw();
 	spriteGaugeFrame_->Draw();*/
 }
