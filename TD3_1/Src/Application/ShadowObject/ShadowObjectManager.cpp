@@ -4,10 +4,12 @@
 
 // C++
 #include <fstream>
-#include <json.hpp>
 
 // Application
 #include <Application/PointLightObject/PointLightObject.h>
+
+// Externals
+#include <json.hpp>
 
 void ShadowObjectManager::Initialize()
 {

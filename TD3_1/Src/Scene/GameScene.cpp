@@ -77,7 +77,7 @@ void GameScene::Initialize() {
 	gameUI_->Initialize();
 
 	// カメラシェイク初期化
-	CameraShake::GetInstance()->Initialize(1.0f, 0.5f);
+	CameraShake::GetInstance()->Initialize();
 
 
 	// フェード初期化
