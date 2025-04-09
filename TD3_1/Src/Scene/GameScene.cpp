@@ -79,12 +79,16 @@ void GameScene::Initialize() {
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize();
 
-    clearChecker_ = std::make_unique<ClearChecker>();
+  clearChecker_ = std::make_unique<ClearChecker>();
 
 	// フェード初期化
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+	// プレイヤー初期化
+	playerHand_ = std::make_unique<PlayerHand>();
+	playerHand_->Initialize();
 }
 
 void GameScene::Update() {
@@ -130,6 +134,8 @@ void GameScene::Update() {
 	shadowObjectManager_->Update(movableObjectManager_->GetAllObjects(), pointLightObjectManager_->GetLights());
 	// UI更新
 	gameUI_->Update();
+	// プレイヤー更新
+	playerHand_->Update(SceneCamera_);
 
     rewardGauge_->Update();
 
@@ -187,6 +193,8 @@ void GameScene::Draw() {
 	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
+	// プレイヤー描画
+	playerHand_->Draw(SceneCamera_);
 
 	///
 	///	スプライト描画

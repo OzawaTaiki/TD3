@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Player\PlayerHand.cpp" />
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp" />
     <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
@@ -183,6 +184,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Player\PlayerHand.h" />
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
     <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />
     <ClInclude Include="Src\Application\UI\Game\GameUI.h" />
