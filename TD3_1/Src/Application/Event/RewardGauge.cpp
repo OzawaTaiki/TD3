@@ -32,6 +32,7 @@ void RewardGauge::Initialize()
 
     gaugeFrame_ = std::make_unique<UISprite>();
     gaugeFrame_->Initialize("RewardGaugeFrame");
+	gaugeFrame_->SetColor({1.0f, 1.0f, 1.0f, 1.0f});
 
     count_ = 0;
 
