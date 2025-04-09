@@ -94,7 +94,6 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 	if (_event.GetEventType() == "ResetEnemyManager") {
 		// 敵マネージャーのリセット処理
 		objects_.clear();
-		colliders_.clear();
 		AddMovableObject({ 0, 1, -6 });
 	}
 #endif // ?DEBUG
