@@ -58,11 +58,17 @@ void EnemySpawnManager::Update() {
 				WaveChangeData WaveChangeData;
 				WaveChangeData.waveNumber = data.waveNumber;
 
-                // イベントを発行
-                EventManager::GetInstance()->DispatchEvent(GameEvent("WaveStart", &WaveChangeData));
+				// イベントを発行
+				EventManager::GetInstance()->DispatchEvent(GameEvent("WaveStart", &WaveChangeData));
+
+				if (data.waveNumber == nSpawnData_.size() - 1)
+                    EventManager::GetInstance()->DispatchEvent(GameEvent("WaveCompleted", nullptr)); // 最後のウェーブが終了したらイベントを発行
 			}
 		}
 	}
+
+
+    bool enemyCleared = currentWaveIndex_ == nSpawnData_.size() - 1;
 
 	if (currentWaveIndex_ != -1 && nSpawnData_.size() > currentWaveIndex_)
 	{
@@ -94,10 +100,17 @@ void EnemySpawnManager::Update() {
 							else if (spawnData.enemyType == "Empty")
 								continue;
 
-							spawnData.spawned = true; // スポーン済みとしてマーク
+							spawnData.spawned = true;
+						}
+                        else if (spawnData.delayTime > groupActiveTime)
+                        {
+                            // スポーン時間が経過していない場合、敵はまだスポーンしていない
+							enemyCleared = false; // スポーン時間が経過していない場合、敵はまだスポーンしていない
 						}
 					}
 				}
+				else
+                    enemyCleared = false; // スポーン時間が経過していない場合、敵はまだスポーンしていない
 			}
 		}
 	}
@@ -113,6 +126,16 @@ void EnemySpawnManager::Update() {
 		{ return enemy->IsDead();
 		}),
 		enemies_.end());
+
+    if (enemies_.empty())
+    {
+        // 敵が全て死亡したらウェーブを終了
+		if (currentWaveIndex_ != -1 && enemyCleared)
+        {
+            EventManager::GetInstance()->DispatchEvent(GameEvent("EnemyCleared", nullptr));
+
+        }
+    }
 
 	#ifdef _DEBUG
 

@@ -13,7 +13,7 @@ WaveUI::WaveUI()
 
 WaveUI::~WaveUI()
 {
-    EventManager::GetInstance()->RemoveEventListener("WaveStart", this);
+     EventManager::GetInstance()->RemoveEventListener("WaveStart", this);
 }
 
 void WaveUI::Initialize(uint32_t _waveCount)

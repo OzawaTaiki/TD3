@@ -14,6 +14,12 @@ RewardGauge::RewardGauge()
 
 RewardGauge::~RewardGauge()
 {
+    // イベントリスナーの登録解除
+    EventManager::GetInstance()->RemoveEventListener("EnemyLaunchKill", this);
+
+#ifdef _DEBUG
+    EventManager::GetInstance()->RemoveEventListener("ResetEnemyManager", this);
+#endif // _DEBUG
 }
 
 void RewardGauge::Initialize()

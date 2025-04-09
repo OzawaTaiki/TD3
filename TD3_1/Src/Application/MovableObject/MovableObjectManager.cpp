@@ -18,6 +18,17 @@
 // Application
 #include <Application/Event/RewardEventData.h>
 
+
+MovableObjectManager::~MovableObjectManager()
+{
+    // イベントリスナーの登録解除
+    EventManager::GetInstance()->RemoveEventListener("GiveReward", this);
+
+#ifdef _DEBUG
+    EventManager::GetInstance()->RemoveEventListener("ResetEnemyManager", this);
+#endif // _DEBUG
+}
+
 void MovableObjectManager::Initialize()
 {
 	input_ = Input::GetInstance();

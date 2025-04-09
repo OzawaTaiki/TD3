@@ -1,59 +1,187 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp" />
-    <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
-    <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp" />
-    <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp" />
-    <ClCompile Include="EdgeDetection.cpp" />
-    <ClCompile Include="Src\Application\Event\RewardGauge.cpp" />
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp" />
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp" />
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp" />
-    <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp" />
-    <ClCompile Include="Src\Application\Enemy\Enemy.cpp" />
-    <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp" />
-    <ClCompile Include="Src\Application\Field\Field.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp" />
-    <ClCompile Include="Src\Essential\SampleFramework.cpp" />
-    <ClCompile Include="Src\Essential\SampleScene.cpp" />
-    <ClCompile Include="Src\Essential\SceneFactory.cpp" />
-    <ClCompile Include="Src\Scene\GameScene.cpp" />
-    <ClCompile Include="Src\Application\Tower\Tower.cpp" />
-    <ClCompile Include="Src\Scene\TitleScene.cpp" />
-    <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp" />
-    <ClCompile Include="Src\Application\Player\PlayerHand.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />
-    <ClInclude Include="Src\Application\UI\Game\GameUI.h" />
-    <ClInclude Include="Src\Application\Transition\Fade\Fade.h" />
-    <ClInclude Include="Src\Application\CameraShake\CameraShake.h" />
-    <ClInclude Include="EdgeDetection.h" />
-    <ClInclude Include="Src\Application\Event\RewardEventData.h" />
-    <ClInclude Include="Src\Application\Event\RewardGauge.h" />
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h" />
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h" />
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h" />
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h" />
-    <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h" />
-    <ClInclude Include="Src\Application\Enemy\Enemy.h" />
-    <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h" />
-    <ClInclude Include="Src\Application\Field\Field.h" />
-    <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h" />
-    <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h" />
-    <ClInclude Include="Src\Essential\SampleFramework.h" />
-    <ClInclude Include="Src\Essential\SampleScene.h" />
-    <ClInclude Include="Src\Essential\SceneFactory.h" />
-    <ClInclude Include="Src\Scene\GameScene.h" />
-    <ClInclude Include="Src\Application\Tower\Tower.h" />
-    <ClInclude Include="Src\Scene\TitleScene.h" />
-    <ClInclude Include="Src\Application\UI\Title\TitleUI.h" />
-    <ClInclude Include="Src\Application\Player\PlayerHand.h" />
+
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Essential">
+      <UniqueIdentifier>{8fe94dcb-dc9f-475f-8c7e-4c401ecec204}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{38b74c24-1577-4412-9da5-8125f4d19972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reward">
+      <UniqueIdentifier>{478f625b-526a-4ffe-9491-104b7d5d0263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WaveUI">
+      <UniqueIdentifier>{cb65d659-a9af-42d0-89d0-c2d2c33f017a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClearChecker">
+      <UniqueIdentifier>{b0b05382-1cb9-40cc-81a1-6a111566904e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Essential\SampleFramework.cpp">
+      <Filter>Essential</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Essential\SampleScene.cpp">
+      <Filter>Essential</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Essential\SceneFactory.cpp">
+      <Filter>Essential</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeDetection.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Field\Field.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Tower\Tower.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Event\RewardGauge.cpp">
+      <Filter>Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\UI\Game\GameUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
+      <Filter>WaveUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp">
+      <Filter>ClearChecker</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Essential\SampleFramework.h">
+      <Filter>Essential</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Essential\SampleScene.h">
+      <Filter>Essential</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Essential\SceneFactory.h">
+      <Filter>Essential</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgeDetection.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\GameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Field\Field.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Tower\Tower.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Event\RewardEventData.h">
+      <Filter>Reward</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Event\RewardGauge.h">
+      <Filter>Reward</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\CameraShake\CameraShake.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Transition\Fade\Fade.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Game\GameUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Title\TitleUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\MovableObject\MovableObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h">
+      <Filter>WaveUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h">
+      <Filter>WaveUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h">
+      <Filter>ClearChecker</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
