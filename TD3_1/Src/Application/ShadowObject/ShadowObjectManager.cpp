@@ -108,11 +108,15 @@ void ShadowObjectManager::UpdateWaitDuration()
 	size_t scalingCount = GetScalingShadowObjectsCount();
 
 	// 基準値と持続時間の係数を設定
-	const float baseWaitDuration = 0.74f; // 拡大終了->縮小開始までの待機時間（一旦基準値を手打ち）
 	const float factor = 0.1f; // 実体化中オブジェクト1つあたりの増加時間
 
 	// 動的にwaitDurationを計算
-	waitDuration_ = baseWaitDuration + static_cast<float>(scalingCount) * factor;
+	waitDuration_ = ShadowObject::kBaseWaitDuration + static_cast<float>(scalingCount) * factor;
+
+	// 上限値を設定する
+	if (waitDuration_ > ShadowObject::kMaxWaitDuration) {
+		waitDuration_ = ShadowObject::kMaxWaitDuration;
+	}
 }
 
 void ShadowObjectManager::SaveToFile()

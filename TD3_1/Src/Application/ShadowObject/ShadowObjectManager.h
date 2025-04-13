@@ -40,7 +40,8 @@ private:
 	std::vector<ShadowGroup> shadowGroups_;
 
 	float waitDuration_ = 0.0f; // 最大値まで拡大->縮小を始めるまでの待機時間
-	
+
+	// 実体化してる影オブジェクトのカウントに応じて、持続時間を動的に変更
 	void UpdateWaitDuration();
 
 

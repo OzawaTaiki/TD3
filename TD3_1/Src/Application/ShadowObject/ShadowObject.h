@@ -12,6 +12,10 @@ class Camera;
 /// </summary>
 class ShadowObject {
 public:
+	static constexpr float kBaseWaitDuration = 0.75f;
+	static constexpr float kMaxWaitDuration = 2.0f;
+
+public:
 	void Initialize(float waitDuration);
 	void Update(const float maxDistance);
 	void Draw(const Camera& camera);
