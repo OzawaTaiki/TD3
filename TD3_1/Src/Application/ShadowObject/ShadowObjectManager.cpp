@@ -66,6 +66,9 @@ void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject
 		movableObjects[i]->SetCanMove(!isScalingAny);
 	}
 
+	// 実体化してる影オブジェクトのカウントに応じて、持続時間を動的に変更
+	UpdateWaitDuration();
+
 #ifdef _DEBUG
 	ImGui::Begin("ShadowObjectManager");
 	ImGui::DragFloat("waitDuration", &waitDuration_, 0.01f);
@@ -82,6 +85,34 @@ void ShadowObjectManager::Draw(const Camera& camera)
 			shadowGroups_[i].shadowObjects_[j]->Draw(camera);
 		}
 	}
+}
+
+size_t ShadowObjectManager::GetScalingShadowObjectsCount() const
+{
+	size_t count = 0;
+
+	for (const auto& group : shadowGroups_) {
+		for (const auto& shadowObject : group.shadowObjects_) {
+			if (shadowObject && shadowObject->IsScaling()) {
+				++count;
+			}
+		}
+	}
+
+	return count;
+}
+
+void ShadowObjectManager::UpdateWaitDuration()
+{
+	// 実体化中の影オブジェクトをカウント
+	size_t scalingCount = GetScalingShadowObjectsCount();
+
+	// 基準値と持続時間の係数を設定
+	const float baseWaitDuration = 0.74f; // 拡大終了->縮小開始までの待機時間（一旦基準値を手打ち）
+	const float factor = 0.1f; // 実体化中オブジェクト1つあたりの増加時間
+
+	// 動的にwaitDurationを計算
+	waitDuration_ = baseWaitDuration + static_cast<float>(scalingCount) * factor;
 }
 
 void ShadowObjectManager::SaveToFile()
