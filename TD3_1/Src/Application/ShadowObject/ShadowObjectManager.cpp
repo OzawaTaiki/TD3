@@ -23,22 +23,44 @@ void ShadowObjectManager::Initialize()
 }
 
 void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects) {
-	// ポイントライトと影オブジェクトの数を同期
-	if (movableObjects.size() != shadowGroups_.size()) {
-		shadowGroups_.clear(); // クリアして再生成
-		for (const auto& movable : movableObjects) {
-			ShadowGroup group;
-			group.movableObjectPosition_ = movable->GetTranslate();
+	// 動かせるオブジェクトとグループの数を同期
+	if (movableObjects.size() < shadowGroups_.size()) {
+		shadowGroups_.resize(movableObjects.size()); // 余分なグループを削除
+	}
 
+	for (size_t i = 0; i < movableObjects.size(); ++i) {
+		// movableObjectが増えた場合には新しいグループの追加
+		if (i >= shadowGroups_.size()) { // movableObjectsがshadowGroupsを超えた場合（追加された場合）を探知
+			ShadowGroup group;
+			group.movableObjectPosition_ = movableObjects[i]->GetTranslate();
+
+			// pointLightの数だけ、このグループにshadowObjectを生成
 			for (const auto& pointLight : pointLightObjects) {
 				auto shadowObject = std::make_unique<ShadowObject>();
 				shadowObject->Initialize(waitDuration_);
-				shadowObject->SetMovableObjectPosition(movable->GetTranslate());
+				shadowObject->SetMovableObjectPosition(movableObjects[i]->GetTranslate());
 				shadowObject->SetLightPosition(pointLight->GetTranslate());
+				// 生成したshadowObjectをこのグループのshadowObjectsに追加していく
 				group.shadowObjects_.push_back(std::move(shadowObject));
 			}
-
+			// 生成し終えたグループをshadowGroupsに追加
 			shadowGroups_.push_back(std::move(group));
+
+		// movableObjectが増えていない状態を維持している場合には既存のグループを再利用
+		} else {
+			shadowGroups_[i].movableObjectPosition_ = movableObjects[i]->GetTranslate();
+
+			if (pointLightObjects.size() != shadowGroups_[i].shadowObjects_.size()) {
+				shadowGroups_[i].shadowObjects_.resize(pointLightObjects.size());
+				for (size_t j = 0; j < pointLightObjects.size(); ++j) {
+					if (!shadowGroups_[i].shadowObjects_[j]) {
+						shadowGroups_[i].shadowObjects_[j] = std::make_unique<ShadowObject>();
+						shadowGroups_[i].shadowObjects_[j]->Initialize(waitDuration_);
+					}
+					shadowGroups_[i].shadowObjects_[j]->SetMovableObjectPosition(movableObjects[i]->GetTranslate());
+					shadowGroups_[i].shadowObjects_[j]->SetLightPosition(pointLightObjects[j]->GetTranslate());
+				}
+			}
 		}
 	}
 
