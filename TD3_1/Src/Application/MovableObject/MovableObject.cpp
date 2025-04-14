@@ -21,13 +21,13 @@ void BoxObject::Initialize() {
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
 }
 
-void BoxObject::Update() { 
-	object_->Update(); 
+void BoxObject::Update() {
+	object_->Update();
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 }
 
-void BoxObject::Draw(const Camera& camera) { 
-	object_->Draw(&camera, texture_, {1, 1, 1, 1}); 
+void BoxObject::Draw(const Camera& camera) {
+	object_->Draw(&camera, texture_, {1, 1, 1, 1});
 }
 
 
@@ -55,6 +55,16 @@ void CylinderObject::Update() {
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 }
 
-void CylinderObject::Draw(const Camera& camera) { 
-	object_->Draw(&camera, texture_, {1, 1, 1, 1}); 
+void CylinderObject::Draw(const Camera& camera) {
+	object_->Draw(&camera, texture_, {1, 1, 1, 1});
+}
+
+void MovableObject::Damage(const std::string& _name, float _damage)
+{
+	if (collider_->GetName() == _name)
+	{
+        // ダメージを受けた場合の処理
+        // ここにダメージ処理を書く
+	}
+
 }

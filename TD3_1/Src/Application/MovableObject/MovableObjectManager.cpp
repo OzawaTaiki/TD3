@@ -17,12 +17,14 @@
 
 // Application
 #include <Application/Event/RewardEventData.h>
-
+#include <Application/Enemy/EnemyAttackInfo.h>
 
 MovableObjectManager::~MovableObjectManager()
 {
     // イベントリスナーの登録解除
     EventManager::GetInstance()->RemoveEventListener("GiveReward", this);
+    EventManager::GetInstance()->RemoveEventListener("EnemyAttack", this);
+
 
 #ifdef _DEBUG
     EventManager::GetInstance()->RemoveEventListener("ResetEnemyManager", this);
@@ -44,6 +46,7 @@ void MovableObjectManager::Initialize()
 
     // イベントリスナーの登録
     EventManager::GetInstance()->AddEventListener("GiveReward", this);
+    EventManager::GetInstance()->AddEventListener("EnemyAttack", this);
 
 #ifdef _DEBUG
     EventManager::GetInstance()->AddEventListener("ResetEnemyManager", this);
@@ -109,6 +112,21 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 			// ここにその他のアイテムに対する処理を書く
 		}
 	}
+	else if (_event.GetEventType() == "EnemyAttack")
+	{
+        EnemyAttackInfo* attackInfo = static_cast<EnemyAttackInfo*>(_event.GetData());
+        // 攻撃対象のオブジェクト名を取得
+        std::string targetObjectName = attackInfo->name;
+        // 攻撃対象のオブジェクトを検索
+
+        for (size_t i = 0; i < objects_.size(); i++) {
+            if (objects_[i]->GetCollider()->GetName() == targetObjectName) {
+                // 攻撃対象のオブジェクトにダメージを与える
+                objects_[i]->Damage(attackInfo->name, attackInfo->damage);
+                break;
+            }
+        }
+	}
 
 #ifdef _DEBUG
 	if (_event.GetEventType() == "ResetEnemyManager") {
@@ -169,8 +187,8 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
 				draggingObject_->SetTranslate(
 				{
-					intersection.x + dragOffset_.x, 
-					dragStartHeight_, 
+					intersection.x + dragOffset_.x,
+					dragStartHeight_,
 					intersection.z + dragOffset_.z}
 				);
 			}

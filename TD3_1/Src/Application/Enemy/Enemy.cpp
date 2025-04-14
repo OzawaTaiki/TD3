@@ -7,6 +7,8 @@
 #include <Features/Event/EventManager.h>
 #include <System/Audio/Audio.h>
 
+#include "EnemyAttackInfo.h"
+
 void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThreshold)
 {
 	object_ = std::make_unique<ObjectModel>("normalEnemy");
@@ -49,6 +51,10 @@ void NormalEnemy::Update()
 	Vector3 targetDirection = Normalize(targetPosition_ - object_->translate_);
 	targetDirection.y = 0.0f;
 	object_->quaternion_ = Quaternion::FromToRotation(forward, targetDirection);
+
+	if (isAttacking_)
+		Attack();
+
 
 	object_->Update();
 	if (!isDead_) {
@@ -123,6 +129,14 @@ void Enemy::OnForwardCollision(Collider* _other, const ColliderInfo& _info)
 		{
             blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
 		}
+        if (_info.state == CollisionState::Stay)
+        {
+			if (canAttack_ && !isAttacking_)
+			{
+                isAttacking_ = true; // 攻撃中にする
+                attackObjectName_ = _other->GetName(); // 攻撃対象のオブジェクト名を保存
+			}
+        }
 
 		isBlocked = true;
 	}
@@ -154,5 +168,42 @@ void Enemy::InitialzeColliders()
         OnForwardCollision(_other, _info);
 		});
     forwardCheckCollider_->SetDrawFlag(false);
+
+}
+
+void Enemy::Attack()
+{
+	if (!isBlocked)
+	{
+		canAttack_ = true; // 攻撃可能状態へ
+		return; // ブロックに衝突していないときは攻撃しない
+	}
+
+
+    isAttacking_ = true; // 攻撃中にする
+	canAttack_ = false;
+
+	// 攻撃インターバルには止まってる時間を利用
+
+    attackTimer_ += kDeltaTime; // 攻撃タイマーを加算
+
+    if (attackTimer_ >= attackInterval_)
+    {
+        EnemyAttackInfo attackInfo;
+		attackInfo.name = attackObjectName_; // 攻撃対象のオブジェクト名を保存
+        attackInfo.damage = damage_; // 攻撃力を保存
+
+
+        // 攻撃処理
+        EventManager::GetInstance()->DispatchEvent(GameEvent("EnemyAttack", &attackInfo));
+		attackTimer_ = 0.0f; // 攻撃後にタイマーをリセット
+
+        isAttacking_ = false; // 攻撃終了
+		canAttack_ = true;
+        attackObjectName_ = ""; // 攻撃対象のオブジェクト名をリセット
+    }
+
+	// ちょっとした攻撃モーション
+
 
 }

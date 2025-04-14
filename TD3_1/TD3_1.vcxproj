@@ -184,6 +184,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
     <ClInclude Include="Src\Application\Player\PlayerHand.h" />
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
     <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />

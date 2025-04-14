@@ -39,6 +39,8 @@ public:
 protected:
 	void InitialzeColliders();
 
+    void Attack(); // 攻撃処理
+
 	std::unique_ptr<ObjectModel> object_;
 	std::unique_ptr<OBBCollider> collider_;
 	std::unique_ptr<SphereCollider> forwardCheckCollider_; // 目の前にブロックがあるか確認するためのコライダー
@@ -50,6 +52,13 @@ protected:
 	float speed_;
 
 	bool isDead_ = false;
+
+    bool isAttacking_ = false; // 攻撃中かどうか
+    bool canAttack_ = true; // 攻撃可能かどうか
+    float attackInterval_ = 2.0f; // 攻撃間隔
+	float attackTimer_ = 0.0f;
+	std::string attackObjectName_ = "";//攻撃したオブジェクトの名前
+    float damage_ = 1.0f;
 
 	bool isBlocked = false; // ブロックに衝突して止まっているか
     float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
