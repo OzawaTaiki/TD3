@@ -65,6 +65,10 @@ protected:
     float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
     float blockedTimer_ = 0.0f; // 止まっている時間
 
+	// 攻撃開始後ダメージが入る瞬間の時間
+	float damageActivationTime = 0.7f;
+    bool isDamageActivated = false; // ダメージが入る瞬間の時間を記録するフラグ
+
 	// 打ち上げられ時の垂直速度
 	float verticalVelocity_;
 	// 打ち上げられたかどうか記録（何回も打ち上げられないように）
