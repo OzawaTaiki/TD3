@@ -49,7 +49,7 @@ void NormalEnemy::Update()
         }
 	}
 
-	if (isAttacking_)
+	if (isAttacking_ && !isLaunched_)
 		Attack();
 	// ターゲット方向に回転を設定
 	Vector3 forward = Vector3(0, 0, 1);
@@ -59,7 +59,6 @@ void NormalEnemy::Update()
 
 
 
-	object_->Update();
 	if (!isDead_) {
 		CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 		CollisionManager::GetInstance()->RegisterCollider(forwardCheckCollider_.get());
@@ -78,6 +77,7 @@ void NormalEnemy::Update()
 			Dead();
 		}
 	}
+	object_->Update();
 
 #ifdef _DEBUG
 	//ImGuiTool::TimeLine("enemy", animSeq_.get());
