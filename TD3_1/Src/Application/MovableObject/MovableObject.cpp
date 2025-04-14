@@ -59,8 +59,12 @@ void CylinderObject::Draw(const Camera& camera) {
 	object_->Draw(&camera, texture_, {1, 1, 1, 1});
 }
 
-bool MovableObject::Damage(const std::string& _name, float _damage)
+void MovableObject::Damage(const std::string& _name, float _damage)
 {
-    //if(collider_->GetName() == _name)
+	if (collider_->GetName() == _name)
+	{
+        // ダメージを受けた場合の処理
+        // ここにダメージ処理を書く
+	}
 
 }

@@ -23,8 +23,7 @@ public:
 	void SetLayerMask(std::string name) { collider_->SetLayerMask(name); }
 	void ExcludeLayerMask(std::string name) { collider_->ExcludeLayerMask(name); }
 
-	bool Damage(const std::string& _name, float _damage);
-
+	void Damage(const std::string& name, float damage);
 
 protected:
 	std::unique_ptr<ObjectModel> object_;
