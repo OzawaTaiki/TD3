@@ -21,7 +21,7 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 
 	InitialzeColliders();
 
-	speed_ = 4.0f;
+	speed_ = 2.0f;
 
 	blockStopThreshold = _blockStopThreshold;
 
