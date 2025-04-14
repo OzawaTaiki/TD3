@@ -3,6 +3,7 @@
 // Engine
 #include <Features/Model/ObjectModel.h>
 #include <Features/Collision/Manager/CollisionManager.h>
+#include <Features/Animation/Sequence/AnimationSequence.h>
 
 class Camera;
 
@@ -75,6 +76,9 @@ protected:
     uint32_t voiceHandle_ = 0; // ボイスハンドル
 
     float deathSoundVolume_ = 0.5f; // 死亡時のサウンドボリューム
+
+	std::unique_ptr<AnimationSequence> animSeq_ = nullptr; // アニメーション
+	Vector3 prePos_ = {};
 };
 
 
@@ -89,6 +93,7 @@ public:
 	void Draw(const Camera* camera) override;
 
 private:
+    void InitializeAnimSeq();
 	uint32_t texture_;
 };
 

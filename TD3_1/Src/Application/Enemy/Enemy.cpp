@@ -6,6 +6,7 @@
 #include <Features/Collision/CollisionLayer/CollisionLayerManager.h>
 #include <Features/Event/EventManager.h>
 #include <System/Audio/Audio.h>
+#include <Debug/ImguITools.h>
 
 #include "EnemyAttackInfo.h"
 
@@ -23,12 +24,14 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 	speed_ = 4.0f;
 
 	blockStopThreshold = _blockStopThreshold;
+
+	InitializeAnimSeq();
 }
 
 void NormalEnemy::Update()
 {
 	// ターゲットの位置まで移動
-	if (!isBlocked)
+	if (!isBlocked && !isAttacking_)
 	{
 		// 衝突していないとき
 		Vector3 direction = targetPosition_ - object_->translate_;
@@ -46,14 +49,14 @@ void NormalEnemy::Update()
         }
 	}
 
+	if (isAttacking_)
+		Attack();
 	// ターゲット方向に回転を設定
 	Vector3 forward = Vector3(0, 0, 1);
 	Vector3 targetDirection = Normalize(targetPosition_ - object_->translate_);
 	targetDirection.y = 0.0f;
 	object_->quaternion_ = Quaternion::FromToRotation(forward, targetDirection);
 
-	if (isAttacking_)
-		Attack();
 
 
 	object_->Update();
@@ -76,7 +79,19 @@ void NormalEnemy::Update()
 		}
 	}
 
-	isBlocked = false;
+#ifdef _DEBUG
+	//ImGuiTool::TimeLine("enemy", animSeq_.get());
+    //if (ImGui::Button("Seq Save"))
+    //{
+    //     animSeq_->Save();
+    // }
+	//blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
+
+#endif // ?DEBUG
+
+
+	if (!isAttacking_)
+		isBlocked = false;
 }
 
 void NormalEnemy::Draw(const Camera* camera)
@@ -84,7 +99,13 @@ void NormalEnemy::Draw(const Camera* camera)
 	object_->Draw(camera, texture_, { 1, 1, 1, 1 });
 }
 
-void Enemy::PlayDeathSound() const 
+void NormalEnemy::InitializeAnimSeq()
+{
+	animSeq_ = std::make_unique<AnimationSequence>("enemy");
+	animSeq_->Initialize("Resources/data/animationSeq/enemy/");
+}
+
+void Enemy::PlayDeathSound() const
 {
     Audio::GetInstance()->SoundPlay(soundHandle_, deathSoundVolume_); // 死亡時のサウンドを再生
 }
@@ -127,6 +148,7 @@ void Enemy::OnForwardCollision(Collider* _other, const ColliderInfo& _info)
 
 		if (_info.state == CollisionState::Enter)
 		{
+			if (!isAttacking_ && !isBlocked)
             blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
 		}
         if (_info.state == CollisionState::Stay)
@@ -134,6 +156,7 @@ void Enemy::OnForwardCollision(Collider* _other, const ColliderInfo& _info)
 			if (canAttack_ && !isAttacking_)
 			{
                 isAttacking_ = true; // 攻撃中にする
+                prePos_ = object_->translate_; // 衝突した瞬間の位置を保存
                 attackObjectName_ = _other->GetName(); // 攻撃対象のオブジェクト名を保存
 			}
         }
@@ -186,6 +209,7 @@ void Enemy::Attack()
 	// 攻撃インターバルには止まってる時間を利用
 
     attackTimer_ += kDeltaTime; // 攻撃タイマーを加算
+    animSeq_->Update(kDeltaTime); // アニメーションの更新
 
     if (attackTimer_ >= attackInterval_)
     {
@@ -201,9 +225,12 @@ void Enemy::Attack()
         isAttacking_ = false; // 攻撃終了
 		canAttack_ = true;
         attackObjectName_ = ""; // 攻撃対象のオブジェクト名をリセット
+        animSeq_->SetCurrentTime(0.0f); // アニメーションの時間をリセット
     }
 
-	// ちょっとした攻撃モーション
+	Vector3 move = Transform(animSeq_->GetValue<Vector3>("pos"), object_->quaternion_.ToMatrix());
 
+	// ちょっとした攻撃モーション
+	object_->translate_ = prePos_ + move;
 
 }
