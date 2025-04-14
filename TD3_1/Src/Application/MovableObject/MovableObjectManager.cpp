@@ -17,7 +17,7 @@
 
 // Application
 #include <Application/Event/RewardEventData.h>
-
+#include <Application/Enemy/EnemyAttackInfo.h>
 
 MovableObjectManager::~MovableObjectManager()
 {
@@ -108,6 +108,17 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
 			// その他のアイテムに対する処理
 			// ここにその他のアイテムに対する処理を書く
 		}
+	}
+	else if (_event.GetEventType() == "EnemyAttack")
+	{
+        EnemyAttackInfo* attackInfo = static_cast<EnemyAttackInfo*>(_event.GetData());
+        // 攻撃対象のオブジェクト名を取得
+        std::string targetObjectName = attackInfo->name;
+        // 攻撃対象のオブジェクトを検索
+
+		
+
+
 	}
 
 #ifdef _DEBUG
