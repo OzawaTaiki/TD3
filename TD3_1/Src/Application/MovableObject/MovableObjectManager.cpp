@@ -218,7 +218,21 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({ 0, 1, -6 });
 	}
-	ImGui::Checkbox("isDragging", &isDragging_);
+	for (size_t i = 0; i < objects_.size(); ++i) {
+		// オブジェクト番号表示
+		std::string labelNum = "Object[" + std::to_string(i) + "]";
+		ImGui::Text(labelNum.c_str());
+
+		// オブジェクト座標表示（非活性化していじれないように）
+		Vector3 translate = objects_[i]->GetTranslate();
+		ImGui::BeginDisabled(true); ImGui::DragFloat3("", &translate.x); ImGui::EndDisabled(); ImGui::SameLine();
+
+		// オブジェクト削除ボタン
+		std::string labelDel = "Delete##" + std::to_string(i);
+		if (ImGui::Button(labelDel.c_str())) {
+			objects_.erase(objects_.begin() + i);
+		}
+	}
 	ImGui::End();
 #endif
 }
