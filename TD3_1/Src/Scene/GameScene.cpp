@@ -99,6 +99,7 @@ void GameScene::Update() {
 
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
+	ImGui::Text("count : %d", shadowObjectManager_->GetScalingShadowObjectsCount());
 	ImGui::End();
 
 #endif // _DEBUG

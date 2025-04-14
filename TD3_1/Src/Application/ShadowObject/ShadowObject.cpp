@@ -81,7 +81,15 @@ void ShadowObject::Update(const float maxDistance) {
 void ShadowObject::Draw(const Camera& camera) { 
 	// アクティブな状態のときのみ描画
 	if (this->isActive_) {
-		object_->Draw(&camera, texture_, { 0, 0, 0, 1 });
+		/*waitDuration（持続時間）に応じて色の濃さを変える*/
+		float clampedWaitDuration = std::clamp(waitDuration_, kBaseWaitDuration, kMaxWaitDuration); // 現在のwaitDurationをクランプして安全に計算
+
+		float t = (clampedWaitDuration - kBaseWaitDuration) / (kMaxWaitDuration);
+		float colorIntensity = 0.5f * (1.0f - t);
+
+		Vector4 color = { colorIntensity, colorIntensity, colorIntensity, 1.0f };
+
+		object_->Draw(&camera, texture_, color);
 	}
 }
 

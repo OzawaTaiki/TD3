@@ -11,7 +11,7 @@
 #include <System/Time/GameTime.h>
 #include <Features/UI/UIButton.h>
 #include <Features/Model/Primitive/Ring.h>
-#include <Features/Model/Primitive/Ellipse.h>
+// #include <Features/Model/Primitive/Ellipse.h>
 #include <Features/Model/Primitive/Cylinder.h>
 #include <Features/UVTransform/SpriteSheetAnimetion.h>
 #include <Features/UVTransform/UVTransformAnimation.h>
