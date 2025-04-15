@@ -13,6 +13,7 @@
 
 // Application
 #include <Application/MovableObject/MovableObject.h>
+#include <Application/Player/PlayerHand.h>
 
 class Camera;
 
@@ -21,7 +22,7 @@ class MovableObjectManager : public iEventListener
 public:
     ~MovableObjectManager() override;
 
-	void Initialize();
+	void Initialize(const Camera& camera);
 	void Update(const Camera& camera);
 	void Draw(const Camera& camera);
 
@@ -55,6 +56,13 @@ private:
 	Vector3 dragOffset_;
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
 	MovableObject* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
+
+	float targetY_;
+	float currentY_;
+
+
+	// 手オブジェクト
+	std::unique_ptr<PlayerHand> hand_;
 
     uint32_t haveSoundHandle_ = 0; // サウンドハンドル
     uint32_t putSoundHandle_ = 0; // サウンドハンドル

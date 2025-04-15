@@ -21,7 +21,6 @@
 #include <Application/ShadowObject/ShadowObjectManager.h>
 #include <Application/Event/RewardGauge.h>
 #include <Application/UI/Game/GameUI.h>
-#include <Application/Player/PlayerHand.h>
 #include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
 
@@ -74,8 +73,6 @@ private:
     std::unique_ptr<RewardGauge> rewardGauge_ = nullptr;
     // UI
     std::unique_ptr<GameUI> gameUI_;
-    // プレイヤー手
-	std::unique_ptr<PlayerHand> playerHand_;
     // クリアチェック
     std::unique_ptr<ClearChecker> clearChecker_ = nullptr;
 

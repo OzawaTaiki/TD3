@@ -31,13 +31,16 @@ MovableObjectManager::~MovableObjectManager()
 #endif // _DEBUG
 }
 
-void MovableObjectManager::Initialize()
-{
+void MovableObjectManager::Initialize(const Camera& camera) {
 	input_ = Input::GetInstance();
 
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
 
 	AddMovableObject({ 0, 1, -6 });
+
+	// 手オブジェクト生成
+	hand_ = std::make_unique<PlayerHand>();
+	hand_->Initialize(camera);
 
     Audio* audio = Audio::GetInstance();
 
@@ -71,6 +74,9 @@ void MovableObjectManager::Update(const Camera& camera)
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
 	HandleObjectDragAndDrop(camera);
+
+	// 手オブジェクト更新
+	hand_->Update(camera);
 }
 
 void MovableObjectManager::Draw(const Camera& camera)
@@ -79,6 +85,9 @@ void MovableObjectManager::Draw(const Camera& camera)
 	for (const auto& object : objects_) {
 		object->Draw(camera);
 	}
+
+	// 手オブジェクト描画
+	hand_->Draw(camera);
 }
 
 void MovableObjectManager::AddMovableObject(const Vector3& position)
@@ -172,8 +181,13 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 			isDragging_ = true;
 			draggingObject_ = hitObject;
-			dragStartHeight_ = draggingObject_->GetTranslate().y; // 掴んだ際の高さを記録
+			//dragStartHeight_ = draggingObject_->GetTranslate().y; // 掴んだ際の高さを記録
+			dragStartHeight_ = 1.0f;
 			dragOffset_ = draggingObject_->GetTranslate() - hit.point; // マウスとオブジェクトのオフセット計算
+
+			// 掴んだ際に少し上昇させる処理
+			targetY_ = dragStartHeight_ + 3.0f;
+			currentY_ = dragStartHeight_;
 
             Audio::GetInstance()->SoundPlay(haveSoundHandle_,haveSoundVolume_); // サウンドを再生
 		}
@@ -182,13 +196,16 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 	// ドラッグ中のオブジェクト位置を更新
 	if (isDragging_) {
 		if (draggingObject_) {
+			// 掴んだ際に少し上昇させる処理
+			currentY_ += (targetY_ - currentY_) * 0.2f;
+
 			// マウスレイとオブジェクトの初期高さの平面との交点を求める
 			Vector3 intersection;
 			if (IntersectRayWithPlane(mouseRay, Vector3(0, 1, 0), dragStartHeight_, intersection)) {
 				draggingObject_->SetTranslate(
 				{
 					intersection.x + dragOffset_.x,
-					dragStartHeight_,
+					currentY_,
 					intersection.z + dragOffset_.z}
 				);
 			}
@@ -197,9 +214,12 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 	// 左クリックを離したら終了
 	if (input_->IsMouseReleased(0)) {
-		if (isDragging_)
-			Audio::GetInstance()->SoundPlay(putSoundHandle_, putSoundVolume_); // サウンドを再生
+		if (isDragging_) {
+			targetY_ = dragStartHeight_;
+			draggingObject_->SetTranslateY(dragStartHeight_); // 離した際に元の高さへ戻るように
 
+			Audio::GetInstance()->SoundPlay(putSoundHandle_, putSoundVolume_); // サウンドを再生
+		}
 		isDragging_ = false;
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
@@ -213,8 +233,12 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		}
 	}
 
+	// 手オブジェクトにドラッグ状態を知らせる
+	hand_->SetIsDragging(isDragging_);
+
 #ifdef _DEBUG
 	ImGui::Begin("movableObject");
+
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({ 0, 1, -6 });
 	}
