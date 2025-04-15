@@ -24,7 +24,7 @@ void PointLightObjectManager::Update()
 
 #ifdef _DEBUG
 	ImGui::Begin("PointLightObjectManager");
-	if (ImGui::Button("Add Light")) { AddLight(); } ImGui::SameLine();
+	if (ImGui::Button("Add")) { AddLight(); } ImGui::SameLine();
 	if (ImGui::Button("Save")) { SaveToFile(); }
 
 	// 全てのオブジェクト位置を設定できるように
@@ -36,11 +36,17 @@ void PointLightObjectManager::Update()
 
 		// 位置の設定
 		std::string positionLabel = "Position##" + std::to_string(i);
-		ImGui::DragFloat3(positionLabel.c_str(), &pointLightObjects_[i]->object_->translate_.x, 0.1f);
+		ImGui::DragFloat3(positionLabel.c_str(), &pointLightObjects_[i]->object_->translate_.x, 0.01f);
 
 		// 距離の設定
 		std::string maxDistanceLabel = "MaxDistance##" + std::to_string(i);
-		ImGui::DragFloat(maxDistanceLabel.c_str(), &pointLightObjects_[i]->maxDistance_, 0.1f);
+		ImGui::DragFloat(maxDistanceLabel.c_str(), &pointLightObjects_[i]->maxDistance_, 0.01f);
+
+		// 削除ボタン
+		std::string deleteLabel = "Delete##" + std::to_string(i);
+		if (ImGui::Button(deleteLabel.c_str())) {
+			pointLightObjects_.erase(pointLightObjects_.begin() + i);
+		}
 	}
 	ImGui::End();
 #endif
