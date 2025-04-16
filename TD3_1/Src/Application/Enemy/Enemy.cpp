@@ -211,21 +211,30 @@ void Enemy::Attack()
     attackTimer_ += kDeltaTime; // 攻撃タイマーを加算
     animSeq_->Update(kDeltaTime); // アニメーションの更新
 
-    if (attackTimer_ >= attackInterval_)
-    {
-        EnemyAttackInfo attackInfo;
+	if (attackTimer_ >= damageActivationTime && !isDamageActivated)
+	{
+		EnemyAttackInfo attackInfo;
 		attackInfo.name = attackObjectName_; // 攻撃対象のオブジェクト名を保存
-        attackInfo.damage = damage_; // 攻撃力を保存
+		attackInfo.damage = damage_; // 攻撃力を保存
 
+		// 攻撃開始後ダメージが入る瞬間の時間を記録する
+		isDamageActivated = true;
+		// 攻撃対象のオブジェクトにダメージを与える
+		EventManager::GetInstance()->DispatchEvent(GameEvent("EnemyAttack", &attackInfo));
+		// ダメージを与えたら攻撃対象のオブジェクト名をリセット
+		attackObjectName_ = "";
 
+	};
+
+    if (attackTimer_ >= attackInterval_)
+	{
         // 攻撃処理
-        EventManager::GetInstance()->DispatchEvent(GameEvent("EnemyAttack", &attackInfo));
 		attackTimer_ = 0.0f; // 攻撃後にタイマーをリセット
 
         isAttacking_ = false; // 攻撃終了
 		canAttack_ = true;
-        attackObjectName_ = ""; // 攻撃対象のオブジェクト名をリセット
         animSeq_->SetCurrentTime(0.0f); // アニメーションの時間をリセット
+        isDamageActivated = false; // ダメージが入る瞬間の時間をリセット
     }
 
 	Vector3 move = Transform(animSeq_->GetValue<Vector3>("pos"), object_->quaternion_.ToMatrix());

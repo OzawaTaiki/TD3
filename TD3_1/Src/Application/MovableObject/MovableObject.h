@@ -8,7 +8,7 @@ class MovableObject {
 public:
 	virtual ~MovableObject() = default;
 
-	virtual void Initialize() = 0;
+	virtual void Initialize(float _hp) = 0;
 	virtual void Update() = 0;
 	virtual void Draw(const Camera& camera) = 0;
 
@@ -26,12 +26,17 @@ public:
 
 	void Damage(const std::string& name, float damage);
 
+    bool IsDead() const { return isDead_; }
+
 protected:
 	std::unique_ptr<ObjectModel> object_;
 	std::unique_ptr<AABBCollider> collider_;
 
 	uint32_t texture_;
 
+    float hp_ = 10.0f; // HP
+    bool isDead_ = false; // 死亡フラグ
+    bool isHit_ = false; // 衝突フラグ
 	bool canMove_ = true; // ドラッグで動かせるかどうか : 初期は動かせる状態
 };
 
@@ -40,7 +45,7 @@ protected:
 /// </summary>
 class BoxObject : public MovableObject {
 public:
-	void Initialize() override;
+	void Initialize(float _hp) override;
 	void Update() override;
 	void Draw(const Camera& camera) override;
 };
@@ -50,7 +55,7 @@ public:
 /// </summary>
 class CylinderObject : public MovableObject {
 public:
-	void Initialize() override;
+	void Initialize(float _hp) override;
 	void Update() override;
 	void Draw(const Camera& camera) override;
 };

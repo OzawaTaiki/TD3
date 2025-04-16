@@ -94,7 +94,7 @@ void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成（一旦箱型オブジェクトだけ）
 	auto object = std::make_unique<BoxObject>();
-	object->Initialize();
+	object->Initialize(objectHp_);
 	object->SetTranslate(position);
 
 	// 配列に追加
@@ -128,10 +128,17 @@ void MovableObjectManager::OnEvent(const GameEvent& _event)
         std::string targetObjectName = attackInfo->name;
         // 攻撃対象のオブジェクトを検索
 
-        for (size_t i = 0; i < objects_.size(); i++) {
-            if (objects_[i]->GetCollider()->GetName() == targetObjectName) {
+        for (auto it = objects_.begin(); it != objects_.end(); ++it) {
+            if ((*it)->GetCollider()->GetName() == targetObjectName) {
                 // 攻撃対象のオブジェクトにダメージを与える
-                objects_[i]->Damage(attackInfo->name, attackInfo->damage);
+                (*it)->Damage(attackInfo->name, attackInfo->damage);
+                // HPが0以下になったらオブジェクトを削除
+                if ((*it)->IsDead()) {
+                    // オブジェクトを削除
+                    it = objects_.erase(it);
+                    // 削除したのでループを抜ける
+                    break;
+                }
                 break;
             }
         }

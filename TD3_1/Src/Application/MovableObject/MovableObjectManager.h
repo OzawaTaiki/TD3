@@ -62,12 +62,15 @@ private:
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
 	MovableObject* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
 
+
 	float targetY_;
 	float currentY_;
 
 
 	// 手オブジェクト
 	std::unique_ptr<PlayerHand> hand_;
+
+    float objectHp_ = 10.0f; // オブジェクトのHP
 
     uint32_t haveSoundHandle_ = 0; // サウンドハンドル
     uint32_t putSoundHandle_ = 0; // サウンドハンドル

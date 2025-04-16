@@ -3,7 +3,7 @@
 // Engine
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 
-void BoxObject::Initialize() {
+void BoxObject::Initialize(float _hp) {
 	// オブジェクト生成
 	object_ = std::make_unique<ObjectModel>("boxObject");
 	object_->Initialize("movableObjects/objectBox.obj");
@@ -18,6 +18,8 @@ void BoxObject::Initialize() {
 
 	// テクスチャ読み込み
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectBox.png");
+
+	hp_ = _hp;
 }
 
 void BoxObject::Update() {
@@ -26,12 +28,16 @@ void BoxObject::Update() {
 }
 
 void BoxObject::Draw(const Camera& camera) {
-	object_->Draw(&camera, texture_, {1, 1, 1, 1});
+
+	Vector4 color = isHit_ ? Vector4(1.0f, 0.6f, 0.6f, 1) : Vector4(1, 1, 1, 1);
+
+	object_->Draw(&camera, texture_, color);
+	isHit_ = false;
 }
 
 
 
-void CylinderObject::Initialize() {
+void CylinderObject::Initialize(float _hp) {
 	// オブジェクト生成
 	object_ = std::make_unique<ObjectModel>("cylinderObject");
 	object_->Initialize("movableObjects/objectCylinder.obj");
@@ -47,6 +53,8 @@ void CylinderObject::Initialize() {
 
 	// テクスチャ読み込み
 	texture_ = TextureManager::GetInstance()->Load("game/player/objectCylinder.png");
+
+    hp_ = _hp;
 }
 
 void CylinderObject::Update() {
@@ -55,7 +63,10 @@ void CylinderObject::Update() {
 }
 
 void CylinderObject::Draw(const Camera& camera) {
-	object_->Draw(&camera, texture_, {1, 1, 1, 1});
+
+    Vector4 color = isHit_ ? Vector4(1.0f, 0.6f, 0.6f, 1) : Vector4(1, 1, 1, 1);
+
+    object_->Draw(&camera, texture_, color);
 }
 
 void MovableObject::Damage(const std::string& _name, float _damage)
@@ -64,6 +75,14 @@ void MovableObject::Damage(const std::string& _name, float _damage)
 	{
         // ダメージを受けた場合の処理
         // ここにダメージ処理を書く
+        hp_ -= _damage;
+
+        if (hp_ <= 0.0f)
+        {
+            isDead_ = true; // 死亡フラグを立てる
+        }
+		else
+            isHit_ = true; // 衝突フラグを立てる
 	}
 
 }
