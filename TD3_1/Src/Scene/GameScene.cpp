@@ -128,7 +128,11 @@ void GameScene::Update() {
 	// ポイントライトオブジェクト更新
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
-	shadowObjectManager_->Update(movableObjectManager_->GetAllObjects(), pointLightObjectManager_->GetLights());
+	shadowObjectManager_->Update(
+		movableObjectManager_->GetAllObjects(), 
+		pointLightObjectManager_->GetLights(),
+		movableObjectManager_->IsDragging()
+	);
 	// UI更新
 	gameUI_->Update();
 

@@ -17,7 +17,7 @@ public:
 
 public:
 	void Initialize(float waitDuration);
-	void Update(const float maxDistance);
+	void Update(const float maxDistance, bool isDragging);
 	void Draw(const Camera& camera);
 
 	/// <summary>

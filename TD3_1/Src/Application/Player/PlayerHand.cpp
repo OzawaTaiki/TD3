@@ -26,7 +26,7 @@ void PlayerHand::Update(const Camera& camera) {
 	if (Input::GetInstance()->IsMousePressed(0)) {
 		// オブジェクトを掴んでいる状態であれば
 		if (isDragging_) {
-			targetY_ = defaultY_ + 3.0f; // 上昇する値の設定
+			targetY_ = defaultY_ + 2.0f; // 上昇する値の設定
 		}
 	// 左クリックを離したら元の高さへ
 	} else {

@@ -48,7 +48,7 @@ void ShadowObject::Initialize(float waitDuration) {
 	waitDuration_ = waitDuration;
 }
 
-void ShadowObject::Update(const float maxDistance) {
+void ShadowObject::Update(const float maxDistance, bool isDragging) {
 	object_->Update(); 
 	CalculateShadowTransform(maxDistance);
 
@@ -75,7 +75,9 @@ void ShadowObject::Update(const float maxDistance) {
 	}
 
 	// SPACE押下で実体化
-	HandleAttackInput();
+	if (!isDragging) { // オブジェクトを持ってたらできない
+		HandleAttackInput();
+	}
 }
 
 void ShadowObject::Draw(const Camera& camera) { 

@@ -186,7 +186,7 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 			dragOffset_ = draggingObject_->GetTranslate() - hit.point; // マウスとオブジェクトのオフセット計算
 
 			// 掴んだ際に少し上昇させる処理
-			targetY_ = dragStartHeight_ + 3.0f;
+			targetY_ = dragStartHeight_ + 2.0f; // 上昇する値の設定
 			currentY_ = dragStartHeight_;
 
             Audio::GetInstance()->SoundPlay(haveSoundHandle_,haveSoundVolume_); // サウンドを再生
@@ -223,14 +223,6 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		isDragging_ = false;
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
-	}
-
-	// SPACEが押されたらドラッグ解除（ドラッグしながら実体化したらそのまま動かせてしまうため応急処置)
-	if (input_->IsKeyTriggered(DIK_SPACE)) {
-		if (isDragging_) {
-			isDragging_ = false;
-			draggingObject_ = nullptr;
-		}
 	}
 
 	// 手オブジェクトにドラッグ状態を知らせる

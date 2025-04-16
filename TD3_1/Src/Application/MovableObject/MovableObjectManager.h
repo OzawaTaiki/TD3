@@ -37,6 +37,11 @@ public:
 	/// </summary>
 	const std::vector<std::unique_ptr<MovableObject>>& GetAllObjects() const { return objects_; }
 
+	/// <summary>
+	/// ドラッグ状態を取得
+	/// </summary>
+	bool IsDragging() const { return isDragging_; }
+
 	void OnEvent(const GameEvent& _event) override;
 
 private:

@@ -22,7 +22,7 @@ void ShadowObjectManager::Initialize()
 
 }
 
-void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects) {
+void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects, bool isDragging) {
 	// 動かせるオブジェクトとグループの数を同期
 	if (movableObjects.size() < shadowGroups_.size()) {
 		shadowGroups_.resize(movableObjects.size()); // 余分なグループを削除
@@ -77,7 +77,7 @@ void ShadowObjectManager::Update(const std::vector<std::unique_ptr<MovableObject
 
 			// ライト毎に設定されている最大距離を適用
 			float maxDistance = pointLightObjects[j]->maxDistance_;
-			shadowGroups_[i].shadowObjects_[j]->Update(maxDistance);
+			shadowGroups_[i].shadowObjects_[j]->Update(maxDistance, isDragging);
 
 			// グループ内で1つでも実体化しているか確認
 			if (shadowGroups_[i].shadowObjects_[j]->IsScaling()) {
