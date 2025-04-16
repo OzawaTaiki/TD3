@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp" />
     <ClCompile Include="Src\Application\Player\PlayerHand.cpp" />
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp" />
     <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp" />
@@ -185,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
+    <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h" />
     <ClInclude Include="Src\Application\Player\PlayerHand.h" />
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
     <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />

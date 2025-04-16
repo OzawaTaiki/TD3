@@ -16,17 +16,23 @@
     <Filter Include="Essential">
       <UniqueIdentifier>{8fe94dcb-dc9f-475f-8c7e-4c401ecec204}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{38b74c24-1577-4412-9da5-8125f4d19972}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Reward">
-      <UniqueIdentifier>{478f625b-526a-4ffe-9491-104b7d5d0263}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="WaveUI">
-      <UniqueIdentifier>{cb65d659-a9af-42d0-89d0-c2d2c33f017a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ClearChecker">
       <UniqueIdentifier>{b0b05382-1cb9-40cc-81a1-6a111566904e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{641d0c54-18f8-4d47-a7c3-7f1bfb3215dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Reward">
+      <UniqueIdentifier>{478f625b-526a-4ffe-9491-104b7d5d0263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Scene">
+      <UniqueIdentifier>{38b74c24-1577-4412-9da5-8125f4d19972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\WaveUI">
+      <UniqueIdentifier>{cb65d659-a9af-42d0-89d0-c2d2c33f017a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Enemy">
+      <UniqueIdentifier>{8c477477-00f5-4904-a542-77a6e41834d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +55,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Scene\GameScene.cpp">
-      <Filter>Scene</Filter>
+      <Filter>Application\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Field\Field.cpp">
       <Filter>ソース ファイル</Filter>
@@ -58,12 +64,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Tower\Tower.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp">
@@ -79,7 +79,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Event\RewardGauge.cpp">
-      <Filter>Reward</Filter>
+      <Filter>Application\Reward</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp">
       <Filter>ソース ファイル</Filter>
@@ -97,16 +97,25 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
-      <Filter>WaveUI</Filter>
+      <Filter>Application\WaveUI</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp">
       <Filter>ClearChecker</Filter>
     </ClCompile>
     <ClCompile Include="Src\Scene\TitleScene.cpp">
-      <Filter>Scene</Filter>
+      <Filter>Application\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Player\PlayerHand.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp">
+      <Filter>Application\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Enemy\Enemy.cpp">
+      <Filter>Application\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp">
+      <Filter>Application\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +132,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\GameScene.h">
-      <Filter>Scene</Filter>
+      <Filter>Application\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Field\Field.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -132,12 +141,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Tower\Tower.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h">
@@ -153,10 +156,10 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Event\RewardEventData.h">
-      <Filter>Reward</Filter>
+      <Filter>Application\Reward</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Event\RewardGauge.h">
-      <Filter>Reward</Filter>
+      <Filter>Application\Reward</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\CameraShake\CameraShake.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -174,22 +177,31 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h">
-      <Filter>WaveUI</Filter>
+      <Filter>Application\WaveUI</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h">
-      <Filter>WaveUI</Filter>
+      <Filter>Application\WaveUI</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h">
       <Filter>ClearChecker</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\TitleScene.h">
-      <Filter>Scene</Filter>
+      <Filter>Application\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Player\PlayerHand.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h">
+      <Filter>Application\Enemy</Filter>
+    </ClInclude>
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Application\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h">
+      <Filter>Application\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Enemy\Enemy.h">
+      <Filter>Application\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

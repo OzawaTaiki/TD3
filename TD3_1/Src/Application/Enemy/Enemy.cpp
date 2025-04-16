@@ -31,13 +31,29 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 void NormalEnemy::Update()
 {
 	// ターゲットの位置まで移動
-	if (!isBlocked && !isAttacking_)
+	if (!isBlocked && !isAttacking_ && !isLaunched_)
 	{
-		// 衝突していないとき
-		Vector3 direction = targetPosition_ - object_->translate_;
-		direction = Normalize(direction);
-		direction.y = 0; // 高さを固定するため、Y成分を無効化
-		object_->translate_ += direction * speed_ * kDeltaTime;
+		if (route_ == nullptr)
+		{
+			// 衝突していないとき
+			Vector3 direction = targetPosition_ - object_->translate_;
+			direction = Normalize(direction);
+			direction.y = 0; // 高さを固定するため、Y成分を無効化
+			object_->translate_ += direction * speed_ * kDeltaTime;
+		}
+        else
+        {
+            distance_ += speed_ * kDeltaTime;
+            float totalLength = route_->CalculateTotalLength();
+            if (distance_ > totalLength)
+            {
+                distance_ = 1.0f;
+            }
+
+			Vector3 targetPos = route_->GetPointAtDistance(distance_);
+			targetPos.y = object_->translate_.y;
+            object_->translate_ = targetPos;
+		}
 	}
 	else
 	{
@@ -144,25 +160,46 @@ void Enemy::OnForwardCollision(Collider* _other, const ColliderInfo& _info)
 	CollisionLayerManager* collisionManager = CollisionLayerManager::GetInstance();
 
 	uint32_t movableObjectLayer = collisionManager->GetLayer("movableObject");
+	uint32_t shadowObjectLayer = collisionManager->GetLayer("ShadowObject"); // 影オブジェクトのレイヤーを取得
+	uint32_t shadowObjectReturningLayer = collisionManager->GetLayer("ShadowObjectReturning"); // 影オブジェクトのレイヤーを取得
 	if (_other->GetLayer() == movableObjectLayer) {
 
 		if (_info.state == CollisionState::Enter)
 		{
 			if (!isAttacking_ && !isBlocked)
-            blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
+				blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
 		}
-        if (_info.state == CollisionState::Stay)
-        {
+		if (_info.state == CollisionState::Stay)
+		{
 			if (canAttack_ && !isAttacking_)
 			{
-                isAttacking_ = true; // 攻撃中にする
-                prePos_ = object_->translate_; // 衝突した瞬間の位置を保存
-                attackObjectName_ = _other->GetName(); // 攻撃対象のオブジェクト名を保存
+				isAttacking_ = true; // 攻撃中にする
+				prePos_ = object_->translate_; // 衝突した瞬間の位置を保存
+				attackObjectName_ = _other->GetName(); // 攻撃対象のオブジェクト名を保存
 			}
-        }
+		}
 
 		isBlocked = true;
 	}
+	else if (_other->GetLayer() == shadowObjectLayer) {
+
+		if (_info.state == CollisionState::Enter)
+		{
+			if (!isAttacking_ && !isBlocked)
+				blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
+		}
+		isBlocked = true;
+	}
+	else if (_other->GetLayer() == shadowObjectReturningLayer) {
+
+		if (_info.state == CollisionState::Enter)
+		{
+			if (!isAttacking_ && !isBlocked)
+				blockedTimer_ = 0.0f; // 衝突した瞬間にタイマーをリセット
+		}
+		isBlocked = true;
+	}
+
 }
 
 void Enemy::InitialzeColliders()
@@ -184,13 +221,15 @@ void Enemy::InitialzeColliders()
 	forwardCheckCollider_ = std::make_unique<SphereCollider>("enemy_forward");
     forwardCheckCollider_->SetLayer("enemy_forward");
 	forwardCheckCollider_->SetCollisionLayer("movableObject"); // これだけに衝突するよ
+    forwardCheckCollider_->AddCollisionLayer("ShadowObject");
+    forwardCheckCollider_->AddCollisionLayer("ShadowObjectReturning");
     forwardCheckCollider_->SetRadius(1.0f);
-	forwardCheckCollider_->SetOffset(Vector3(0, 0, 1));// 前方にオフセット
+	forwardCheckCollider_->SetOffset(Vector3(0, 0.6f, 1));// 前方にオフセット
     forwardCheckCollider_->SetWorldTransform(object_->GetWorldTransform());
 	forwardCheckCollider_->SetOnCollisionCallback([this](Collider* _other, const ColliderInfo& _info) {
         OnForwardCollision(_other, _info);
 		});
-    forwardCheckCollider_->SetDrawFlag(false);
+    forwardCheckCollider_->SetDrawFlag(true);
 
 }
 

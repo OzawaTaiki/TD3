@@ -1,0 +1,12 @@
+{
+    "EnemyRouteKeyMap": {
+        "BezierCurveKey": [
+            "leftSpawnRoute_0",
+            "leftSpawnRoute_1",
+            "rightSpawnRoute_0",
+            "rightSpawnRoute_1",
+            "topSpawnRoute_0",
+            "topSpawnRoute_1"
+        ]
+    }
+}
