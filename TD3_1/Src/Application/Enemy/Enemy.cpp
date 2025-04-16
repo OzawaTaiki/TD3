@@ -208,6 +208,7 @@ void Enemy::InitialzeColliders()
 	collider_->SetLayer("enemy");
 	/*衝突判定を行わないコライダーを設定*/
 	collider_->SetLayerMask("enemy");
+	collider_->SetLayerMask("Wall");
 	/*----------------------------*/
 	Vector3 halfExtents = (object_->GetMax() - object_->GetMin()) * 0.5f;
 	collider_->SetHalfExtents(halfExtents);
