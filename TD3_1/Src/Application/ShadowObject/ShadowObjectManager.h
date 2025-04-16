@@ -13,7 +13,7 @@ class ShadowObjectManager
 {
 public:
 	void Initialize();
-	void Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects);
+	void Update(const std::vector<std::unique_ptr<MovableObject>>& movableObjects, const std::vector<std::unique_ptr<PointLightObject>>& pointLightObjects, bool isDragging);
 	void Draw(const Camera& camera);
 
 	/// <summary>

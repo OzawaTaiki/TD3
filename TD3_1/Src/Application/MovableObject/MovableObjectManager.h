@@ -13,6 +13,7 @@
 
 // Application
 #include <Application/MovableObject/MovableObject.h>
+#include <Application/Player/PlayerHand.h>
 
 class Camera;
 
@@ -21,7 +22,7 @@ class MovableObjectManager : public iEventListener
 public:
     ~MovableObjectManager() override;
 
-	void Initialize();
+	void Initialize(const Camera& camera);
 	void Update(const Camera& camera);
 	void Draw(const Camera& camera);
 
@@ -35,6 +36,11 @@ public:
 	/// 全てのオブジェクトを返す
 	/// </summary>
 	const std::vector<std::unique_ptr<MovableObject>>& GetAllObjects() const { return objects_; }
+
+	/// <summary>
+	/// ドラッグ状態を取得
+	/// </summary>
+	bool IsDragging() const { return isDragging_; }
 
 	void OnEvent(const GameEvent& _event) override;
 
@@ -55,6 +61,14 @@ private:
 	Vector3 dragOffset_;
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
 	MovableObject* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
+
+
+	float targetY_;
+	float currentY_;
+
+
+	// 手オブジェクト
+	std::unique_ptr<PlayerHand> hand_;
 
     float objectHp_ = 10.0f; // オブジェクトのHP
 

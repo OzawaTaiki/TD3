@@ -49,7 +49,7 @@ void GameScene::Initialize() {
 
 	// 動かせるオブジェクトを管理するクラス
 	movableObjectManager_ = std::make_unique<MovableObjectManager>();
-	movableObjectManager_->Initialize();
+	movableObjectManager_->Initialize(SceneCamera_);
 
 	// タワー
 	tower_ = std::make_unique<Tower>();
@@ -85,10 +85,6 @@ void GameScene::Initialize() {
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
-
-	// プレイヤー初期化
-	playerHand_ = std::make_unique<PlayerHand>();
-	playerHand_->Initialize();
 }
 
 void GameScene::Update() {
@@ -132,11 +128,13 @@ void GameScene::Update() {
 	// ポイントライトオブジェクト更新
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
-	shadowObjectManager_->Update(movableObjectManager_->GetAllObjects(), pointLightObjectManager_->GetLights());
+	shadowObjectManager_->Update(
+		movableObjectManager_->GetAllObjects(), 
+		pointLightObjectManager_->GetLights(),
+		movableObjectManager_->IsDragging()
+	);
 	// UI更新
 	gameUI_->Update();
-	// プレイヤー更新
-	playerHand_->Update(SceneCamera_);
 
     rewardGauge_->Update();
 
@@ -194,8 +192,6 @@ void GameScene::Draw() {
 	pointLightObjectManager_->Draw(SceneCamera_);
 	// 影オブジェクト描画
 	shadowObjectManager_->Draw(SceneCamera_);
-	// プレイヤー描画
-	playerHand_->Draw(SceneCamera_);
 
 	///
 	///	スプライト描画

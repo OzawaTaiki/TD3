@@ -13,7 +13,6 @@ void BoxObject::Initialize(float _hp) {
 	collider_ = std::make_unique<AABBCollider>();
 	collider_->Initialize();
 	collider_->SetLayer("movableObject");
-	collider_->SetLayerMask("movableObject");
 	collider_->SetMinMax(object_->GetMin(), object_->GetMax());
 	collider_->SetWorldTransform(object_->GetWorldTransform());
 

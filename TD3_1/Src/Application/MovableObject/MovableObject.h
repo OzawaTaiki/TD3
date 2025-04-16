@@ -13,6 +13,7 @@ public:
 	virtual void Draw(const Camera& camera) = 0;
 
 	void SetTranslate(const Vector3& translate) { object_->translate_ = translate; }
+	void SetTranslateY(const float& y) { object_->translate_.y = y; }
 	Vector3 GetTranslate() const { return object_->translate_; }
 
 	void SetCanMove(bool canMove) { canMove_ = canMove; }
