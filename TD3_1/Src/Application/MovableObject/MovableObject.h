@@ -21,12 +21,17 @@ public:
 
 	AABBCollider* GetCollider() const { return collider_ ? collider_.get() : nullptr; }
 
+	void OnCollision(Collider* _other, const ColliderInfo& _info);
+
 	void SetLayerMask(std::string name) { collider_->SetLayerMask(name); }
 	void ExcludeLayerMask(std::string name) { collider_->ExcludeLayerMask(name); }
 
 	void Damage(const std::string& name, float damage);
 
     bool IsDead() const { return isDead_; }
+
+	bool IsCollidingWithMovableObject() const { return isCollidingWithMovableObject_; }
+	void SetIsCollidingWithMovableObject(bool flag) { isCollidingWithMovableObject_ = flag; }
 
 protected:
 	std::unique_ptr<ObjectModel> object_;
@@ -38,6 +43,7 @@ protected:
     bool isDead_ = false; // 死亡フラグ
     bool isHit_ = false; // 衝突フラグ
 	bool canMove_ = true; // ドラッグで動かせるかどうか : 初期は動かせる状態
+	bool isCollidingWithMovableObject_; // 動かせるオブジェクトと衝突しているか
 };
 
 /// <summary>

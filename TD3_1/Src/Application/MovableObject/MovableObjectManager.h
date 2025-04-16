@@ -61,6 +61,7 @@ private:
 	Vector3 dragOffset_;
 	float dragStartHeight_ = 0.0f;          // オブジェクトの元の高さを保持
 	MovableObject* draggingObject_ = nullptr; // ドラッグ中のオブジェクト
+	Vector3 dragStartPos_;
 
 
 	float targetY_;

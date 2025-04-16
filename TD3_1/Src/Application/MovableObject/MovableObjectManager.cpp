@@ -178,6 +178,7 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		}
 	}
 
+
 	// 左クリックした瞬間
 	if (input_->IsMouseTriggered(0)) {
 		if (hitObject) {
@@ -188,7 +189,9 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 			isDragging_ = true;
 			draggingObject_ = hitObject;
+			draggingObject_->SetIsCollidingWithMovableObject(false);
 			//dragStartHeight_ = draggingObject_->GetTranslate().y; // 掴んだ際の高さを記録
+			dragStartPos_ = draggingObject_->GetTranslate(); // 掴んだ際の位置を記録（movableObjectとの衝突時に元の位置に戻すため）
 			dragStartHeight_ = 1.0f;
 			dragOffset_ = draggingObject_->GetTranslate() - hit.point; // マウスとオブジェクトのオフセット計算
 
@@ -225,6 +228,10 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 			targetY_ = dragStartHeight_;
 			draggingObject_->SetTranslateY(dragStartHeight_); // 離した際に元の高さへ戻るように
 
+			if (draggingObject_->IsCollidingWithMovableObject()) {
+				draggingObject_->SetTranslate(dragStartPos_);
+			}
+
 			Audio::GetInstance()->SoundPlay(putSoundHandle_, putSoundVolume_); // サウンドを再生
 		}
 		isDragging_ = false;
@@ -237,6 +244,8 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 
 #ifdef _DEBUG
 	ImGui::Begin("movableObject");
+
+	ImGui::DragFloat3("startPos", &dragStartPos_.x);
 
 	if (ImGui::Button("AddObject")) {
 		AddMovableObject({ 0, 1, -6 });
