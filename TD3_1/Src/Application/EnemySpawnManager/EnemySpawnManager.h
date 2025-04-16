@@ -6,6 +6,7 @@
 
 // Application
 #include <Application/Enemy/Enemy.h>
+#include <Application/Enemy/Route/EnemyRouteManager.h>
 
 // Externals
 #include <json.hpp>
@@ -40,17 +41,28 @@ private:
         std::string enemyType="Normal"; // 敵の種類 (どのオブジェクトを攻撃するか
         float delayTime = 0.0f; // スポーンまでの遅延時間 グループ内最初のスポーンからの時間
         bool spawned = false; // スポーン済みかどうか
+		std::string routeName = ""; // ルート名
+
+#ifdef _DEBUG
+        int routeIndex = 0; // ルートのインデックス
+        int typeIndex = 0; // 敵の種類のインデックス
+#endif // _DEBUG
 
         //std::string targetId; // 攻撃対象の塔のID的なもの
 	};
+
     // 敵のスポーングループ
-    struct EnemySpawnGroup {
+	struct EnemySpawnGroup {
 		std::string groupName = "group"; // グループ名
 		int enemyCount = 0; // 敵の数
 		float spawnTime = 1.0f; // スポーン時間 wave基準の時間
 		Vector3 spawnPosition = { 0,0,0 }; // スポーン位置
 		std::vector<EnemySpawnData> spawnData = {}; // スポーンデータ
-    };
+
+#ifdef _DEBUG
+		int positionIndex = 0; // グループのインデックス
+#endif // _DEBUG
+	};
 
 	struct SpawnWave {
 		int waveNumber = 0; // ウェーブ番号
@@ -92,6 +104,8 @@ private:
     Vector3 forwardColliderOffset_ = { 0,0,1 }; // 前方コライダーのオフセット
     float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
 
+    std::unique_ptr<EnemyRouteManager> enemyRouteManager_ = nullptr; // 敵のルートマネージャー
+    std::vector<std::string> enemyRouteNames_; // 敵のルート名
 
 
 	#ifdef _DEBUG

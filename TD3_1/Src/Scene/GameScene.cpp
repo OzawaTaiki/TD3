@@ -8,7 +8,7 @@
 #include <Application/CameraShake/CameraShake.h>
 
 GameScene::~GameScene() {
-	
+
 }
 
 void GameScene::Initialize() {
@@ -39,10 +39,10 @@ void GameScene::Initialize() {
 
 	///
 	///	Application
-	/// 
+	///
 
 	/*---生成と初期化---*/
-	
+
 	// フィールド
 	field_ = std::make_unique<Field>();
 	field_->Initialize("mapData.csv");
@@ -143,7 +143,9 @@ void GameScene::Update() {
 	CollisionManager::GetInstance()->Update();
 
 
-	if (input_->IsKeyTriggered(DIK_T)) {
+	if (input_->IsKeyTriggered(DIK_T) &&
+		input_->IsKeyPressed(DIK_RSHIFT))
+	{
 		SceneManager::GetInstance()->ReserveScene("Title");
 	}
 
@@ -199,7 +201,7 @@ void GameScene::Draw() {
 
 	///
 	///	スプライト描画
-	/// 
+	///
 
 	// UI描画
 	Sprite::PreDraw();

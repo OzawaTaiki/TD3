@@ -81,7 +81,6 @@ void SampleScene::Initialize()
     cubeCollider2_->SetOnCollisionCallback([](Collider* _other, const ColliderInfo& _info) {
         });
 
-
 }
 
 void SampleScene::Update()

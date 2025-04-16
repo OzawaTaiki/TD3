@@ -36,6 +36,10 @@ void EnemySpawnManager::Initialize() {
     deathSoundHandle_ = audio_->SoundLoadWave("Resources/audio/enemyDeath.wav");
     deathSoundVolume_ = 0.5f; // デフォルトのボリュームを設定
 
+    enemyRouteManager_ = std::make_unique<EnemyRouteManager>();
+    enemyRouteManager_->Initialize();
+    enemyRouteNames_ = enemyRouteManager_->GetBezierCurveNames(); // ルート名を取得
+
 	// 敵スポーンデータをロード
 	LoadFromFile();
 }
@@ -93,6 +97,7 @@ void EnemySpawnManager::Update() {
 								enemy->SetTarget(towerPositon_); // タワーをターゲットに設定
 								enemy->SetSoundHandle(deathSoundHandle_); // サウンドハンドルをセット
 								enemy->SetVolume(deathSoundVolume_); // ボリュームをセット
+                                enemy->SetRoute(enemyRouteManager_->GetBezierCurve(spawnData.routeName)); // ルートをセット
 
 								enemies_.push_back(std::move(enemy));
 							}
@@ -157,6 +162,18 @@ void EnemySpawnManager::Update() {
             enemy->SetForwardCheckColliderOffset(forwardColliderOffset_);
         }
 	}
+    ImGui::SeparatorText("Route");
+
+    enemyRouteManager_->ShowDebugWindow();
+
+    std::map<std::string, BezierCurve3D*> bezierCurves = enemyRouteManager_->GetBezierCurves();
+    for (auto& bezier : bezierCurves)
+    {
+        //ImGui::Text(bezier.first.c_str());
+        bezier.second->DrawWithControlPoints();
+    }
+
+
 	ImGui::End();
 
 
@@ -354,10 +371,9 @@ void EnemySpawnManager::nDrawSpawnEditor()
 			group.spawnPosition;
 
 			static const char* spawnPositionNames[] = { "Left", "Top", "Right" };
-			static int selectedSpawnPositionIndex = 0;
 			static Vector3 spawnPositions[] = { kLeftSpawnPos_, kTopSpawnPos_, kRightSpawnPos_ };
-			if (ImGui::Combo("Spawn Position", &selectedSpawnPositionIndex, spawnPositionNames, IM_ARRAYSIZE(spawnPositionNames))) {
-				group.spawnPosition = spawnPositions[selectedSpawnPositionIndex];
+			if (ImGui::Combo("Spawn Position", &group.positionIndex, spawnPositionNames, IM_ARRAYSIZE(spawnPositionNames))) {
+				group.spawnPosition = spawnPositions[group.positionIndex];
 			}
 
 			// Groupのスポーン時間
@@ -428,6 +444,20 @@ void EnemySpawnManager::nDrawSpawnEditor()
 					ImGui::DragFloat3("Spawn Offset", &enemy.spawnOffset.x, 0.01f);
 					// 敵のスポーン時間
 					ImGui::DragFloat("Delay Time", &enemy.delayTime, 0.01f);
+
+					enemyRouteNames_ = enemyRouteManager_->GetBezierCurveNames();
+
+                    std::vector<const char*> routeNames;
+					for (const auto& name : enemyRouteNames_)
+                    {
+						routeNames.push_back(name.c_str());
+                    }
+                    // 敵のルート名
+                    if(ImGui::Combo("Route Name", &enemy.routeIndex, routeNames.data(), static_cast<int>(routeNames.size())))
+                    {
+                        enemy.routeName = routeNames[enemy.routeIndex];
+                    }
+
 				}
 			}
 		}
@@ -473,7 +503,9 @@ void EnemySpawnManager::SaveToFile()
                 enemyJson["enemy_type"] = enemy.enemyType;
                 enemyJson["spawn_offset"] = { enemy.spawnOffset.x, enemy.spawnOffset.y, enemy.spawnOffset.z };
                 enemyJson["delay_time"] = enemy.delayTime;
+                enemyJson["route_name"] = enemy.routeName;
                 groupJson["spawn_data"].push_back(enemyJson);
+
             }
             waveJson["enemy_groups"].push_back(groupJson);
         }
@@ -525,6 +557,8 @@ void EnemySpawnManager::LoadFromFile()
                             enemy.spawnOffset = { enemyEntry["spawn_offset"][0], enemyEntry["spawn_offset"][1], enemyEntry["spawn_offset"][2] };
                         }
                         if (enemyEntry.contains("delay_time")) enemy.delayTime = enemyEntry["delay_time"];
+                        if (enemyEntry.contains("route_name"))
+							enemy.routeName = enemyEntry["route_name"];
 
                         group.spawnData.push_back(enemy);
                     }

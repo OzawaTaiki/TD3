@@ -4,6 +4,8 @@
 #include <Features/Model/ObjectModel.h>
 #include <Features/Collision/Manager/CollisionManager.h>
 #include <Features/Animation/Sequence/AnimationSequence.h>
+#include <Math/BezierCurve3D.h>
+
 
 class Camera;
 
@@ -26,6 +28,8 @@ public:
 
 	// 実体化した影オブジェクトに打ち上げられた際の処理
 	void Launched();
+
+    void SetRoute(BezierCurve3D* route) { route_ = route; } // ルートをセット
 
     void SetSoundHandle(uint32_t soundHandle) { soundHandle_ = soundHandle; } // サウンドハンドルをセット
     void SetVolume(float volume) { deathSoundVolume_ = volume; } // ボリュームをセット
@@ -83,6 +87,8 @@ protected:
 
 	std::unique_ptr<AnimationSequence> animSeq_ = nullptr; // アニメーション
 	Vector3 prePos_ = {};
+
+    BezierCurve3D* route_; // ベジエ曲線
 };
 
 
@@ -99,5 +105,6 @@ public:
 private:
     void InitializeAnimSeq();
 	uint32_t texture_;
+    float distance_ = 0.0f; // ベジエ曲線上の距離
 };
 
