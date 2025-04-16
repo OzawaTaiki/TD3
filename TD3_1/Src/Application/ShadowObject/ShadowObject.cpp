@@ -75,9 +75,7 @@ void ShadowObject::Update(const float maxDistance, bool isDragging) {
 	}
 
 	// SPACE押下で実体化
-	if (!isDragging) { // オブジェクトを持ってたらできない
-		HandleAttackInput();
-	}
+	HandleAttackInput(isDragging);
 }
 
 void ShadowObject::Draw(const Camera& camera) { 
@@ -137,21 +135,23 @@ void ShadowObject::CalculateShadowTransform(const float maxDistance)
 	this->object_->translate_.y = -0.99f; // 高さを固定
 }
 
-void ShadowObject::HandleAttackInput()
+void ShadowObject::HandleAttackInput(bool isDragging)
 {
-	if (Input::GetInstance()->IsKeyTriggered(DIK_SPACE)) {
-		if (!isScaling_) {
-			isScaling_ = true;
-			isReturning_ = false;
-			scaleYStart_ = object_->scale_.y; // 現在のスケールを取得
-			scaleYTarget_ = 5.0f; // 増加後のスケール
-			animationTime_ = 0.0f; // アニメーションタイマーをリセット
-			animationDuration_ = scaleUpDuration_; // 増加時間を設定
+	if (!isDragging) {
+		if (Input::GetInstance()->IsKeyTriggered(DIK_SPACE)) {
+			if (!isScaling_) {
+				isScaling_ = true;
+				isReturning_ = false;
+				scaleYStart_ = object_->scale_.y; // 現在のスケールを取得
+				scaleYTarget_ = 5.0f; // 増加後のスケール
+				animationTime_ = 0.0f; // アニメーションタイマーをリセット
+				animationDuration_ = scaleUpDuration_; // 増加時間を設定
 
-			// カメラシェイクを行う
-			CameraShake::GetInstance()->StartShake();
-            // サウンドを再生
-            Audio::GetInstance()->SoundPlay(soundHandle_, volume_); // サウンドを再生
+				// カメラシェイクを行う
+				CameraShake::GetInstance()->StartShake();
+				// サウンドを再生
+				Audio::GetInstance()->SoundPlay(soundHandle_, volume_); // サウンドを再生
+			}
 		}
 	}
 

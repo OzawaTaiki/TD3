@@ -85,7 +85,7 @@ private:
 	/// <summary>
 	/// スペース押下時、影オブジェクトの実体化（コライダー設定、アニメーション処理含む）
 	/// </summary>
-	void HandleAttackInput();
+	void HandleAttackInput(bool isDragging);
 
 private:
 	Matrix4x4 MakeRotateMatrix(const Quaternion& q);
