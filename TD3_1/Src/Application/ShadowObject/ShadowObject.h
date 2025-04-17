@@ -70,7 +70,7 @@ private:
 	float animationTime_ = 0.0f; // アニメーション経過時間
 	float animationDuration_ = 0.0f; // アニメーション全体の時間
 	float scaleUpDuration_ = 0.2f; // 増加の時間 :（SPACEを押してから最大値まで実体化する時間）
-	float scaleDownDuration_ = 1.6f; // 戻る時間 :（最大値まで実体化してから元の位置まで戻るまでの時間）
+	float scaleDownDuration_ = 3.0f; // 戻る時間 :（最大値まで実体化してから元の位置まで戻るまでの時間）
 	bool isReturning_ = false; // 戻りアニメーション中かどうか
 
 	float waitDuration_ = 0.0f; // 最大値で待機する秒数を格納

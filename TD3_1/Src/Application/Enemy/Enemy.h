@@ -66,7 +66,7 @@ protected:
     float damage_ = 1.0f;
 
 	bool isBlocked = false; // ブロックに衝突して止まっているか
-    float blockStopThreshold = 3.0f; // 止まり続けて死ぬまでの時間
+    float blockStopThreshold = 2.0f; // 止まり続けて死ぬまでの時間
     float blockedTimer_ = 0.0f; // 止まっている時間
 
 	// 攻撃開始後ダメージが入る瞬間の時間
