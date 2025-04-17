@@ -85,4 +85,7 @@ private:
     };
     std::unique_ptr<Fade> fade_;
     Phase phase_ = Phase::kFadeIn;
+
+    void SaveToFile();
+	void LoadFromFile();
 };
