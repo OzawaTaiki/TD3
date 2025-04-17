@@ -79,12 +79,14 @@ void GameScene::Initialize() {
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize();
 
-  clearChecker_ = std::make_unique<ClearChecker>();
+	clearChecker_ = std::make_unique<ClearChecker>();
 
 	// フェード初期化
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+	LoadFromFile();
 }
 
 void GameScene::Update() {
@@ -96,6 +98,14 @@ void GameScene::Update() {
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
 	ImGui::Text("count : %d", shadowObjectManager_->GetScalingShadowObjectsCount());
+	ImGui::End();
+
+	ImGui::Begin("Camera");
+	ImGui::DragFloat3("translate", &originalCameraTranslate_.x, 0.01f);
+	ImGui::DragFloat3("rotate", &SceneCamera_.rotate_.x, 0.01f);
+	if (ImGui::Button("Save")) {
+		SaveToFile();
+	}
 	ImGui::End();
 
 #endif // _DEBUG
@@ -210,3 +220,35 @@ void GameScene::Draw() {
 }
 
 void GameScene::DrawShadow() {}
+
+void GameScene::SaveToFile() {
+	const std::string filePath = "Resources/Data/Camera/cameraParam.json";
+	nlohmann::json jsonData;
+
+	jsonData.push_back({
+	    {"originalCameraTranslate", {originalCameraTranslate_.x, originalCameraTranslate_.y, originalCameraTranslate_.z}},
+	    {"originalCameraRotate",    {SceneCamera_.rotate_.x, SceneCamera_.rotate_.y, SceneCamera_.rotate_.z}            }
+    });
+
+	std::ofstream file(filePath);
+	file << jsonData.dump(4);
+}
+
+void GameScene::LoadFromFile() {
+	const std::string filePath = "Resources/Data/Camera/cameraParam.json";
+
+	std::ifstream file(filePath);
+	nlohmann::json jsonData;
+	file >> jsonData;
+
+	originalCameraTranslate_ = {
+		jsonData[0]["originalCameraTranslate"][0].get<float>(), 
+		jsonData[0]["originalCameraTranslate"][1].get<float>(), 
+		jsonData[0]["originalCameraTranslate"][2].get<float>()
+	};
+	SceneCamera_.rotate_ = {
+	    jsonData[0]["originalCameraRotate"][0].get<float>(), 
+		jsonData[0]["originalCameraRotate"][1].get<float>(), 
+		jsonData[0]["originalCameraRotate"][2].get<float>()
+	};
+}
