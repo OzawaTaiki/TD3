@@ -41,6 +41,46 @@
                                 0.0,
                                 0.0
                             ]
+                        },
+                        {
+                            "delay_time": 10.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 10.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 12.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 12.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
                         }
                     ],
                     "spawn_position": [
@@ -73,6 +113,46 @@
                                 0.0,
                                 -2.0
                             ]
+                        },
+                        {
+                            "delay_time": 15.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 17.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 19.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
                         }
                     ],
                     "spawn_position": [
@@ -83,43 +163,11 @@
                     "spawn_time": 5.5
                 }
             ],
-            "start_time": 3.0,
+            "start_time": 2.0,
             "wave_number": 0
         },
         {
             "enemy_groups": [
-                {
-                    "enemy_count": 2,
-                    "group_name": "LeftRightPincer",
-                    "spawn_data": [
-                        {
-                            "delay_time": 0.0,
-                            "enemy_type": "Normal",
-                            "route_name": "leftSpawnRoute_1",
-                            "spawn_offset": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ]
-                        },
-                        {
-                            "delay_time": 1.0,
-                            "enemy_type": "Normal",
-                            "route_name": "leftSpawnRoute_1",
-                            "spawn_offset": [
-                                2.0,
-                                0.0,
-                                0.0
-                            ]
-                        }
-                    ],
-                    "spawn_position": [
-                        -26.0,
-                        1.0,
-                        -4.0
-                    ],
-                    "spawn_time": 0.5
-                },
                 {
                     "enemy_count": 2,
                     "group_name": "RightFirst",
@@ -140,6 +188,66 @@
                             "route_name": "rightSpawnRoute_0",
                             "spawn_offset": [
                                 -2.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 4.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 5.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 8.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 8.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 25.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 25.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
                                 0.0,
                                 0.0
                             ]
@@ -167,7 +275,7 @@
                             ]
                         },
                         {
-                            "delay_time": 1.0,
+                            "delay_time": 1.5,
                             "enemy_type": "Normal",
                             "route_name": "topSpawnRoute_1",
                             "spawn_offset": [
@@ -177,11 +285,51 @@
                             ]
                         },
                         {
-                            "delay_time": 2.0,
+                            "delay_time": 3.0,
                             "enemy_type": "Normal",
                             "route_name": "topSpawnRoute_1",
                             "spawn_offset": [
                                 2.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 6.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 8.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 10.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 12.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
                                 0.0,
                                 0.0
                             ]
@@ -192,7 +340,7 @@
                         1.0,
                         22.0
                     ],
-                    "spawn_time": 8.0
+                    "spawn_time": 12.0
                 }
             ],
             "start_time": 25.0,
@@ -341,31 +489,11 @@
                             ]
                         },
                         {
-                            "delay_time": 0.5,
+                            "delay_time": 0.0,
                             "enemy_type": "Normal",
-                            "route_name": "topSpawnRoute_0",
+                            "route_name": "leftSpawnRoute_1",
                             "spawn_offset": [
-                                -1.0,
-                                0.0,
-                                0.0
-                            ]
-                        },
-                        {
-                            "delay_time": 1.0,
-                            "enemy_type": "Normal",
-                            "route_name": "topSpawnRoute_0",
-                            "spawn_offset": [
-                                1.0,
-                                0.0,
-                                0.0
-                            ]
-                        },
-                        {
-                            "delay_time": 1.5,
-                            "enemy_type": "Normal",
-                            "route_name": "topSpawnRoute_0",
-                            "spawn_offset": [
-                                3.0,
+                                -3.0,
                                 0.0,
                                 0.0
                             ]
@@ -375,6 +503,70 @@
                         1.0,
                         1.0,
                         22.0
+                    ],
+                    "spawn_time": 15.0
+                },
+                {
+                    "enemy_count": 0,
+                    "group_name": "FinalAssault",
+                    "spawn_data": [
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "spawn_position": [
+                        1.0,
+                        1.0,
+                        22.0
+                    ],
+                    "spawn_time": 15.0
+                },
+                {
+                    "enemy_count": 0,
+                    "group_name": "FinalAssault",
+                    "spawn_data": [
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "route_name": "",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "delay_time": 0.0,
+                            "enemy_type": "Normal",
+                            "route_name": "leftSpawnRoute_1",
+                            "spawn_offset": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "spawn_position": [
+                        26.0,
+                        1.0,
+                        0.0
                     ],
                     "spawn_time": 15.0
                 }
