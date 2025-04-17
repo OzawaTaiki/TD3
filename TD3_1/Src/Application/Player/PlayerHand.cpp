@@ -40,11 +40,12 @@ void PlayerHand::Update(const Camera& camera) {
 
 	object_->translate_ = cursorPosition;
 	
-
+#ifdef _DEBUG
 	ImGui::Begin("HandObject");
 	ImGui::Text("Translate: x:%.2f, y:%.2f, z:%.2f", object_->translate_.x, object_->translate_.y, object_->translate_.z);
 	ImGui::Checkbox("isDragging", &isDragging_);
 	ImGui::End();
+#endif
 }
 
 void PlayerHand::Draw(const Camera& camera) { 
