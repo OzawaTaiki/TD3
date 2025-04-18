@@ -35,6 +35,11 @@ void BoxObject::Draw(const Camera& camera) {
 	isHit_ = false;
 }
 
+void BoxObject::DrawShadow(const Camera& camera)
+{
+    object_->DrawShadow(&camera, 0);
+}
+
 
 
 void CylinderObject::Initialize(float _hp) {
@@ -67,6 +72,11 @@ void CylinderObject::Draw(const Camera& camera) {
     Vector4 color = isHit_ ? Vector4(1.0f, 0.6f, 0.6f, 1) : Vector4(1, 1, 1, 1);
 
     object_->Draw(&camera, texture_, color);
+}
+
+void CylinderObject::DrawShadow(const Camera& camera)
+{
+    object_->DrawShadow(&camera, 0);
 }
 
 void MovableObject::Damage(const std::string& _name, float _damage)

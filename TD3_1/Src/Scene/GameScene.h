@@ -48,10 +48,11 @@ private:
     LineDrawer* lineDrawer_ = nullptr;
     Input* input_ = nullptr;
     ParticleManager* particleManager_ = nullptr;
-    std::unique_ptr<LightGroup> lights_;
 
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
+
+    std::shared_ptr<LightGroup> lights_ = nullptr;
 
 /// <summary>
 /// Application

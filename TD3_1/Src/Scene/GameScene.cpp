@@ -32,9 +32,6 @@ void GameScene::Initialize() {
 
 	particleManager_ = ParticleManager::GetInstance();
 
-	lights_ = std::make_unique<LightGroup>();
-	lights_->Initialize();
-	//LightingSystem::GetInstance()->SetActiveGroup(lights_.get());
 
 
 	///
@@ -85,6 +82,10 @@ void GameScene::Initialize() {
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+    lights_ = std::make_shared<LightGroup>();
+    lights_->Initialize();
+	LightingSystem::GetInstance()->SetActiveGroup(lights_);
 }
 
 void GameScene::Update() {
@@ -209,4 +210,10 @@ void GameScene::Draw() {
 	fade_->Draw();
 }
 
-void GameScene::DrawShadow() {}
+void GameScene::DrawShadow() {
+	movableObjectManager_->DrawShadow(SceneCamera_);
+	// タワー描画
+	tower_->DrawShadow(SceneCamera_);
+	// 敵管理クラス描画
+	enemySpawnManager_->DrawShadow(&SceneCamera_);
+}

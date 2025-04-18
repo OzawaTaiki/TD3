@@ -115,6 +115,11 @@ void NormalEnemy::Draw(const Camera* camera)
 	object_->Draw(camera, texture_, { 1, 1, 1, 1 });
 }
 
+void NormalEnemy::DrawShadow(const Camera* camera)
+{
+    object_->DrawShadow(camera, 0);
+}
+
 void NormalEnemy::InitializeAnimSeq()
 {
 	animSeq_ = std::make_unique<AnimationSequence>("enemy");

@@ -17,6 +17,7 @@ public:
 	void Update();
 	void Draw(const Camera& camera);
 	void DrawUI(const Camera& camera);
+    void DrawShadow(const Camera& camera);
 
 	void OnCollision(Collider* _other, const ColliderInfo& _info);
 

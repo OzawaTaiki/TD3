@@ -25,6 +25,7 @@ public:
 	void Initialize(const Camera& camera);
 	void Update(const Camera& camera);
 	void Draw(const Camera& camera);
+	void DrawShadow(const Camera& camera);
 
 	/// <summary>
 	/// オブジェクトの追加
