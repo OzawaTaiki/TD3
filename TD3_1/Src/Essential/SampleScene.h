@@ -5,7 +5,7 @@
 #include <Features/Model/ObjectModel.h>
 #include <Features/Model/AnimationModel.h>
 
-#include <Features/Effect/Manager/ParticleManager.h>
+#include <Features/Effect/Manager/ParticleSystem.h>
 #include <Features/LineDrawer/LineDrawer.h>
 #include <System/Input/Input.h>
 #include <System/Time/GameTime.h>
@@ -43,7 +43,7 @@ private:
 
     LineDrawer* lineDrawer_ = nullptr;
     Input* input_ = nullptr;
-    ParticleManager* particleManager_ = nullptr;
+    ParticleSystem* particleSystem_ = nullptr;
 
     std::unique_ptr<ObjectModel> aModel_ = nullptr;
 

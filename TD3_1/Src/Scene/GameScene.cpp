@@ -30,7 +30,8 @@ void GameScene::Initialize() {
 	ground_->Initialize("Tile/Tile.gltf");
 	ground_->GetUVTransform().SetScale({100, 100});
 
-	particleManager_ = ParticleManager::GetInstance();
+	particleSystem_ = ParticleSystem::GetInstance();
+    particleSystem_->SetCamera(&SceneCamera_);
 
 	lights_ = std::make_unique<LightGroup>();
 	lights_->Initialize();
@@ -116,11 +117,9 @@ void GameScene::Update() {
 		debugCamera_.Update();
 		SceneCamera_.matView_ = debugCamera_.matView_;
 		SceneCamera_.TransferData();
-		particleManager_->Update(debugCamera_.rotate_);
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-		particleManager_->Update(SceneCamera_.rotate_);
 	}
 
 	// カメラシェイク更新
@@ -139,7 +138,7 @@ void GameScene::Update() {
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
 	shadowObjectManager_->Update(
-		movableObjectManager_->GetAllObjects(), 
+		movableObjectManager_->GetAllObjects(),
 		pointLightObjectManager_->GetLights(),
 		movableObjectManager_->IsDragging()
 	);
@@ -148,6 +147,7 @@ void GameScene::Update() {
 
     rewardGauge_->Update();
 
+	particleSystem_->Update();
 	CollisionManager::GetInstance()->Update();
 
 
@@ -242,13 +242,13 @@ void GameScene::LoadFromFile() {
 	file >> jsonData;
 
 	originalCameraTranslate_ = {
-		jsonData[0]["originalCameraTranslate"][0].get<float>(), 
-		jsonData[0]["originalCameraTranslate"][1].get<float>(), 
+		jsonData[0]["originalCameraTranslate"][0].get<float>(),
+		jsonData[0]["originalCameraTranslate"][1].get<float>(),
 		jsonData[0]["originalCameraTranslate"][2].get<float>()
 	};
 	SceneCamera_.rotate_ = {
-	    jsonData[0]["originalCameraRotate"][0].get<float>(), 
-		jsonData[0]["originalCameraRotate"][1].get<float>(), 
+	    jsonData[0]["originalCameraRotate"][0].get<float>(),
+		jsonData[0]["originalCameraRotate"][1].get<float>(),
 		jsonData[0]["originalCameraRotate"][2].get<float>()
 	};
 }
