@@ -136,16 +136,16 @@ void SampleScene::Update()
         debugCamera_.Update();
         SceneCamera_.matView_ = debugCamera_.matView_;
         SceneCamera_.TransferData();
-        ParticleManager::GetInstance()->Update(debugCamera_.rotate_);
+        ParticleSystem::GetInstance()->Update();
     }
     else
     {
         SceneCamera_.Update();
         SceneCamera_.UpdateMatrix();
-        ParticleManager::GetInstance()->Update(SceneCamera_.rotate_);
     }
 
 
+    ParticleSystem::GetInstance()->Update();
 #pragma region 半直線との衝突判定
 
     //if(input_->IsMouseTriggered(0))
@@ -195,7 +195,7 @@ void SampleScene::Draw()
 
     //button_->Draw();
 
-    ParticleManager::GetInstance()->Draw(&SceneCamera_);
+    ParticleSystem::GetInstance()->DrawParticles();
 
 }
 

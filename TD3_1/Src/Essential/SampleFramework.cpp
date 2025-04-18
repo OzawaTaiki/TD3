@@ -3,6 +3,7 @@
 #include "SampleScene.h"
 #include <Features/Scene/ParticleTestScene.h>
 #include "SceneFactory.h"
+#include "ParticleModifierFactory.h"
 
 void SampleFramework::Initialize()
 {
@@ -15,6 +16,8 @@ void SampleFramework::Initialize()
     rtvManager_->CreateRenderTarget("ShadowMap", 4096, 4096, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,  Vector4(1.0f, 1.0f, 1.0f, 1.0f),true);
 
     sceneManager_->SetSceneFactory(new SceneFactory());
+
+    particleManager_->SetModifierFactory(new ParticleModifierFactory());
 
 #ifdef _DEBUG
     collisionManager_->SetDrawEnabled(true);
