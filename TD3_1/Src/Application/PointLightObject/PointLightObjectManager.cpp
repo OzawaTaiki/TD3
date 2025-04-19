@@ -36,7 +36,7 @@ void PointLightObjectManager::Update()
 
 		// 位置の設定
 		std::string positionLabel = "Position##" + std::to_string(i);
-		ImGui::DragFloat3(positionLabel.c_str(), &pointLightObjects_[i]->object_->translate_.x, 0.01f);
+		ImGui::DragFloat3(positionLabel.c_str(), &pointLightObjects_[i]->objectLight_->translate_.x, 0.01f);
 
 		// 距離の設定
 		std::string maxDistanceLabel = "MaxDistance##" + std::to_string(i);
