@@ -1,6 +1,6 @@
 [
     {
-        "maxDistance": 20.0,
+        "maxDistance": 8.0,
         "position": [
             -9.720000267028809,
             5.0,
@@ -8,7 +8,7 @@
         ]
     },
     {
-        "maxDistance": 20.0,
+        "maxDistance": 8.0,
         "position": [
             7.329999923706055,
             5.0,

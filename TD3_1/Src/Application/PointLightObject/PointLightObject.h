@@ -14,13 +14,17 @@ public:
 	void Update();
 	void Draw(const Camera& camera);
 
-	const Vector3& GetTranslate() { return object_->translate_; }
-	const void SetTranslate(Vector3 translate) { object_->translate_ = translate; }
+	const Vector3& GetTranslate() { return objectLight_->translate_; }
+	const void SetTranslate(Vector3 translate) { objectLight_->translate_ = translate; }
 
 	// 届く距離
 	float maxDistance_;
-	std::unique_ptr<ObjectModel> object_;
+	std::unique_ptr<ObjectModel> objectLight_;
 
 private:
-	uint32_t texture_;
+	uint32_t textureLight_;
+
+	// 光が届く範囲
+	std::unique_ptr<ObjectModel> objectCircle_;
+	uint32_t textureCircle_;
 };
