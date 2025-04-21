@@ -85,6 +85,10 @@ void GameScene::Initialize() {
 
     lights_ = std::make_shared<LightGroup>();
     lights_->Initialize();
+
+    auto pl = std::make_shared<PointLightComponent>();
+    lights_->AddPointLight("PointLight", pl);
+
 	LightingSystem::GetInstance()->SetActiveGroup(lights_);
 }
 
@@ -215,7 +219,7 @@ void GameScene::Draw() {
 void GameScene::DrawShadow() {
 	movableObjectManager_->DrawShadow(SceneCamera_);
 	// タワー描画
-	//tower_->DrawShadow(SceneCamera_);
+	tower_->DrawShadow(SceneCamera_);
 	// 敵管理クラス描画
-	//enemySpawnManager_->DrawShadow(&SceneCamera_);
+	enemySpawnManager_->DrawShadow(&SceneCamera_);
 }

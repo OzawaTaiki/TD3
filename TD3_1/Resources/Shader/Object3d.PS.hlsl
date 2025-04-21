@@ -31,7 +31,7 @@ SamplerState gSampler : register(s0);
 Texture2D<float> gShadowMap : register(t1);
 SamplerComparisonState gShadowSampler : register(s1);
 
-TextureCube<float4> gCubeMap[MAX_POINT_LIGHT * 6] : register(t2);
+TextureCube<float4> gCubeMap : register(t2);
 SamplerState gCubeMapSampler : register(s2);
 
 float3 CalculateDirectionalLighting(VertexShaderOutput _input, float3 _toEye, float4 _textureColor);
@@ -54,7 +54,7 @@ float ComputeShadow(float4 shadowCoord)
     float closestDepth = gShadowMap.Sample(gSampler, shadowCoord.xy).r;
 
     // 深度比較による影の判定
-    float shadow = (currentDepth > closestDepth + 0.001f) ? 0.5f : 1.0f;
+    float shadow = (currentDepth > closestDepth + 0.001f) ? 0.2f : 1.0f;
     return shadow;
 }
 float ComputePointLightShadow(int lightIndex, float3 worldPos, PointLight _PL)
@@ -82,16 +82,16 @@ float ComputePointLightShadow(int lightIndex, float3 worldPos, PointLight _PL)
     float currentDepth = length(lightToWorldVec) / _PL.radius;
 
     // 対応するライトのシャドウマップをサンプリング
-    float closestDepth = gCubeMap[lightIndex].Sample(
+    float closestDepth = gCubeMap.Sample(
         gCubeMapSampler,
         lightToWorldVec
     ).r;
 
     // シャドウバイアスを考慮
     float bias = 0.005;
-    float shadow = currentDepth > closestDepth + bias ? 0.5 : 1.0;
+    float shadow = currentDepth > closestDepth + bias ? 0.2 : 1.0;
 
-    
+
     return shadow;
 }
 
