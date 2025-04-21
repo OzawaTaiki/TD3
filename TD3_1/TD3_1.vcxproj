@@ -179,6 +179,8 @@
     <ClCompile Include="Src\Application\Tower\Tower.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp" />
+    <ClCompile Include="Src\Application\Particles\TestParticle\TestParticle.cpp" />
+    <ClCompile Include="Src\Application\Particles\TestParticle\TestModifier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine\GameEngine.vcxproj">
@@ -215,6 +217,8 @@
     <ClInclude Include="Src\Application\Tower\Tower.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h" />
+    <ClInclude Include="Src\Application\Particles\TestParticle\TestParticle.h" />
+    <ClInclude Include="Src\Application\Particles\TestParticle\TestModifier.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

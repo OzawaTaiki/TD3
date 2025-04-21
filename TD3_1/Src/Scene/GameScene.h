@@ -23,6 +23,7 @@
 #include <Application/UI/Game/GameUI.h>
 #include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
+#include <Application/Particles/TestParticle/TestParticle.h>
 
 class GameScene : public BaseScene
 {
@@ -88,4 +89,9 @@ private:
 
     void SaveToFile();
 	void LoadFromFile();
+
+    void InitParticles();
+
+    // テスト用パーティクル
+	std::unique_ptr<TestParticle> testParticle_;
 };

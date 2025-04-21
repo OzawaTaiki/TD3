@@ -120,6 +120,12 @@
     <ClCompile Include="Src\Essential\ParticleModifierFactory.cpp">
       <Filter>Essential</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\Particles\TestParticle\TestParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Particles\TestParticle\TestModifier.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Essential\SampleFramework.h">
@@ -208,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="Src\Essential\ParticleModifierFactory.h">
       <Filter>Essential</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\TestParticle\TestParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\TestParticle\TestModifier.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

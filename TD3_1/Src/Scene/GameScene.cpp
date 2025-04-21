@@ -3,6 +3,7 @@
 // Engine
 #include <Features/Model/Manager/ModelManager.h>
 #include <Features/Scene/Manager/SceneManager.h>
+#include <Math/Random/RandomGenerator.h>
 
 // Application
 #include <Application/CameraShake/CameraShake.h>
@@ -88,6 +89,10 @@ void GameScene::Initialize() {
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 
 	LoadFromFile();
+
+	// テストパーティクル
+	testParticle_ = std::make_unique<TestParticle>();
+	testParticle_->Initialize();
 }
 
 void GameScene::Update() {
@@ -99,6 +104,13 @@ void GameScene::Update() {
 	ImGui::Begin("GameSceneInfo");
 	ImGui::Text("fps : %.2f", ImGui::GetIO().Framerate);
 	ImGui::Text("count : %d", shadowObjectManager_->GetScalingShadowObjectsCount());
+	if (ImGui::Button("Emit")) {
+		InitParticles();
+	}
+
+	if (ImGui::Button("Emit TestParticle")) {
+		testParticle_->Emit();
+	}
 	ImGui::End();
 
 	ImGui::Begin("Camera");
@@ -107,6 +119,7 @@ void GameScene::Update() {
 	if (ImGui::Button("Save")) {
 		SaveToFile();
 	}
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -185,6 +198,9 @@ void GameScene::Update() {
 			SceneManager::GetInstance()->ReserveScene("Title");
 		}
 	}
+
+	// テストパーティクル
+	testParticle_->Update();
 }
 
 void GameScene::Draw() {
@@ -217,6 +233,8 @@ void GameScene::Draw() {
 
 	// フェード描画
 	fade_->Draw();
+
+	particleSystem_->DrawParticles();
 }
 
 void GameScene::DrawShadow() {}
@@ -251,4 +269,74 @@ void GameScene::LoadFromFile() {
 		jsonData[0]["originalCameraRotate"][1].get<float>(),
 		jsonData[0]["originalCameraRotate"][2].get<float>()
 	};
+}
+
+void GameScene::InitParticles() {
+	const uint32_t emitCount = 10;
+
+	auto rand = RandomGenerator::GetInstance();
+
+	std::vector<Particle*> particles(emitCount);
+
+	for (uint32_t i = 0; i < emitCount; ++i) {
+		// 初期化データ
+		ParticleInitParam initParam;
+
+		// ビルボードの有無(正常に動くか微妙)
+		initParam.isBillboard = {false, false, false};
+
+		// 初期カラー
+		initParam.color;
+		Vector3 rgb = rand->GetRandValue(Vector3{1, 1, 1}, Vector3{0, 0, 0});
+		float alpha = 1.0f;
+
+		initParam.color = Vector4(rgb.x, rgb.y, rgb.z, alpha);
+
+		// 初期方向
+		// 上方向
+		initParam.direction = Vector3(0, 1, 0);
+
+		// lifiTimeを持つか 基本false
+		initParam.isInfiniteLife = false;
+
+		initParam.lifeTime;
+		if (!initParam.isInfiniteLife) {
+			initParam.lifeTime = rand->GetRandValue(0.5f, 1.0f);
+		}
+
+		// 初期位置 親となるようなTransformがあればそれを基準にする
+		initParam.position = {4, 4, 0};
+
+		// 回転
+		initParam.rotate = {0, 0, 0};
+
+		// 初期サイズ(モデルのスケール)
+		initParam.size = {1, 1, 1};
+
+		// 初期速度
+		initParam.speed = rand->GetRandValue(1.0f, 3.0f);
+
+		Particle* particle = new Particle();
+		particle->Initialize(initParam);
+
+		particles[i] = particle;
+	}
+
+	// 描画簡易設定
+	ParticleRenderSettings settings;
+	settings.blendMode = BlendMode::Add; // ブレンドモード
+	settings.cullBack = false;           // 背面カリングの有無 ここではなし
+
+	// 使用するモデル名
+	// ※必ずしもモデルのパスではない ModelManagerでキーとして持っている名前(たいていはpathで管理している。)
+	std::string useModelName = "Hand/hand.obj";
+
+	uint32_t textureHandle = 0;
+
+	// ParticleModifierFactory に登録されているモディファイアの名前を指定する
+	// 新しく実装したら ParticleModifierFactory に追記すること。
+	std::vector<std::string> modifiers;
+	modifiers.push_back("DecelerationModifier"); // 減速Modifier
+
+	ParticleSystem::GetInstance()->AddParticles(useModelName, particles, settings, textureHandle, modifiers);
 }
