@@ -26,7 +26,7 @@ void TitleScene::Initialize()
 	ground_->Initialize("Tile/Tile.gltf");
 	ground_->GetUVTransform().SetScale({ 100, 100 });
 
-	particleManager_ = ParticleManager::GetInstance();
+	particleSystem_ = ParticleSystem::GetInstance();
 
 	lights_ = std::make_unique<LightGroup>();
 	lights_->Initialize();
@@ -34,8 +34,8 @@ void TitleScene::Initialize()
 
 	///
 	///	Application
-	/// 
-	
+	///
+
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
@@ -57,11 +57,11 @@ void TitleScene::Update()
 		debugCamera_.Update();
 		SceneCamera_.matView_ = debugCamera_.matView_;
 		SceneCamera_.TransferData();
-		particleManager_->Update(debugCamera_.rotate_);
+		//particleManager_->Update(debugCamera_.rotate_);
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-		particleManager_->Update(SceneCamera_.rotate_);
+		//particleManager_->Update(SceneCamera_.rotate_);
 	}
 
 	ground_->Update();
@@ -72,7 +72,7 @@ void TitleScene::Update()
 		if (fade_->IsFinished()) {
 			phase_ = Phase::kMain;
 		}
-		
+
 		break;
 	case Phase::kMain:
 		// スペース押下でフェード開始
@@ -87,7 +87,7 @@ void TitleScene::Update()
 		if (fade_->IsFinished()) {
 			SceneManager::GetInstance()->ReserveScene("Game");
 		}
-		
+
 		break;
 	}
 }

@@ -13,7 +13,7 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& _name)
     }
     else if (_name == "ParticleTest")
     {
-        return std::make_unique<ParticleTestScene>();
+        //return std::make_unique<ParticleTestScene>();
     }
     else if (_name == "Game")
     {

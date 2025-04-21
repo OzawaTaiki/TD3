@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	ground_->Initialize("Tile/Tile.gltf");
 	ground_->GetUVTransform().SetScale({100, 100});
 
-	particleManager_ = ParticleManager::GetInstance();
+	particleSystem_ = ParticleSystem::GetInstance();
 
 
 
@@ -99,6 +99,8 @@ void GameScene::Update() {
 	ImGui::Text("count : %d", shadowObjectManager_->GetScalingShadowObjectsCount());
 	ImGui::End();
 
+	lights_->ImGui();
+
 #endif // _DEBUG
 
 	ground_->Update();
@@ -107,11 +109,11 @@ void GameScene::Update() {
 		debugCamera_.Update();
 		SceneCamera_.matView_ = debugCamera_.matView_;
 		SceneCamera_.TransferData();
-		particleManager_->Update(debugCamera_.rotate_);
+		//particleManager_->Update(debugCamera_.rotate_);
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-		particleManager_->Update(SceneCamera_.rotate_);
+		//particleManager_->Update(SceneCamera_.rotate_);
 	}
 
 	// カメラシェイク更新
@@ -130,7 +132,7 @@ void GameScene::Update() {
 	pointLightObjectManager_->Update();
 	// 影オブジェクト更新
 	shadowObjectManager_->Update(
-		movableObjectManager_->GetAllObjects(), 
+		movableObjectManager_->GetAllObjects(),
 		pointLightObjectManager_->GetLights(),
 		movableObjectManager_->IsDragging()
 	);
@@ -213,7 +215,7 @@ void GameScene::Draw() {
 void GameScene::DrawShadow() {
 	movableObjectManager_->DrawShadow(SceneCamera_);
 	// タワー描画
-	tower_->DrawShadow(SceneCamera_);
+	//tower_->DrawShadow(SceneCamera_);
 	// 敵管理クラス描画
-	enemySpawnManager_->DrawShadow(&SceneCamera_);
+	//enemySpawnManager_->DrawShadow(&SceneCamera_);
 }

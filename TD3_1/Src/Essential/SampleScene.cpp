@@ -136,13 +136,13 @@ void SampleScene::Update()
         debugCamera_.Update();
         SceneCamera_.matView_ = debugCamera_.matView_;
         SceneCamera_.TransferData();
-        ParticleManager::GetInstance()->Update(debugCamera_.rotate_);
+        //ParticleManager::GetInstance()->Update(debugCamera_.rotate_);
     }
     else
     {
         SceneCamera_.Update();
         SceneCamera_.UpdateMatrix();
-        ParticleManager::GetInstance()->Update(SceneCamera_.rotate_);
+        //ParticleManager::GetInstance()->Update(SceneCamera_.rotate_);
     }
 
 
@@ -195,7 +195,7 @@ void SampleScene::Draw()
 
     //button_->Draw();
 
-    ParticleManager::GetInstance()->Draw(&SceneCamera_);
+    //ParticleSystem::GetInstance()->DrawParticles();
 
 }
 
