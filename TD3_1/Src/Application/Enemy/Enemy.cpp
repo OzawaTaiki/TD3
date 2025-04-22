@@ -7,6 +7,7 @@
 #include <Features/Event/EventManager.h>
 #include <System/Audio/Audio.h>
 #include <Debug/ImguITools.h>
+#include <Math/Random/RandomGenerator.h>
 
 #include "EnemyAttackInfo.h"
 
@@ -29,10 +30,17 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 	blockStopThreshold = _blockStopThreshold;
 
 	InitializeAnimSeq();
+
+	// 移動時パーティクル初期化
+	bubbleParticle_ = std::make_unique<BubbleParticle>();
+	bubbleParticle_->Initialize();
 }
 
 void NormalEnemy::Update()
 {
+	// 前フレームの位置を記録
+	Vector3 prePos = object_->translate_;
+
 	// ターゲットの位置まで移動
 	if (!isBlocked && !isAttacking_ && !isLaunched_)
 	{
@@ -63,8 +71,8 @@ void NormalEnemy::Update()
         // 衝突しているとき
         blockedTimer_ += kDeltaTime; // 衝突している時間を加算
         if (blockedTimer_ >= blockStopThreshold) {
-            // 一定時間衝突していたら拡縮開始
-			Scaling();
+            // 一定時間衝突していたら拡縮して死亡
+			ScalingAndDead();
         }
 	}
 
@@ -95,14 +103,23 @@ void NormalEnemy::Update()
 			object_->translate_.y = 1.0f; // 地面に固定
 			/*Dead();*/
 
-			// 着地したら拡縮
-			Scaling();
+			// 着地したら拡縮して死亡
+			ScalingAndDead();
 		}
 	}
 
-	// 拡縮アニメーションが終わったら死亡
-	if (scale_ < 0.0f) {
-		Dead();
+	// 生きていれば移動パーティクルを発生
+	if (!IsDead()) {
+		// 5~10フレーム毎に生成
+		emitCounter_++;
+		const uint32_t interval = RandomGenerator::GetInstance()->GetRandValue(5, 10);
+		if (emitCounter_ >= interval) {
+			// 後ろの位置を計算
+			Vector3 backwardPosition = object_->translate_ - CalculateFoward(object_->quaternion_) * (object_->scale_.z * 0.5f * 3.0f); // 0.5fの後に掛ける値でどれくらい後ろから出るか調整
+
+			bubbleParticle_->Emit(backwardPosition);
+			emitCounter_ = 0;
+		}
 	}
 
 	object_->Update();
@@ -152,7 +169,7 @@ void Enemy::Launched()
 	}
 }
 
-void Enemy::Scaling()
+void Enemy::ScalingAndDead()
 {
 	if (!hasScaled_) {
 		SimpleEasing::Animate(scale_, scale_, 0.0f, Easing::EaseInBack, 1.0f);
@@ -160,6 +177,10 @@ void Enemy::Scaling()
 	}
 	
 	object_->scale_ = { scale_, scale_, scale_ };
+
+	if (scale_ <= 0.0f) {
+		Dead();
+	}
 }
 
 void Enemy::OnCollsion(Collider* _other, const ColliderInfo& _info)
@@ -308,5 +329,27 @@ void Enemy::Attack()
 
 	// ちょっとした攻撃モーション
 	object_->translate_ = prePos_ + move;
+
+}
+
+Vector3 Enemy::CalculateFoward(const Quaternion& quaternion)
+{
+	// ローカル座標の前方向
+	Vector3 localForward = { 0.0f, 0.0f, 1.0f };
+
+	// クォータニオンを使ってローカル座標を回転
+	float x = localForward.x * (1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z)) +
+		localForward.y * (2 * (quaternion.x * quaternion.y - quaternion.z * quaternion.w)) +
+		localForward.z * (2 * (quaternion.x * quaternion.z + quaternion.y * quaternion.w));
+
+	float y = localForward.x * (2 * (quaternion.x * quaternion.y + quaternion.z * quaternion.w)) +
+		localForward.y * (1 - 2 * (quaternion.x * quaternion.x + quaternion.z * quaternion.z)) +
+		localForward.z * (2 * (quaternion.y * quaternion.z - quaternion.x * quaternion.w));
+
+	float z = localForward.x * (2 * (quaternion.x * quaternion.z - quaternion.y * quaternion.w)) +
+		localForward.y * (2 * (quaternion.y * quaternion.z + quaternion.x * quaternion.w)) +
+		localForward.z * (1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y));
+
+	return Vector3(x, y, z);
 
 }

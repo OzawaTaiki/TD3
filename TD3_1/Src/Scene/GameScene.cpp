@@ -222,10 +222,10 @@ void GameScene::Draw() {
 	gameUI_->Draw();
 	tower_->DrawUI(SceneCamera_);
 
+	particleSystem_->DrawParticles();
+
 	// フェード描画
 	fade_->Draw();
-
-	particleSystem_->DrawParticles();
 }
 
 void GameScene::DrawShadow() {

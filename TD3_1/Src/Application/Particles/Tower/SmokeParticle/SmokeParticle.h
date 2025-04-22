@@ -1,5 +1,6 @@
 #pragma once
 
+// Engine
 #include <Features/Model/Model.h>
 
 /// <summary>
@@ -13,7 +14,7 @@ public:
 
 private:
 	// 生成するパーティクル数
-	const uint32_t kEmitCount = 10;
+	const uint32_t kEmitCount = 8;
 	// 使用するモデル（一度読み込む必要があるため）
 	Model* model_;
 	// 使用するテクスチャ

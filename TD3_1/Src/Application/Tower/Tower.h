@@ -9,7 +9,7 @@
 #include <Features/Sprite/Sprite.h>
 
 // Application
-#include <Application/Particles/SmokeParticle/SmokeParticle.h>
+#include <Application/Particles/Tower/SmokeParticle/SmokeParticle.h>
 
 class Camera;
 

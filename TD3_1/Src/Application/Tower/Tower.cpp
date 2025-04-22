@@ -1,7 +1,9 @@
+#define NOMINMAX
 #include "Tower.h"
 
 // C++
 #include <random>
+#include <algorithm>
 
 // Engine
 #include <Features/Camera/Camera/Camera.h>
@@ -106,6 +108,7 @@ void Tower::DrawUI(const Camera& camera)
 	const float kMaxWidth = 80.0f;
 	const float kMaxHP = 10.0f;
 	float currentWidth = kMaxWidth * (static_cast<float>(hp_) / kMaxHP);
+	currentWidth = std::max(currentWidth, 0.0f);
 	spriteHP_->SetSize({ currentWidth, 15.0f });
 
 	spriteHP_->Draw();

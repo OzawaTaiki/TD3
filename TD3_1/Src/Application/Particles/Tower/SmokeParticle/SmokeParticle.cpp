@@ -8,7 +8,7 @@
 void SmokeParticle::Initialize()
 {
 	// 使用するモデル読み込み
-	model_ = Model::CreateFromFile("plane/plane.gltf");
+	model_ = Model::CreateFromFile("particlePlane/smoke/plane.gltf");
 	// 使用するテクスチャ読み込み
 	textureHandle_ = TextureManager::GetInstance()->Load("particle/smoke.png");
 }
@@ -34,13 +34,14 @@ void SmokeParticle::Emit(const Vector3& position)
 		initParam.lifeTime = 1.0f;
 		initParam.isInfiniteLife = false;
 		// サイズ
-		initParam.size = { 1.0f, 1.0f, 1.0f };
+		float randSize = rand->GetRandValue(1.0f, 1.5f);
+		initParam.size = { randSize, randSize, randSize };
 		// 回転
 		initParam.rotate = { 0.0f, 0.0f, 0.0f };
 		// 位置
 		initParam.position = position;
 		// スピード
-		initParam.speed = 4.0f;
+		initParam.speed = rand->GetRandValue(3.0f, 4.0f);
 		// 方向
 		initParam.direction = rand->GetRandValue({ -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f });
 		// 加速度、重力
@@ -69,7 +70,7 @@ void SmokeParticle::Emit(const Vector3& position)
 	///
 	///	使用するモデル名
 	/// 
-	std::string useModelName = "plane/plane.gltf";
+	std::string useModelName = "particlePlane/smoke/plane.gltf";
 
 	///
 	///	モディファイア

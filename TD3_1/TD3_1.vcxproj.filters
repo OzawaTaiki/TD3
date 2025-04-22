@@ -123,10 +123,16 @@
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Particles\SmokeParticle\SmokeParticle.cpp">
+    <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Particles\SmokeParticle\SmokeModifier.cpp">
+    <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleModifier.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -221,10 +227,16 @@
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Particles\SmokeParticle\SmokeParticle.h">
+    <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Particles\SmokeParticle\SmokeModifier.h">
+    <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleModifier.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
