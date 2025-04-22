@@ -27,6 +27,7 @@ void TitleScene::Initialize()
 	ground_->GetUVTransform().SetScale({ 100, 100 });
 
 	particleSystem_ = ParticleSystem::GetInstance();
+	particleSystem_->SetCamera(&SceneCamera_);
 
 	lights_ = std::make_unique<LightGroup>();
 	lights_->Initialize();
@@ -57,11 +58,9 @@ void TitleScene::Update()
 		debugCamera_.Update();
 		SceneCamera_.matView_ = debugCamera_.matView_;
 		SceneCamera_.TransferData();
-		//particleManager_->Update(debugCamera_.rotate_);
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-		//particleManager_->Update(SceneCamera_.rotate_);
 	}
 
 	ground_->Update();
@@ -90,6 +89,9 @@ void TitleScene::Update()
 
 		break;
 	}
+
+	particleSystem_->Update();
+
 }
 
 void TitleScene::Draw()

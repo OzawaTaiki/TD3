@@ -31,6 +31,7 @@ void GameScene::Initialize() {
 	ground_->GetUVTransform().SetScale({100, 100});
 
 	particleSystem_ = ParticleSystem::GetInstance();
+    particleSystem_->SetCamera(&SceneCamera_);
 
 
 
@@ -76,7 +77,7 @@ void GameScene::Initialize() {
 	// カメラシェイク初期化
 	CameraShake::GetInstance()->Initialize();
 
-  clearChecker_ = std::make_unique<ClearChecker>();
+	clearChecker_ = std::make_unique<ClearChecker>();
 
 	// フェード初期化
 	fade_ = std::make_unique<Fade>();
@@ -90,6 +91,9 @@ void GameScene::Initialize() {
     lights_->AddPointLight("PointLight", pl);
 
 	LightingSystem::GetInstance()->SetActiveGroup(lights_);
+  
+  
+	LoadFromFile();
 }
 
 void GameScene::Update() {
@@ -104,6 +108,13 @@ void GameScene::Update() {
 	ImGui::End();
 
 	lights_->ImGui();
+	ImGui::Begin("Camera");
+	ImGui::DragFloat3("translate", &originalCameraTranslate_.x, 0.01f);
+	ImGui::DragFloat3("rotate", &SceneCamera_.rotate_.x, 0.01f);
+	if (ImGui::Button("Save")) {
+		SaveToFile();
+	}
+	ImGui::End();
 
 #endif // _DEBUG
 
@@ -113,12 +124,10 @@ void GameScene::Update() {
 		debugCamera_.Update();
 		SceneCamera_.matView_ = debugCamera_.matView_;
 		SceneCamera_.TransferData();
-		//particleManager_->Update(debugCamera_.rotate_);
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-		//particleManager_->Update(SceneCamera_.rotate_);
-	}
+  }
 
 	// カメラシェイク更新
 	CameraShake::GetInstance()->Update();
@@ -145,6 +154,7 @@ void GameScene::Update() {
 
     rewardGauge_->Update();
 
+	particleSystem_->Update();
 	CollisionManager::GetInstance()->Update();
 
 
@@ -222,4 +232,35 @@ void GameScene::DrawShadow() {
 	tower_->DrawShadow(SceneCamera_);
 	// 敵管理クラス描画
 	enemySpawnManager_->DrawShadow(&SceneCamera_);
+}
+void GameScene::SaveToFile() {
+	const std::string filePath = "Resources/Data/Camera/cameraParam.json";
+	nlohmann::json jsonData;
+
+	jsonData.push_back({
+	    {"originalCameraTranslate", {originalCameraTranslate_.x, originalCameraTranslate_.y, originalCameraTranslate_.z}},
+	    {"originalCameraRotate",    {SceneCamera_.rotate_.x, SceneCamera_.rotate_.y, SceneCamera_.rotate_.z}            }
+    });
+
+	std::ofstream file(filePath);
+	file << jsonData.dump(4);
+}
+
+void GameScene::LoadFromFile() {
+	const std::string filePath = "Resources/Data/Camera/cameraParam.json";
+
+	std::ifstream file(filePath);
+	nlohmann::json jsonData;
+	file >> jsonData;
+
+	originalCameraTranslate_ = {
+		jsonData[0]["originalCameraTranslate"][0].get<float>(),
+		jsonData[0]["originalCameraTranslate"][1].get<float>(),
+		jsonData[0]["originalCameraTranslate"][2].get<float>()
+	};
+	SceneCamera_.rotate_ = {
+	    jsonData[0]["originalCameraRotate"][0].get<float>(),
+		jsonData[0]["originalCameraRotate"][1].get<float>(),
+		jsonData[0]["originalCameraRotate"][2].get<float>()
+	};
 }

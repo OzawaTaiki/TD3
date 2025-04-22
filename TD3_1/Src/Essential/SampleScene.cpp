@@ -136,46 +136,20 @@ void SampleScene::Update()
         debugCamera_.Update();
         SceneCamera_.matView_ = debugCamera_.matView_;
         SceneCamera_.TransferData();
-        //ParticleManager::GetInstance()->Update(debugCamera_.rotate_);
     }
     else
     {
         SceneCamera_.Update();
         SceneCamera_.UpdateMatrix();
-        //ParticleManager::GetInstance()->Update(SceneCamera_.rotate_);
     }
 
 
-#pragma region 半直線との衝突判定
-
-    //if(input_->IsMouseTriggered(0))
-    //{
-    //    // カーソルからRayを生成 (うまくいかない
-    //    Ray ray = Ray::CreateFromMouseCursor(SceneCamera_, input_->GetMousePosition());
-
-    //    Ray ray2 = Ray::CreateFromPointAndTarget(SceneCamera_.translate_, oModel2_->GetWorldTransform()->GetWorldPosition());
-    //    RayCollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
-
-    //    std::vector<RayCastHit> hits;
-    //    RayCollisionManager::GetInstance()->RayCastAll(ray2, hits, 0xffffffff);
-
-    //    RayCastHit hit2;
-    //    // 個々での衝突判定
-    //    if (RayCollisionManager::GetInstance()->RayCast(ray, cubeCollider_, hit2))
-    //    {
-    //        // 衝突した
-    //        Debug::Log("Ray Hit\n");
-    //    }
-    //    else
-    //        Debug::Log("Ray Not Hit\n");
-    //}
-
-#pragma endregion
 
     CollisionManager::GetInstance()->RegisterCollider(bunnyCollider_);
     CollisionManager::GetInstance()->RegisterCollider(cubeCollider_);
     CollisionManager::GetInstance()->RegisterCollider(cubeCollider2_);
 
+        ParticleSystem::GetInstance()->Update();
     CollisionManager::GetInstance()->Update();
 }
 
@@ -195,7 +169,7 @@ void SampleScene::Draw()
 
     //button_->Draw();
 
-    //ParticleSystem::GetInstance()->DrawParticles();
+    ParticleSystem::GetInstance()->DrawParticles();
 
 }
 
