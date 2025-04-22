@@ -48,7 +48,6 @@ private:
     LineDrawer* lineDrawer_ = nullptr;
     Input* input_ = nullptr;
     ParticleSystem* particleSystem_ = nullptr;
-    std::unique_ptr<LightGroup> lights_;
 
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
