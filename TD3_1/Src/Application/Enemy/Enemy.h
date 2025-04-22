@@ -24,11 +24,13 @@ public:
 
 	void SetTarget(const Vector3& target) { targetPosition_ = target; }
 	bool IsDead() const { return isDead_; }
-	void Dead() { isDead_ = true; PlayDeathSound(); }
 
-
-	// 実体化した影オブジェクトに打ち上げられた際の処理
+	// 打ち上げ
 	void Launched();
+	// 拡縮
+	void Scaling();
+	// 死亡
+	void Dead() { isDead_ = true; PlayDeathSound(); }
 
     void SetRoute(BezierCurve3D* route) { route_ = route; } // ルートをセット
 
@@ -54,10 +56,12 @@ protected:
 	const float kDeltaTime = 1.0f / 60.0f;
 	const float kGravity = -30.0f;
 
+	float scale_ = 1.0f;
 	Vector3 targetPosition_;
 	float speed_;
 
 	bool isDead_ = false;
+	bool hasScaled_ = false; // 拡縮アニメーション用フラグ
 
     bool isAttacking_ = false; // 攻撃中かどうか
     bool canAttack_ = true; // 攻撃可能かどうか

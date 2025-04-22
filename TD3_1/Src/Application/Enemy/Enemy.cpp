@@ -10,6 +10,9 @@
 
 #include "EnemyAttackInfo.h"
 
+// Application
+#include <Application/Util/SimpleEasing/SimpleEasing.h>
+
 void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThreshold)
 {
 	object_ = std::make_unique<ObjectModel>("normalEnemy");
@@ -60,8 +63,8 @@ void NormalEnemy::Update()
         // 衝突しているとき
         blockedTimer_ += kDeltaTime; // 衝突している時間を加算
         if (blockedTimer_ >= blockStopThreshold) {
-            // 一定時間衝突していたら死亡
-            Dead();
+            // 一定時間衝突していたら拡縮開始
+			Scaling();
         }
 	}
 
@@ -87,12 +90,21 @@ void NormalEnemy::Update()
 		// オブジェクトの高さ更新
 		object_->translate_.y += verticalVelocity_ * kDeltaTime;
 
-		// 打ち上げられ後、着地したら落下を止めて死亡させる
+		// 打ち上げられ後、着地したら落下を止める
 		if (object_->translate_.y <= 1.0f) {
 			object_->translate_.y = 1.0f; // 地面に固定
-			Dead();
+			/*Dead();*/
+
+			// 着地したら拡縮
+			Scaling();
 		}
 	}
+
+	// 拡縮アニメーションが終わったら死亡
+	if (scale_ < 0.0f) {
+		Dead();
+	}
+
 	object_->Update();
 
 #ifdef _DEBUG
@@ -138,6 +150,16 @@ void Enemy::Launched()
 		verticalVelocity_ = 20.0f; // 初期垂直初速を設定
 		isLaunched_ = true; // 打ち上げられたことを記録
 	}
+}
+
+void Enemy::Scaling()
+{
+	if (!hasScaled_) {
+		SimpleEasing::Animate(scale_, scale_, 0.0f, Easing::EaseInBack, 1.0f);
+		hasScaled_ = true;
+	}
+	
+	object_->scale_ = { scale_, scale_, scale_ };
 }
 
 void Enemy::OnCollsion(Collider* _other, const ColliderInfo& _info)
