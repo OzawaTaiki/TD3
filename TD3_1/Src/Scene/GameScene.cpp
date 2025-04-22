@@ -224,6 +224,8 @@ void GameScene::Draw() {
 
 	// フェード描画
 	fade_->Draw();
+
+	particleSystem_->DrawParticles();
 }
 
 void GameScene::DrawShadow() {

@@ -123,6 +123,12 @@
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\Particles\SmokeParticle\SmokeParticle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Particles\SmokeParticle\SmokeModifier.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Essential\SampleFramework.h">
@@ -213,6 +219,12 @@
       <Filter>Essential</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\SmokeParticle\SmokeParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Particles\SmokeParticle\SmokeModifier.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

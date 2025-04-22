@@ -38,6 +38,10 @@ void Tower::Initialize(const Vector3& position)
 	spriteHP_ = Sprite::Create("towerHP", textureHP);
 	spriteHP_->Initialize();
 	spriteHP_->SetColor(Vector4(0.25f, 1.0f, 0.0f, 1.0f));
+
+	// パーティクル初期化
+	smokeParticle_ = std::make_unique<SmokeParticle>();
+	smokeParticle_->Initialize();
 }
 
 void Tower::Update()
@@ -57,6 +61,11 @@ void Tower::Update()
 
 	if (ImGui::Button("Shake")) {
 		StartShake(1.0f, 0.5f);
+	}
+
+	if (ImGui::Button("Emit")) {
+		Vector3 offset = { 0.0f, 3.0f, 0.0f };
+		smokeParticle_->Emit(this->object_->translate_ + offset);
 	}
 
 	// イージング移動テスト
@@ -115,8 +124,14 @@ void Tower::OnCollision(Collider* _other, const ColliderInfo& _info)
 	if (_other->GetLayer() == enemyLayer) {
 		// 処理済みであれば無視
 		if (processedColliders_.find(_other) == processedColliders_.end()) {
-			this->hp_--; // HPを減らす
+			// タワーHPを減らす
+			this->hp_--;
+			// タワーをシェイクさせる
 			StartShake(0.5f, 0.5f);
+			// タワーから煙パーティクルを発生
+			Vector3 offset = { 0.0f, 3.0f, 0.0f };
+			smokeParticle_->Emit(this->object_->translate_ + offset);
+			
 			processedColliders_.insert(_other); // 処理済みであることを記録
 		}
 	}

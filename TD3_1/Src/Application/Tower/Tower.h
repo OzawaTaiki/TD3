@@ -8,6 +8,9 @@
 #include <Features/Collision/Manager/CollisionManager.h>
 #include <Features/Sprite/Sprite.h>
 
+// Application
+#include <Application/Particles/SmokeParticle/SmokeParticle.h>
+
 class Camera;
 
 class Tower
@@ -43,6 +46,9 @@ private:
 	float shakeElapsed_ = 0.0f;
 	float shakeIntensity_ = 0.0f;
 	bool isShaking_ = false;
+
+	// パーティクル
+	std::unique_ptr<SmokeParticle> smokeParticle_;
 
 private:
 	std::unique_ptr<Sprite> spriteHP_;

@@ -3,6 +3,8 @@
 #include <Features/Effect/Modifier/Preset/DecelerationModifier.h>
 #include <Features/Effect/Modifier/Preset/AlphaOverLifetime.h>
 
+#include <Application/Particles/SmokeParticle/SmokeModifier.h>
+
 std::unique_ptr<ParticleModifier> ParticleModifierFactory::CreateModifier(const std::string _name)
 {
     if (_name == "DecelerationModifier")
@@ -16,6 +18,10 @@ std::unique_ptr<ParticleModifier> ParticleModifierFactory::CreateModifier(const 
     else if (_name == "ParticleModifier2")
     {
         // return std::make_unique<ParticleModifier2>();
+    }
+    else if (_name == "SmokeModifier") 
+    {
+        return std::make_unique<SmokeModifier>();
     }
 
 
