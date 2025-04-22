@@ -8,6 +8,9 @@
 #include <Math/Vector/VectorFunction.h>
 #include <Core/WinApp/WinApp.h>
 
+// Application
+#include <Application/Util/SimpleEasing/SimpleEasing.h>
+
 // Externals
 #include <imgui.h>
 
@@ -47,6 +50,15 @@ void Tower::Update()
 	ImGui::Begin("tower");
 	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
 	ImGui::Text("HP : %d", hp_);
+
+	// イージング移動テスト
+	if (ImGui::Button("Move Test : float")) {
+		SimpleEasing::Animate(object_->translate_.x, object_->translate_.x, 10.0f, Easing::EaseOutExpo, 2.0f);
+	}
+	if (ImGui::Button("Move Test : Vector3")) {
+		SimpleEasing::Animate(object_->translate_, object_->translate_, {5.0f, 1.0f, 10.0f}, Easing::EaseOutExpo, 2.0f);
+	}
+
 	ImGui::End();
 #endif
 }
