@@ -34,6 +34,16 @@ private:
 	// 敵と1度だけ衝突判定を行うよう、処理済みコライダーを追加
 	std::unordered_set<Collider*> processedColliders_;
 
+	// シェイク関連
+	void StartShake(float duration, float intensity);
+	void ApplyShake();
+	const float kDeltaTime = 1.0f / 60.0f;
+	Vector3 originalPosition_;
+	float shakeDuration_ = 0.0f;
+	float shakeElapsed_ = 0.0f;
+	float shakeIntensity_ = 0.0f;
+	bool isShaking_ = false;
+
 private:
 	std::unique_ptr<Sprite> spriteHP_;
 };

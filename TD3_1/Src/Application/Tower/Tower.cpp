@@ -1,5 +1,8 @@
 #include "Tower.h"
 
+// C++
+#include <random>
+
 // Engine
 #include <Features/Camera/Camera/Camera.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
@@ -40,6 +43,7 @@ void Tower::Initialize(const Vector3& position)
 void Tower::Update()
 {
 	object_->Update();
+	ApplyShake();
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 
 	spriteHP_->Update();
@@ -50,6 +54,10 @@ void Tower::Update()
 	ImGui::Begin("tower");
 	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
 	ImGui::Text("HP : %d", hp_);
+
+	if (ImGui::Button("Shake")) {
+		StartShake(1.0f, 0.5f);
+	}
 
 	// イージング移動テスト
 	if (ImGui::Button("Move Test : float")) {
@@ -108,7 +116,44 @@ void Tower::OnCollision(Collider* _other, const ColliderInfo& _info)
 		// 処理済みであれば無視
 		if (processedColliders_.find(_other) == processedColliders_.end()) {
 			this->hp_--; // HPを減らす
+			StartShake(0.5f, 0.5f);
 			processedColliders_.insert(_other); // 処理済みであることを記録
+		}
+	}
+}
+
+void Tower::StartShake(float duration, float intensity)
+{
+	if (isShaking_) return;
+
+	originalPosition_ = object_->translate_;
+	shakeDuration_ = duration;
+	shakeElapsed_ = 0.0f;
+	shakeIntensity_ = intensity;
+	isShaking_ = true;
+}
+
+void Tower::ApplyShake()
+{
+	if (isShaking_) {
+		shakeElapsed_ += kDeltaTime;
+
+		if (shakeElapsed_ < shakeDuration_) {
+			float remainingTime = shakeDuration_ - shakeElapsed_;
+			float currentIntensity = shakeIntensity_ * (remainingTime / shakeDuration_);
+
+			static std::random_device rd;
+			static std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> dis(-currentIntensity, currentIntensity);
+
+			Vector3 shakeOffset = { dis(gen), 0.0f, dis(gen) / 2.0f };
+
+			object_->translate_ = originalPosition_ + shakeOffset;
+
+		} else {
+			// シェイク終了
+			object_->translate_ = originalPosition_;
+			isShaking_ = false;
 		}
 	}
 }
