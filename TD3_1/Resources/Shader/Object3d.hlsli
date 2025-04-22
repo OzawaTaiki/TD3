@@ -25,6 +25,8 @@ struct DirectionalLight
 
     int isHalf;
     int castShadow;
+    float shadowFactor;
+    float pad;
 };
 
 struct PointLight
@@ -38,6 +40,9 @@ struct PointLight
     float decay;
     int isHalf;
     int castShadow;
+    
+    float shadowFactor;
+    float3 pad;
 
     float4x4 lightVP[6];
 };
