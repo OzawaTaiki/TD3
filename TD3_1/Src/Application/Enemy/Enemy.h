@@ -6,6 +6,8 @@
 #include <Features/Animation/Sequence/AnimationSequence.h>
 #include <Math/BezierCurve3D.h>
 
+// Application
+#include <Application/Particles/Enemy/Move/BubbleParticle.h>
 
 class Camera;
 
@@ -24,11 +26,13 @@ public:
 
 	void SetTarget(const Vector3& target) { targetPosition_ = target; }
 	bool IsDead() const { return isDead_; }
-	void Dead() { isDead_ = true; PlayDeathSound(); }
 
-
-	// 実体化した影オブジェクトに打ち上げられた際の処理
+	// 打ち上げ
 	void Launched();
+	// 拡縮して死亡
+	void ScalingAndDead();
+	// 死亡
+	void Dead() { isDead_ = true; PlayDeathSound(); }
 
     void SetRoute(BezierCurve3D* route) { route_ = route; } // ルートをセット
 
@@ -54,10 +58,12 @@ protected:
 	const float kDeltaTime = 1.0f / 60.0f;
 	const float kGravity = -30.0f;
 
+	float scale_ = 1.0f;
 	Vector3 targetPosition_;
 	float speed_;
 
 	bool isDead_ = false;
+	bool hasScaled_ = false; // 拡縮アニメーション用フラグ
 
     bool isAttacking_ = false; // 攻撃中かどうか
     bool canAttack_ = true; // 攻撃可能かどうか
@@ -90,6 +96,12 @@ protected:
 	Vector3 prePos_ = {};
 
     BezierCurve3D* route_; // ベジエ曲線
+
+	std::unique_ptr<BubbleParticle> bubbleParticle_; // 移動時パーティクル
+	uint32_t emitCounter_;
+
+	Vector3 CalculateFoward(const Quaternion& quaternion); // quaternionから前方向ベクトルの計算
+
 };
 
 

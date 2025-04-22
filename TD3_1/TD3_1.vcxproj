@@ -152,6 +152,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleModifier.cpp" />
+    <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp" />
+    <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.cpp" />
+    <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.cpp" />
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp" />
     <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp" />
     <ClCompile Include="Src\Application\Player\PlayerHand.cpp" />
@@ -187,6 +191,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleModifier.h" />
+    <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h" />
+    <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.h" />
+    <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.h" />
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h" />
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
     <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h" />

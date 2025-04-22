@@ -3,6 +3,9 @@
 #include <Features/Effect/Modifier/Preset/DecelerationModifier.h>
 #include <Features/Effect/Modifier/Preset/AlphaOverLifetime.h>
 
+#include <Application/Particles/Tower/SmokeParticle/SmokeModifier.h>
+#include <Application/Particles/Enemy/Move/BubbleModifier.h>
+
 std::unique_ptr<ParticleModifier> ParticleModifierFactory::CreateModifier(const std::string _name)
 {
     if (_name == "DecelerationModifier")
@@ -17,7 +20,14 @@ std::unique_ptr<ParticleModifier> ParticleModifierFactory::CreateModifier(const 
     {
         // return std::make_unique<ParticleModifier2>();
     }
-
+    else if (_name == "SmokeModifier") 
+    {
+        return std::make_unique<SmokeModifier>();
+    }
+    else if (_name == "BubbleModifier")
+    {
+        return std::make_unique<BubbleModifier>();
+    }
 
     throw std::runtime_error("モディファイアが見つかりませんでした。");
 

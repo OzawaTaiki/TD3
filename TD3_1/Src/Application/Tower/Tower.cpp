@@ -1,4 +1,9 @@
+#define NOMINMAX
 #include "Tower.h"
+
+// C++
+#include <random>
+#include <algorithm>
 
 // Engine
 #include <Features/Camera/Camera/Camera.h>
@@ -35,11 +40,16 @@ void Tower::Initialize(const Vector3& position)
 	spriteHP_ = Sprite::Create("towerHP", textureHP);
 	spriteHP_->Initialize();
 	spriteHP_->SetColor(Vector4(0.25f, 1.0f, 0.0f, 1.0f));
+
+	// パーティクル初期化
+	smokeParticle_ = std::make_unique<SmokeParticle>();
+	smokeParticle_->Initialize();
 }
 
 void Tower::Update()
 {
 	object_->Update();
+	ApplyShake();
 	CollisionManager::GetInstance()->RegisterCollider(collider_.get());
 
 	spriteHP_->Update();
@@ -50,6 +60,15 @@ void Tower::Update()
 	ImGui::Begin("tower");
 	ImGui::DragFloat3("translate", &object_->translate_.x, 0.01f);
 	ImGui::Text("HP : %d", hp_);
+
+	if (ImGui::Button("Shake")) {
+		StartShake(1.0f, 0.5f);
+	}
+
+	if (ImGui::Button("Emit")) {
+		Vector3 offset = { 0.0f, 3.0f, 0.0f };
+		smokeParticle_->Emit(this->object_->translate_ + offset);
+	}
 
 	// イージング移動テスト
 	if (ImGui::Button("Move Test : float")) {
@@ -89,6 +108,7 @@ void Tower::DrawUI(const Camera& camera)
 	const float kMaxWidth = 80.0f;
 	const float kMaxHP = 10.0f;
 	float currentWidth = kMaxWidth * (static_cast<float>(hp_) / kMaxHP);
+	currentWidth = std::max(currentWidth, 0.0f);
 	spriteHP_->SetSize({ currentWidth, 15.0f });
 
 	spriteHP_->Draw();
@@ -107,8 +127,51 @@ void Tower::OnCollision(Collider* _other, const ColliderInfo& _info)
 	if (_other->GetLayer() == enemyLayer) {
 		// 処理済みであれば無視
 		if (processedColliders_.find(_other) == processedColliders_.end()) {
-			this->hp_--; // HPを減らす
+			// タワーHPを減らす
+			this->hp_--;
+			// タワーをシェイクさせる
+			StartShake(0.5f, 0.5f);
+			// タワーから煙パーティクルを発生
+			Vector3 offset = { 0.0f, 3.0f, 0.0f };
+			smokeParticle_->Emit(this->object_->translate_ + offset);
+			
 			processedColliders_.insert(_other); // 処理済みであることを記録
+		}
+	}
+}
+
+void Tower::StartShake(float duration, float intensity)
+{
+	if (isShaking_) return;
+
+	originalPosition_ = object_->translate_;
+	shakeDuration_ = duration;
+	shakeElapsed_ = 0.0f;
+	shakeIntensity_ = intensity;
+	isShaking_ = true;
+}
+
+void Tower::ApplyShake()
+{
+	if (isShaking_) {
+		shakeElapsed_ += kDeltaTime;
+
+		if (shakeElapsed_ < shakeDuration_) {
+			float remainingTime = shakeDuration_ - shakeElapsed_;
+			float currentIntensity = shakeIntensity_ * (remainingTime / shakeDuration_);
+
+			static std::random_device rd;
+			static std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> dis(-currentIntensity, currentIntensity);
+
+			Vector3 shakeOffset = { dis(gen), 0.0f, dis(gen) / 2.0f };
+
+			object_->translate_ = originalPosition_ + shakeOffset;
+
+		} else {
+			// シェイク終了
+			object_->translate_ = originalPosition_;
+			isShaking_ = false;
 		}
 	}
 }
