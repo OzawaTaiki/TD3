@@ -4,6 +4,9 @@
 #include <fstream>
 #include <unordered_set>
 
+// Application
+#include <Application/Util/SimpleEasing/SimpleEasing.h>
+
 // Externals
 #include <imgui.h>
 #include <json.hpp>
