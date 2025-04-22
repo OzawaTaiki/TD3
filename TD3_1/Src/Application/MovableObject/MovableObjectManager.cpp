@@ -90,6 +90,14 @@ void MovableObjectManager::Draw(const Camera& camera)
 	hand_->Draw(camera);
 }
 
+void MovableObjectManager::DrawShadow(const Camera& camera)
+{
+    // オブジェクト影描画
+    for (const auto& object : objects_) {
+        object->DrawShadow(camera);
+    }
+}
+
 void MovableObjectManager::AddMovableObject(const Vector3& position)
 {
 	// オブジェクトを生成（一旦箱型オブジェクトだけ）

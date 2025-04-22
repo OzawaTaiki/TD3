@@ -201,6 +201,14 @@ void EnemySpawnManager::Draw(const Camera* camera) {
 	#endif
 }
 
+void EnemySpawnManager::DrawShadow(const Camera* camera)
+{
+    // 敵全ての影描画
+    for (auto& enemy : enemies_) {
+        enemy->DrawShadow(camera);
+    }
+}
+
 void EnemySpawnManager::Reset()
 {
     isTimerActive_ = false;

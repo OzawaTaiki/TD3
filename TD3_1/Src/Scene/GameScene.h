@@ -53,6 +53,8 @@ private:
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
 
+    std::shared_ptr<LightGroup> lights_ = nullptr;
+
 /// <summary>
 /// Application
 /// </summary>

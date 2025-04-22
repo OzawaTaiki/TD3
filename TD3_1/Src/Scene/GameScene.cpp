@@ -33,9 +33,6 @@ void GameScene::Initialize() {
 	particleSystem_ = ParticleSystem::GetInstance();
     particleSystem_->SetCamera(&SceneCamera_);
 
-	lights_ = std::make_unique<LightGroup>();
-	lights_->Initialize();
-	//LightingSystem::GetInstance()->SetActiveGroup(lights_.get());
 
 
 	///
@@ -87,6 +84,15 @@ void GameScene::Initialize() {
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 
+    lights_ = std::make_shared<LightGroup>();
+    lights_->Initialize();
+
+    auto pl = std::make_shared<PointLightComponent>();
+    lights_->AddPointLight("PointLight", pl);
+
+	LightingSystem::GetInstance()->SetActiveGroup(lights_);
+  
+  
 	LoadFromFile();
 }
 
@@ -101,6 +107,7 @@ void GameScene::Update() {
 	ImGui::Text("count : %d", shadowObjectManager_->GetScalingShadowObjectsCount());
 	ImGui::End();
 
+	lights_->ImGui();
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("translate", &originalCameraTranslate_.x, 0.01f);
 	ImGui::DragFloat3("rotate", &SceneCamera_.rotate_.x, 0.01f);
@@ -120,7 +127,7 @@ void GameScene::Update() {
 	} else {
 		SceneCamera_.Update();
 		SceneCamera_.UpdateMatrix();
-	}
+  }
 
 	// カメラシェイク更新
 	CameraShake::GetInstance()->Update();
@@ -219,8 +226,13 @@ void GameScene::Draw() {
 	fade_->Draw();
 }
 
-void GameScene::DrawShadow() {}
-
+void GameScene::DrawShadow() {
+	movableObjectManager_->DrawShadow(SceneCamera_);
+	// タワー描画
+	tower_->DrawShadow(SceneCamera_);
+	// 敵管理クラス描画
+	enemySpawnManager_->DrawShadow(&SceneCamera_);
+}
 void GameScene::SaveToFile() {
 	const std::string filePath = "Resources/Data/Camera/cameraParam.json";
 	nlohmann::json jsonData;

@@ -83,6 +83,11 @@ void Tower::DrawUI(const Camera& camera)
 #pragma endregion
 }
 
+void Tower::DrawShadow(const Camera& camera)
+{
+    object_->DrawShadow(&camera, 0);
+}
+
 void Tower::OnCollision(Collider* _other, const ColliderInfo& _info)
 {
 	// 敵との衝突時処理

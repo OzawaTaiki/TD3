@@ -18,6 +18,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw(const Camera* camera);
+    void DrawShadow(const Camera* camera);
 
 	/// <summary>
 	/// ターゲットの位置をセット

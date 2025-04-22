@@ -11,6 +11,7 @@ public:
 	virtual void Initialize(float _hp) = 0;
 	virtual void Update() = 0;
 	virtual void Draw(const Camera& camera) = 0;
+	virtual void DrawShadow(const Camera& camera) = 0;
 
 	void SetTranslate(const Vector3& translate) { object_->translate_ = translate; }
 	void SetTranslateY(const float& y) { object_->translate_.y = y; }
@@ -48,6 +49,7 @@ public:
 	void Initialize(float _hp) override;
 	void Update() override;
 	void Draw(const Camera& camera) override;
+    void DrawShadow(const Camera& camera) override;
 };
 
 /// <summary>
@@ -58,4 +60,5 @@ public:
 	void Initialize(float _hp) override;
 	void Update() override;
 	void Draw(const Camera& camera) override;
+    void DrawShadow(const Camera& camera) override;
 };
