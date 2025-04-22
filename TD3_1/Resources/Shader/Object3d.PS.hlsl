@@ -54,7 +54,7 @@ float ComputeShadow(float4 shadowCoord)
     float closestDepth = gShadowMap.Sample(gSampler, shadowCoord.xy).r;
 
     // 深度比較による影の判定
-    float shadow = (currentDepth > closestDepth + 0.001f) ? 0.2f : 1.0f;
+    float shadow = (currentDepth > closestDepth + 0.001f) ? DL.shadowFactor : 1.0f;
     return shadow;
 }
 float ComputePointLightShadow(int lightIndex, float3 worldPos, PointLight _PL)
@@ -89,7 +89,7 @@ float ComputePointLightShadow(int lightIndex, float3 worldPos, PointLight _PL)
 
     // シャドウバイアスを考慮
     float bias = 0.005;
-    float shadow = currentDepth > closestDepth + bias ? 0.2 : 1.0;
+    float shadow = currentDepth > closestDepth + bias ? _PL.shadowFactor : 1.0;
 
 
     return shadow;
