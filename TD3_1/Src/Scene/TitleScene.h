@@ -12,6 +12,8 @@
 // Application
 #include <Application/Transition/Fade/Fade.h>
 
+#include <Application/TItle/TitleBackModel.h>
+
 class TitleScene : public BaseScene
 {
 public:
@@ -35,10 +37,12 @@ private:
     LineDrawer* lineDrawer_ = nullptr;
     Input* input_ = nullptr;
     ParticleSystem* particleSystem_ = nullptr;
-    std::unique_ptr<LightGroup> lights_;
+    std::shared_ptr<LightGroup> lights_;
 
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
+
+
 
 private:
     // フェード関連
@@ -49,5 +53,8 @@ private:
     };
     std::unique_ptr<Fade> fade_;
     Phase phase_ = Phase::kFadeIn;
+
+    // 
+    std::unique_ptr<TitleBackModel> titleBackModel_ = nullptr;
 };
 
