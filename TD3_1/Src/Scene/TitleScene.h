@@ -12,6 +12,8 @@
 // Application
 #include <Application/Transition/Fade/Fade.h>
 
+#include <Application/TItle/TitleBackModel.h>
+
 class TitleScene : public BaseScene
 {
 public:
@@ -40,6 +42,8 @@ private:
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
 
+
+
 private:
     // フェード関連
     enum class Phase {
@@ -49,5 +53,8 @@ private:
     };
     std::unique_ptr<Fade> fade_;
     Phase phase_ = Phase::kFadeIn;
+
+    // 
+    std::unique_ptr<TitleBackModel> titleBackModel_ = nullptr;
 };
 

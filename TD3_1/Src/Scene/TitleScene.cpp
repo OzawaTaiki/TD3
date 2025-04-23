@@ -34,7 +34,9 @@ void TitleScene::Initialize()
 	lights_->Initialize();
 
 	auto pl = std::make_shared<PointLightComponent>();
+	pl->SetIntensity(0.0f);
 	lights_->AddPointLight("PointLight", pl);
+
 
 	LightingSystem::GetInstance()->SetActiveGroup(lights_);
 
@@ -45,6 +47,10 @@ void TitleScene::Initialize()
 	fade_ = std::make_unique<Fade>();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+    titleBackModel_ = std::make_unique<TitleBackModel>();
+    titleBackModel_->Initialize();
+
 }
 
 void TitleScene::Update()
@@ -56,6 +62,8 @@ void TitleScene::Update()
 
 	if (input_->IsKeyTriggered(DIK_RETURN) && input_->IsKeyPressed(DIK_RSHIFT))
 		enableDebugCamera_ = !enableDebugCamera_;
+
+    titleBackModel_->DebugWindow();
 
 #endif // _DEBUG
 
@@ -69,7 +77,7 @@ void TitleScene::Update()
 	}
 
 	ground_->Update();
-
+    titleBackModel_->Update();
 
 	switch (phase_) {
 	case Phase::kFadeIn:
@@ -103,7 +111,10 @@ void TitleScene::Draw()
 {
 	ModelManager::GetInstance()->PreDrawForObjectModel();
 
-	ground_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
+	//ground_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
+
+    // タイトル背景モデル描画
+    titleBackModel_->Draw(&SceneCamera_);
 
 	// フェード描画
 	fade_->Draw();
