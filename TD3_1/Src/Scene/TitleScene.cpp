@@ -29,9 +29,14 @@ void TitleScene::Initialize()
 	particleSystem_ = ParticleSystem::GetInstance();
 	particleSystem_->SetCamera(&SceneCamera_);
 
-	lights_ = std::make_unique<LightGroup>();
+
+	lights_ = std::make_shared<LightGroup>();
 	lights_->Initialize();
-	//LightingSystem::GetInstance()->SetActiveGroup(lights_.get());
+
+	auto pl = std::make_shared<PointLightComponent>();
+	lights_->AddPointLight("PointLight", pl);
+
+	LightingSystem::GetInstance()->SetActiveGroup(lights_);
 
 	///
 	///	Application
