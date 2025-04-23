@@ -33,4 +33,8 @@ private:
 	std::vector<std::unique_ptr<AABBCollider>> colliders_;
 
 	uint32_t texture_;
+
+	// フィールドオブジェクト
+	std::unique_ptr<ObjectModel> object_;
+	uint32_t textureField_;
 };

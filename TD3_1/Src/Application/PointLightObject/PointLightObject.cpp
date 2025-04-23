@@ -5,10 +5,11 @@
 
 void PointLightObject::Initialize(Vector3 position, float maxDistance) { 
 	objectLight_ = std::make_unique<ObjectModel>("PointLightObject"); 
-	objectLight_->Initialize("Sphere/sphere.obj");
+	objectLight_->Initialize("Light/light.obj");
 	objectLight_->translate_ = position;
+	objectLight_->euler_.y = -std::numbers::pi_v<float>;
 	maxDistance_ = maxDistance;
-	textureLight_ = TextureManager::GetInstance()->Load("white.png");
+	textureLight_ = TextureManager::GetInstance()->Load("game/object/light.png");
 
 	objectCircle_ = std::make_unique<ObjectModel>("CircleObject");
 	objectCircle_->Initialize("circle.obj");
@@ -29,6 +30,6 @@ void PointLightObject::Update() {
 }
 
 void PointLightObject::Draw(const Camera& camera) { 
-	objectLight_->Draw(&camera, textureLight_, {1, 1, 0, 1}); 
+	objectLight_->Draw(&camera, textureLight_, {1, 1, 1, 1}); 
 	objectCircle_->Draw(&camera, textureCircle_, { 0.75f, 0.75f, 0, 1.0f });
 }
