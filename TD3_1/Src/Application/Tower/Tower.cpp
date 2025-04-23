@@ -25,7 +25,7 @@ void Tower::Initialize(const Vector3& position)
 	object_->Initialize("Tower/tower.obj");
 	object_->translate_ = position;
 
-	texture_ = TextureManager::GetInstance()->Load("tower.png");
+	texture_ = TextureManager::GetInstance()->Load("game/tower.png");
 	
 	collider_ = std::make_unique<AABBCollider>("TowerCollider");
 	collider_->SetLayer("Tower");

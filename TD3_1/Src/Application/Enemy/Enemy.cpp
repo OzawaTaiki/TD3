@@ -21,7 +21,7 @@ void NormalEnemy::Initialize(const Vector3& spawnPosition, float _blockStopThres
 	object_->translate_ = spawnPosition;
 	object_->useQuaternion_ = true;
 
-	texture_ = TextureManager::GetInstance()->Load("game/enemy/enemy.png");
+	texture_ = TextureManager::GetInstance()->Load("game/enemy.png");
 
 	InitialzeColliders();
 

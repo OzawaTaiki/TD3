@@ -9,9 +9,10 @@
 
 void PlayerHand::Initialize(const Camera& camera) { 
 	object_ = std::make_unique<ObjectModel>("hand"); 
-	object_->Initialize("Hand/hand.obj");
+	object_->Initialize("Hand/player.obj");
+	object_->euler_.y = -std::numbers::pi_v<float>;
 
-	texture_ = TextureManager::GetInstance()->Load("game/player/hand.png");
+	texture_ = TextureManager::GetInstance()->Load("game/player.png");
 
 	targetY_ = defaultY_;
 	currentY_ = defaultY_;
