@@ -7,7 +7,8 @@
             "Movableobject",
             "Enemy_forward",
             "Shadowobject",
-            "Shadowobjectreturning"
+            "Shadowobjectreturning",
+            "None"
         ]
     }
 }

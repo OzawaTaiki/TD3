@@ -84,7 +84,7 @@ void Field::LoadBlocksFromCSV(const std::string& filename) {
 		// ブロック用コライダーを生成
 		auto collider = std::make_unique<AABBCollider>("WallCollider_" + std::to_string(colliders_.size()));
 		collider->SetLayer("Wall");
-		collider->SetLayerMask("Wall");
+		collider->SetCollisionLayer("none");
 		collider->SetMinMax(block->GetMin(), block->GetMax());
 		collider->SetWorldTransform(block->GetWorldTransform());
 
