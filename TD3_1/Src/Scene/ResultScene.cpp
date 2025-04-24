@@ -109,7 +109,7 @@ void ResultScene::Update()
 	case Phase::kFadeOut:
 		// フェードが終わったらゲームシーンへ
 		if (fade_->IsFinished()) {
-			SceneManager::GetInstance()->ReserveScene("Game");
+			SceneManager::GetInstance()->ReserveScene("Title");
 		}
 
 		break;

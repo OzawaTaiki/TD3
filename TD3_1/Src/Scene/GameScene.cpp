@@ -6,6 +6,7 @@
 
 // Application
 #include <Application/CameraShake/CameraShake.h>
+#include <Application/Result/ResultData.h>
 
 GameScene::~GameScene() {
 
@@ -91,8 +92,9 @@ void GameScene::Initialize() {
     lights_->AddPointLight("PointLight", pl);
 
 	LightingSystem::GetInstance()->SetActiveGroup(lights_);
-  
-  
+
+	ResultData::GetInstance()->Reset();
+
 	LoadFromFile();
 }
 
@@ -178,6 +180,31 @@ void GameScene::Update() {
 		// タワーのHPが0になったら
         // 敵が全て倒されたら
 		// フェード開始
+		if(tower_->GetHP() <= 0)
+            ResultData::GetInstance()->SetGameResult(GameResult::GameOver);
+
+		else if(clearChecker_->IsCleared())
+            ResultData::GetInstance()->SetGameResult(GameResult::Clear);
+#ifdef _DEBUG
+
+        if(ImGui::Button("Clear"))
+		{
+			ResultData::GetInstance()->SetGameResult(GameResult::Clear);
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}
+        if (ImGui::Button("GameOver"))
+        {
+            ResultData::GetInstance()->SetGameResult(GameResult::GameOver);
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+        }
+
+
+#endif // ?DEBUG
+
+
+
 		if (tower_->GetHP() <= 0 ||
 			clearChecker_->IsCleared()) {
 			phase_ = Phase::kFadeOut;
@@ -189,7 +216,7 @@ void GameScene::Update() {
 	case Phase::kFadeOut:
 		// 一旦タイトルに戻るようにしておく
 		if (fade_->IsFinished()) {
-			SceneManager::GetInstance()->ReserveScene("Title");
+			SceneManager::GetInstance()->ReserveScene("Result");
 		}
 	}
 }
