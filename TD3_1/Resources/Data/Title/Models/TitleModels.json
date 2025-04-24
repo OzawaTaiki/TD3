@@ -45,8 +45,75 @@
             "z": 0.0
         },
         "modelNames": [
-            "NewModel",
-            "NewModel2"
-        ]
+            "titleGoodwill",
+            "titleLantern",
+            "titleLantern_left"
+        ],
+        "titleGoodwill_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleGoodwill_euler": {
+            "x": 0.0,
+            "y": 3.140000104904175,
+            "z": 0.3499999940395355
+        },
+        "titleGoodwill_filePath": "titleGoodwill/titleGoodwill.obj",
+        "titleGoodwill_scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleGoodwill_translate": {
+            "x": -3.9600000381469727,
+            "y": 0.699999988079071,
+            "z": 5.389999866485596
+        },
+        "titleLantern_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleLantern_euler": {
+            "x": -0.20000000298023224,
+            "y": 0.0,
+            "z": -0.5799999833106995
+        },
+        "titleLantern_filePath": "titleLantern/titleLantern.obj",
+        "titleLantern_left_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleLantern_left_euler": {
+            "x": 0.23000000417232513,
+            "y": 0.25999999046325684,
+            "z": -0.25
+        },
+        "titleLantern_left_filePath": "titleLantern/titleLantern.obj",
+        "titleLantern_left_scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleLantern_left_translate": {
+            "x": 8.489999771118164,
+            "y": 0.0,
+            "z": 5.369999885559082
+        },
+        "titleLantern_scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "titleLantern_translate": {
+            "x": -6.730000019073486,
+            "y": -12.479999542236328,
+            "z": 22.360000610351563
+        }
     }
 }
