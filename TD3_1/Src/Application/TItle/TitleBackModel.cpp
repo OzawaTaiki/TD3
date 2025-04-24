@@ -1,4 +1,5 @@
 #include "TitleBackModel.h"
+#include <Core/DXCommon/TextureManager/TextureManager.h>
 
 void TitleBackModel::Initialize()
 {
@@ -82,12 +83,23 @@ void TitleBackModel::DebugWindow()
                     ImGui::DragFloat3("Scale", &modelData_[name].scale.x, 0.01f);
                     ImGui::DragFloat3("Euler", &modelData_[name].euler.x, 0.01f);
                     ImGui::InputText("FilePath", filePath, sizeof(filePath));
+                    static char texturePath[256] = "";
+                    static char textureDirPath[256] = "Resources/images/";
+                    ImGui::InputText("TextureDirPath", textureDirPath, 256);
+                    ImGui::InputText("TexturePath", texturePath, 256);
                     if (ImGui::Button("Apply"))
                     {
                         model->Initialize(filePath);
                         modelData_[name].filePath = filePath;
 
+                        modelData_[name].textureHandle = TextureManager::GetInstance()->Load(texturePath, textureDirPath);
+                        modelData_[name].texturePath = texturePath;
+                        modelData_[name].textureDirPath = textureDirPath;
+
+
                         strcpy_s(filePath, 256, "");
+                        strcpy_s(texturePath, 256, "");
+                        strcpy_s(textureDirPath, 256, "Resources/images/");
                     }
 
                     if (ImGui::Button("Delete"))
@@ -127,6 +139,8 @@ void TitleBackModel::Save()
         modelNames.push_back(name);
 
         jsonBinder_->SendVariable(name + "_filePath", data.filePath);
+        jsonBinder_->SendVariable(name + "_texturePath", data.texturePath);
+        jsonBinder_->SendVariable(name + "_textureDirPath", data.textureDirPath);
         jsonBinder_->SendVariable(name + "_translate", data.translate);
         jsonBinder_->SendVariable(name + "_scale", data.scale);
         jsonBinder_->SendVariable(name + "_euler", data.euler);
@@ -144,10 +158,21 @@ void TitleBackModel::LoadModelData(const std::string& _name)
     loadData data;
 
     jsonBinder_->GetVariableValue(_name + "_filePath", data.filePath);
+    jsonBinder_->GetVariableValue(_name + "_texturePath", data.texturePath);
+    jsonBinder_->GetVariableValue(_name + "_textureDirPath", data.textureDirPath);
     jsonBinder_->GetVariableValue(_name + "_translate", data.translate);
     jsonBinder_->GetVariableValue(_name + "_scale", data.scale);
     jsonBinder_->GetVariableValue(_name + "_euler", data.euler);
     jsonBinder_->GetVariableValue(_name + "_color", data.color);
+
+    data.name = _name;
+    if (data.texturePath.empty() || data.textureDirPath.empty())
+    {
+        data.texturePath = "uvChecker.png";
+        data.textureDirPath = "Resources/images/";
+    }
+
+    data.textureHandle = TextureManager::GetInstance()->Load(data.texturePath, data.textureDirPath);
 
     // 保存用に保持
     modelData_[_name] = data;

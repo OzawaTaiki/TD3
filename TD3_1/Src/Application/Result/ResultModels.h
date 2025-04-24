@@ -35,10 +35,13 @@ private:
     {
         std::string name;
         std::string filePath;
+        std::string textureDirPath;
+        std::string texturePath;
         Vector3 translate;
         Vector3 scale;
         Vector3 euler;
         Vector4 color;
+        uint32_t textureHandle = 0;
 
     };
     std::map<std::string, loadData> modelData_;

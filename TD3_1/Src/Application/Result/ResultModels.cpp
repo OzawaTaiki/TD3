@@ -1,10 +1,11 @@
 #include "ResultModels.h"
 
 #include <Application/Result/ResultData.h>
+#include <Core/DXCommon/TextureManager/TextureManager.h>
 
 void ResultModels::Initialize()
 {
-    jsonBinder_ = std::make_unique<JsonBinder>("TitleModels", "Resources/Data/Title/Models/");
+    jsonBinder_ = std::make_unique<JsonBinder>("ResultModels", "Resources/Data/Title/Models/");
 
     auto result = ResultData::GetInstance()->GetGameResult();
 
@@ -48,7 +49,7 @@ void ResultModels::Draw(const Camera* _camera)
 {
     for (auto& [name, model] : models_)
     {
-        model->Draw(_camera, modelData_[name].color);
+        model->Draw(_camera, modelData_[name].textureHandle, modelData_[name].color);
     }
 }
 
@@ -99,12 +100,22 @@ void ResultModels::DebugWindow()
                     ImGui::DragFloat3("Scale", &modelData_[name].scale.x, 0.01f);
                     ImGui::DragFloat3("Euler", &modelData_[name].euler.x, 0.01f);
                     ImGui::InputText("FilePath", filePath, sizeof(filePath));
+                    static char texturePath[256] = "";
+                    static char textureDirPath[256] = "Resources/images/";
+                    ImGui::InputText("TextureDirPath", textureDirPath, 256);
+                    ImGui::InputText("TexturePath", texturePath, 256);
                     if (ImGui::Button("Apply"))
                     {
                         model->Initialize(filePath);
                         modelData_[name].filePath = filePath;
 
+                        modelData_[name].textureHandle = TextureManager::GetInstance()->Load(texturePath, textureDirPath);
+                        modelData_[name].texturePath = texturePath;
+                        modelData_[name].textureDirPath = textureDirPath;
+
                         strcpy_s(filePath, 256, "");
+                        strcpy_s(texturePath, 256, "");
+                        strcpy_s(textureDirPath, 256, "Resources/images/");
                     }
 
                     if (ImGui::Button("Delete"))
@@ -144,6 +155,8 @@ void ResultModels::Save()
         modelNames.push_back(name);
 
         jsonBinder_->SendVariable(name + "_filePath", data.filePath);
+        jsonBinder_->SendVariable(name + "_texturePath", data.texturePath);
+        jsonBinder_->SendVariable(name + "_textureDirPath", data.textureDirPath);
         jsonBinder_->SendVariable(name + "_translate", data.translate);
         jsonBinder_->SendVariable(name + "_scale", data.scale);
         jsonBinder_->SendVariable(name + "_euler", data.euler);
@@ -161,11 +174,21 @@ void ResultModels::LoadModelData(const std::string& _name, int _result)
     loadData data;
 
     jsonBinder_->GetVariableValue(_name + "_filePath", data.filePath);
+    jsonBinder_->GetVariableValue(_name + "_texturePath", data.texturePath);
+    jsonBinder_->GetVariableValue(_name + "_textureDirPath", data.textureDirPath);
     jsonBinder_->GetVariableValue(_name + "_translate", data.translate);
     jsonBinder_->GetVariableValue(_name + "_scale", data.scale);
     jsonBinder_->GetVariableValue(_name + "_euler", data.euler);
     jsonBinder_->GetVariableValue(_name + "_color", data.color);
 
+    if (data.textureDirPath.empty() || data.texturePath.empty())
+    {
+        data.textureDirPath = "Resources/images/";
+        data.texturePath = "uvChecker.png";
+    }
+
+    data.name = _name;
+    data.textureHandle = TextureManager::GetInstance()->Load(data.texturePath, data.textureDirPath);
     // 保存用に保持
     modelData_[_name] = data;
     if (_result == 0)
@@ -187,6 +210,7 @@ void ResultModels::LoadModelData(const std::string& _name, int _result)
             gameOvermodelNames_.push_back(_name);
         }
     }
+
 
 
     // モデルの読み込み

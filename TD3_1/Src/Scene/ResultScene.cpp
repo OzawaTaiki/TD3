@@ -122,7 +122,7 @@ void ResultScene::Draw()
 {
 	// 背景スプライト
     Sprite::PreDraw();
-    scoreSprites_->Draw();
+    //scoreSprites_->Draw();
 
 	ModelManager::GetInstance()->PreDrawForObjectModel();
 
