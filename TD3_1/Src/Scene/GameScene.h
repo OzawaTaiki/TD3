@@ -51,6 +51,7 @@ private:
 
 
     std::unique_ptr<ObjectModel> ground_ = nullptr;
+	uint32_t textureGround_;
 
     std::shared_ptr<LightGroup> lights_ = nullptr;
 
