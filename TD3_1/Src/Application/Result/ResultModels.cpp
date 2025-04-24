@@ -12,8 +12,8 @@ void ResultModels::Initialize()
     std::vector<std::string> modelNames;
 
     jsonBinder_->GetVariableValue("modelNames", modelNames);
-    jsonBinder_->GetVariableValue("clearModelNames", clearmodelNames_);
-    jsonBinder_->GetVariableValue("gameOverModelNames", gameOvermodelNames_);
+    jsonBinder_->RegisterVariable("clearModelNames", &clearmodelNames_);
+    jsonBinder_->RegisterVariable("gameOverModelNames", &gameOvermodelNames_);
 
     if (result == GameResult::Clear)
     {
@@ -104,16 +104,20 @@ void ResultModels::DebugWindow()
                     static char textureDirPath[256] = "Resources/images/";
                     ImGui::InputText("TextureDirPath", textureDirPath, 256);
                     ImGui::InputText("TexturePath", texturePath, 256);
-                    if (ImGui::Button("Apply"))
+                    if (ImGui::Button("Model Apply"))
                     {
                         model->Initialize(filePath);
                         modelData_[name].filePath = filePath;
 
+                        strcpy_s(filePath, 256, "");
+                    }
+
+                    if (ImGui::Button("Texture Apply"))
+                    {
                         modelData_[name].textureHandle = TextureManager::GetInstance()->Load(texturePath, textureDirPath);
                         modelData_[name].texturePath = texturePath;
                         modelData_[name].textureDirPath = textureDirPath;
 
-                        strcpy_s(filePath, 256, "");
                         strcpy_s(texturePath, 256, "");
                         strcpy_s(textureDirPath, 256, "Resources/images/");
                     }
