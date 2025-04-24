@@ -1,0 +1,63 @@
+#pragma once
+
+#include <Features/Scene/Interface/BaseScene.h>
+
+#include <Features/Camera/Camera/Camera.h>
+#include <Features/Camera/DebugCamera/DebugCamera.h>
+#include <Features/Model/ObjectModel.h>
+#include <Features/Effect/Manager/ParticleSystem.h>
+#include <Features/LineDrawer/LineDrawer.h>
+#include <System/Input/Input.h>
+
+// Application
+#include <Application/Transition/Fade/Fade.h>
+
+#include <Application/Result/ScoreSprites.h>
+#include <Application/Result/ResultOtohime.h>
+#include <Application/Result/ResultModels.h>
+
+class ResultScene : public BaseScene
+{
+public:
+    ~ResultScene() override;
+    void Initialize() override;
+    void Update() override;
+    void Draw() override;
+    void DrawShadow() override;
+
+    /// <summary>
+    /// base
+    /// </summary>
+private:
+    // シーン関連
+    Camera SceneCamera_ = {};
+    DebugCamera debugCamera_ = {};
+    bool enableDebugCamera_ = false;
+
+    std::vector<Particle> particles_;
+
+    LineDrawer* lineDrawer_ = nullptr;
+    Input* input_ = nullptr;
+    ParticleSystem* particleSystem_ = nullptr;
+    std::shared_ptr<LightGroup> lights_;
+
+
+    std::unique_ptr<ObjectModel> ground_ = nullptr;
+
+
+private:
+    // フェード関連
+    enum class Phase {
+        kFadeIn,
+        kMain,
+        kFadeOut
+    };
+    std::unique_ptr<Fade> fade_;
+    Phase phase_ = Phase::kFadeIn;
+
+    std::unique_ptr<ScoreSprites> scoreSprites_ = nullptr;
+    std::unique_ptr<ResultOtohime> otohime_ = nullptr;
+
+    std::unique_ptr<ResultModels> resultModels_ = nullptr;
+};
+

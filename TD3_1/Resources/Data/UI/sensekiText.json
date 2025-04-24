@@ -1,0 +1,28 @@
+{
+    "sensekiText": {
+        "sensekiText_anchor": {
+            "x": 0.5,
+            "y": 0.5
+        },
+        "sensekiText_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "sensekiText_directoryPath": "Resources/images/",
+        "sensekiText_isActive": 257,
+        "sensekiText_isVisible": 1,
+        "sensekiText_label": "sensekiText",
+        "sensekiText_pos": {
+            "x": 1024.0,
+            "y": 160.0
+        },
+        "sensekiText_rotate": 0.0,
+        "sensekiText_size": {
+            "x": 128.0,
+            "y": 196.0
+        },
+        "sensekiText_textureName": "white.png"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "utiageCountText": {
+        "utiageCountText_anchor": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "utiageCountText_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "utiageCountText_directoryPath": "Resources/images/",
+        "utiageCountText_isActive": 257,
+        "utiageCountText_isVisible": 1,
+        "utiageCountText_label": "utiageCountText",
+        "utiageCountText_pos": {
+            "x": 801.0,
+            "y": 100.0
+        },
+        "utiageCountText_rotate": 0.0,
+        "utiageCountText_size": {
+            "x": 64.0,
+            "y": 128.0
+        },
+        "utiageCountText_textureName": "white.png"
+    }
+}

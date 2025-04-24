@@ -37,6 +37,9 @@
     <Filter Include="Application\TItleBack">
       <UniqueIdentifier>{30133e89-41da-4c1f-abe3-4bd1b064e5d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\ResultParts">
+      <UniqueIdentifier>{5af4d923-6a9b-4dca-8250-3226d96c7e03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -140,6 +143,21 @@
     </ClCompile>
     <ClCompile Include="Src\Application\TItle\TitleBackModel.cpp">
       <Filter>Application\TItleBack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Result\ScoreSprites.cpp">
+      <Filter>Application\ResultParts</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Result\ResultOtohime.cpp">
+      <Filter>Application\ResultParts</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\ResultScene.cpp">
+      <Filter>Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Result\ResultData.cpp">
+      <Filter>Application\ResultParts</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Result\ResultModels.cpp">
+      <Filter>Application\ResultParts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +265,21 @@
     </ClInclude>
     <ClInclude Include="Src\Application\TItle\TitleBackModel.h">
       <Filter>Application\TItleBack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Result\ScoreSprites.h">
+      <Filter>Application\ResultParts</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Result\ResultOtohime.h">
+      <Filter>Application\ResultParts</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\ResultScene.h">
+      <Filter>Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Result\ResultModels.h">
+      <Filter>Application\ResultParts</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Result\ResultData.h">
+      <Filter>Application\ResultParts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
