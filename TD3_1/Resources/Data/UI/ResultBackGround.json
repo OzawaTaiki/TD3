@@ -1,0 +1,28 @@
+{
+    "ResultBackGround": {
+        "ResultBackGround_anchor": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "ResultBackGround_color": {
+            "w": 1.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "ResultBackGround_directoryPath": "Resources/images/",
+        "ResultBackGround_isActive": 257,
+        "ResultBackGround_isVisible": 1,
+        "ResultBackGround_label": "ResultBackGround",
+        "ResultBackGround_pos": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "ResultBackGround_rotate": 0.0,
+        "ResultBackGround_size": {
+            "x": 1280.0,
+            "y": 720.0
+        },
+        "ResultBackGround_textureName": "white.png"
+    }
+}

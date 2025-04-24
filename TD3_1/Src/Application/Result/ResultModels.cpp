@@ -1,23 +1,39 @@
-#include "TitleBackModel.h"
+#include "ResultModels.h"
+
+#include <Application/Result/ResultData.h>
 #include <Core/DXCommon/TextureManager/TextureManager.h>
 
-void TitleBackModel::Initialize()
+void ResultModels::Initialize()
 {
-    jsonBinder_ = std::make_unique<JsonBinder>("TitleModels", "Resources/Data/Title/Models/");
+    jsonBinder_ = std::make_unique<JsonBinder>("ResultModels", "Resources/Data/Title/Models/");
+
+    auto result = ResultData::GetInstance()->GetGameResult();
 
     std::vector<std::string> modelNames;
 
     jsonBinder_->GetVariableValue("modelNames", modelNames);
+    jsonBinder_->RegisterVariable("clearModelNames", &clearmodelNames_);
+    jsonBinder_->RegisterVariable("gameOverModelNames", &gameOvermodelNames_);
 
-    size_t modelCount = modelNames.size();
-
-    for (std::string name : modelNames)
+    if (result == GameResult::Clear)
     {
-        LoadModelData(name);
+        for (auto& name : clearmodelNames_)
+        {
+            LoadModelData(name, 0);
+        }
     }
+    else if (result == GameResult::GameOver)
+    {
+        for (auto& name : gameOvermodelNames_)
+        {
+            LoadModelData(name, 1);
+        }
+    }
+
+
 }
 
-void TitleBackModel::Update()
+void ResultModels::Update()
 {
     for (auto& [name, model] : models_)
     {
@@ -29,23 +45,21 @@ void TitleBackModel::Update()
     }
 }
 
-void TitleBackModel::Draw(const Camera* _camera)
+void ResultModels::Draw(const Camera* _camera)
 {
     for (auto& [name, model] : models_)
     {
-        model->Draw(_camera, modelData_[name].color);
+        model->Draw(_camera, modelData_[name].textureHandle, modelData_[name].color);
     }
 }
 
-void TitleBackModel::DebugWindow()
+void ResultModels::DebugWindow()
 {
 #ifdef _DEBUG
 
     ImGui::PushID(this);
     ImGui::Begin("Models");
     {
-
-
         if (ImGui::Button("Save"))        Save();
 
         if (ImGui::Button("Create"))      ImGui::OpenPopup("CreateModel");
@@ -53,10 +67,13 @@ void TitleBackModel::DebugWindow()
         if (ImGui::BeginPopupModal("CreateModel"))
         {
             static char name[32] = "NewModel";
+            static const char* result[128] = {"Clear","GameOver"};
+            static int resultIndex = 0;
             ImGui::InputText("Name", name, sizeof(name));
+            ImGui::Combo("Result", &resultIndex, result, IM_ARRAYSIZE(result));
             if (ImGui::Button("OK"))
             {
-                LoadModelData(name);
+                LoadModelData(name, resultIndex);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -132,7 +149,7 @@ void TitleBackModel::DebugWindow()
 #endif // _DEBUG
 }
 
-void TitleBackModel::Save()
+void ResultModels::Save()
 {
     std::vector<std::string> modelNames;
 
@@ -156,7 +173,7 @@ void TitleBackModel::Save()
 }
 
 
-void TitleBackModel::LoadModelData(const std::string& _name)
+void ResultModels::LoadModelData(const std::string& _name, int _result)
 {
     loadData data;
 
@@ -168,17 +185,36 @@ void TitleBackModel::LoadModelData(const std::string& _name)
     jsonBinder_->GetVariableValue(_name + "_euler", data.euler);
     jsonBinder_->GetVariableValue(_name + "_color", data.color);
 
-    data.name = _name;
-    if (data.texturePath.empty() || data.textureDirPath.empty())
+    if (data.textureDirPath.empty() || data.texturePath.empty())
     {
-        data.texturePath = "uvChecker.png";
         data.textureDirPath = "Resources/images/";
+        data.texturePath = "uvChecker.png";
     }
 
+    data.name = _name;
     data.textureHandle = TextureManager::GetInstance()->Load(data.texturePath, data.textureDirPath);
-
     // 保存用に保持
     modelData_[_name] = data;
+    if (_result == 0)
+    {
+        auto it = std::find(clearmodelNames_.begin(), clearmodelNames_.end(), _name);
+        if (it == clearmodelNames_.end())
+        {
+            // 見つからなかったとき追加
+            clearmodelNames_.push_back(_name);
+        }
+
+    }
+    else
+    {
+        auto it = std::find(gameOvermodelNames_.begin(), gameOvermodelNames_.end(), _name);
+        if (it == gameOvermodelNames_.end())
+        {
+            // 見つからなかったとき追加
+            gameOvermodelNames_.push_back(_name);
+        }
+    }
+
 
 
     // モデルの読み込み

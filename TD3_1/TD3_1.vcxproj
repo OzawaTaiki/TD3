@@ -156,6 +156,10 @@
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp" />
     <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.cpp" />
     <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.cpp" />
+    <ClCompile Include="Src\Application\Result\ResultData.cpp" />
+    <ClCompile Include="Src\Application\Result\ResultModels.cpp" />
+    <ClCompile Include="Src\Application\Result\ResultOtohime.cpp" />
+    <ClCompile Include="Src\Application\Result\ScoreSprites.cpp" />
     <ClCompile Include="Src\Application\TItle\TitleBackModel.cpp" />
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp" />
     <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp" />
@@ -183,6 +187,7 @@
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Application\Tower\Tower.cpp" />
+    <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp" />
   </ItemGroup>
@@ -196,6 +201,10 @@
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h" />
     <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.h" />
     <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeParticle.h" />
+    <ClInclude Include="Src\Application\Result\ResultData.h" />
+    <ClInclude Include="Src\Application\Result\ResultModels.h" />
+    <ClInclude Include="Src\Application\Result\ResultOtohime.h" />
+    <ClInclude Include="Src\Application\Result\ScoreSprites.h" />
     <ClInclude Include="Src\Application\TItle\TitleBackModel.h" />
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h" />
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
@@ -225,6 +234,7 @@
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Application\Tower\Tower.h" />
+    <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h" />
   </ItemGroup>

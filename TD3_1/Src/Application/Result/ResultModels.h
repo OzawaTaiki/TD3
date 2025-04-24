@@ -10,11 +10,11 @@
 #include <string>
 #include <memory>
 
-class TitleBackModel
+class ResultModels
 {
 public:
-    TitleBackModel() = default;
-    ~TitleBackModel() = default;
+    ResultModels() = default;
+    ~ResultModels() = default;
 
     void Initialize();
     void Update();
@@ -42,9 +42,13 @@ private:
         Vector3 euler;
         Vector4 color;
         uint32_t textureHandle = 0;
+
     };
     std::map<std::string, loadData> modelData_;
 
-    void LoadModelData(const std::string& _name);
+    std::vector<std::string> clearmodelNames_;
+    std::vector<std::string> gameOvermodelNames_;
+
+    void LoadModelData(const std::string& _name,int _result);
 
 };

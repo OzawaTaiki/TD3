@@ -1,0 +1,62 @@
+{
+    "ResultModels": {
+        "NewModel2_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "NewModel2_euler": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "NewModel2_filePath": "",
+        "NewModel2_scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "NewModel2_textureDirPath": "Resources/images/",
+        "NewModel2_texturePath": "uvChecker.png",
+        "NewModel2_translate": {
+            "x": -2.0199999809265137,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "NewModel_color": {
+            "w": 1.0,
+            "x": 0.7137255072593689,
+            "y": 0.7372549176216125,
+            "z": 0.0
+        },
+        "NewModel_euler": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "NewModel_filePath": "",
+        "NewModel_scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "NewModel_textureDirPath": "Resources/images/",
+        "NewModel_texturePath": "cube.jpg",
+        "NewModel_translate": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "clearModelNames": [
+            "NewModel"
+        ],
+        "gameOverModelNames": [
+            "NewModel2"
+        ],
+        "modelNames": [
+            "NewModel",
+            "NewModel2"
+        ]
+    }
+}

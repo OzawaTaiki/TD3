@@ -1,0 +1,28 @@
+{
+    "otohimeCountText": {
+        "otohimeCountText_anchor": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "otohimeCountText_color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "otohimeCountText_directoryPath": "Resources/images/",
+        "otohimeCountText_isActive": 257,
+        "otohimeCountText_isVisible": 1,
+        "otohimeCountText_label": "otohimeCountText",
+        "otohimeCountText_pos": {
+            "x": 317.0,
+            "y": 100.0
+        },
+        "otohimeCountText_rotate": 0.0,
+        "otohimeCountText_size": {
+            "x": 64.0,
+            "y": 128.0
+        },
+        "otohimeCountText_textureName": "white.png"
+    }
+}
