@@ -3,6 +3,7 @@
 // Engine
 #include <Features/Model/Manager/ModelManager.h>
 #include <Features/Scene/Manager/SceneManager.h>
+#include <Core/DXCommon/TextureManager/TextureManager.h>
 
 // Application
 #include <Application/CameraShake/CameraShake.h>
@@ -30,6 +31,7 @@ void GameScene::Initialize() {
 	ground_ = std::make_unique<ObjectModel>("Ground");
 	ground_->Initialize("Tile/Tile.gltf");
 	ground_->GetUVTransform().SetScale({100, 100});
+	textureGround_ = TextureManager::GetInstance()->Load("white.png");
 
 	particleSystem_ = ParticleSystem::GetInstance();
     particleSystem_->SetCamera(&SceneCamera_);
@@ -224,7 +226,7 @@ void GameScene::Update() {
 void GameScene::Draw() {
 	ModelManager::GetInstance()->PreDrawForObjectModel();
 
-	ground_->Draw(&SceneCamera_, {1, 1, 1, 1});
+	ground_->Draw(&SceneCamera_, textureGround_, {0.627f, 0.322f, 0.176f, 1});
 
 	// フィールド描画
 	field_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
