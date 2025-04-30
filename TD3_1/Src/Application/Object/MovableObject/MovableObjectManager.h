@@ -13,7 +13,6 @@
 
 // Application
 #include <Application/Object/MovableObject/MovableObject.h>
-#include <Application/Object/Player/PlayerHand.h>
 
 class Camera;
 
@@ -67,9 +66,6 @@ private:
 	float targetY_;
 	float currentY_;
 
-
-	// 手オブジェクト
-	std::unique_ptr<PlayerHand> hand_;
 
     float objectHp_ = 10.0f; // オブジェクトのHP
 

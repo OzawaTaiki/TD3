@@ -27,7 +27,7 @@ void SampleFramework::Initialize()
 
 
     // 最初のシーンで初期化
-    sceneManager_->Initialize("Title");
+    sceneManager_->Initialize("Game");
 }
 
 void SampleFramework::Update()

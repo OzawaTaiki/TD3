@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleModifier.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp" />
     <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.cpp" />
@@ -163,7 +164,6 @@
     <ClCompile Include="Src\Application\TItle\TitleBackModel.cpp" />
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp" />
     <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp" />
-    <ClCompile Include="Src\Application\Object\Player\PlayerHand.cpp" />
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp" />
     <ClCompile Include="Src\Application\Object\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
@@ -197,6 +197,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Object\Player\Player.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleModifier.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h" />
     <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.h" />
@@ -209,7 +210,6 @@
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h" />
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
     <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h" />
-    <ClInclude Include="Src\Application\Object\Player\PlayerHand.h" />
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
     <ClInclude Include="Src\Application\Object\MovableObject\MovableObject.h" />
     <ClInclude Include="Src\Application\UI\Game\GameUI.h" />

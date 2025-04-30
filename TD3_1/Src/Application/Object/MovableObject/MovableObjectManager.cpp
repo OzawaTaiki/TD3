@@ -38,10 +38,6 @@ void MovableObjectManager::Initialize(const Camera& camera) {
 
 	AddMovableObject({ 0, 1, -6 });
 
-	// 手オブジェクト生成
-	hand_ = std::make_unique<PlayerHand>();
-	hand_->Initialize(camera);
-
     Audio* audio = Audio::GetInstance();
 
     haveSoundHandle_ = audio->SoundLoadWave("Resources/audio/have.wav");
@@ -73,10 +69,7 @@ void MovableObjectManager::Update(const Camera& camera)
 	}
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
-	HandleObjectDragAndDrop(camera);
-
-	// 手オブジェクト更新
-	hand_->Update(camera);
+	/*HandleObjectDragAndDrop(camera);*/
 }
 
 void MovableObjectManager::Draw(const Camera& camera)
@@ -85,9 +78,6 @@ void MovableObjectManager::Draw(const Camera& camera)
 	for (const auto& object : objects_) {
 		object->Draw(camera);
 	}
-
-	// 手オブジェクト描画
-	hand_->Draw(camera);
 }
 
 void MovableObjectManager::DrawShadow(const Camera& camera)
@@ -239,9 +229,6 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
 	}
-
-	// 手オブジェクトにドラッグ状態を知らせる
-	hand_->SetIsDragging(isDragging_);
 
 #ifdef _DEBUG
 	ImGui::Begin("movableObject");

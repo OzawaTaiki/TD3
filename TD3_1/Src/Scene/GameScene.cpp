@@ -44,6 +44,10 @@ void GameScene::Initialize() {
 
 	/*---生成と初期化---*/
 
+	// プレイヤー
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+
 	// フィールド
 	field_ = std::make_unique<Field>();
 	field_->Initialize("mapData.csv");
@@ -137,6 +141,8 @@ void GameScene::Update() {
 	CameraShake::GetInstance()->Update();
 	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
 
+	// プレイヤー更新
+	player_->Update();
 	// フィールド更新
 	field_->Update();
 	// 動かせるオブジェクト更新
@@ -228,6 +234,8 @@ void GameScene::Draw() {
 
 	ground_->Draw(&SceneCamera_, textureGround_, {0.627f, 0.322f, 0.176f, 1});
 
+	// プレイヤー描画
+	player_->Draw(SceneCamera_);
 	// フィールド描画
 	field_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
 	// 動かせるオブジェクト描画

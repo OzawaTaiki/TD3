@@ -23,6 +23,7 @@
 #include <Application/UI/Game/GameUI.h>
 #include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
+#include <Application/Object/Player/Player.h>
 
 class GameScene : public BaseScene
 {
@@ -59,6 +60,8 @@ private:
 /// Application
 /// </summary>
 private:
+    // プレイヤー
+    std::unique_ptr<Player> player_;
     // フィールド
 	std::unique_ptr<Field> field_;
     // 動かせるオブジェクトを管理するクラス
