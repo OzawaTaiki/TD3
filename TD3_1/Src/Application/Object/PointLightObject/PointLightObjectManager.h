@@ -5,7 +5,7 @@
 #include <memory>
 
 // Application
-#include <Application/PointLightObject/PointLightObject.h>
+#include <Application/Object/PointLightObject/PointLightObject.h>
 
 class PointLightObjectManager
 {

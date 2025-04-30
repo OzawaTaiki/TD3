@@ -12,8 +12,8 @@
 #include <Features/Event/EventListener.h>
 
 // Application
-#include <Application/MovableObject/MovableObject.h>
-#include <Application/Player/PlayerHand.h>
+#include <Application/Object/MovableObject/MovableObject.h>
+#include <Application/Object/Player/PlayerHand.h>
 
 class Camera;
 

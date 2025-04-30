@@ -63,25 +63,25 @@
     <ClCompile Include="Src\Scene\GameScene.cpp">
       <Filter>Application\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Field\Field.cpp">
+    <ClCompile Include="Src\Application\Object\Field\Field.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp">
+    <ClCompile Include="Src\Application\Object\MovableObject\MovableObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Tower\Tower.cpp">
+    <ClCompile Include="Src\Application\Object\Tower\Tower.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp">
+    <ClCompile Include="Src\Application\Object\ShadowObject\ShadowObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp">
+    <ClCompile Include="Src\Application\Object\PointLightObject\PointLightObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp">
+    <ClCompile Include="Src\Application\Object\ShadowObject\ShadowObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp">
+    <ClCompile Include="Src\Application\Object\PointLightObject\PointLightObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Event\RewardGauge.cpp">
@@ -99,7 +99,7 @@
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp">
+    <ClCompile Include="Src\Application\Object\MovableObject\MovableObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp">
@@ -111,7 +111,7 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp">
       <Filter>Application\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Player\PlayerHand.cpp">
+    <ClCompile Include="Src\Application\Object\Player\PlayerHand.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp">
@@ -176,25 +176,25 @@
     <ClInclude Include="Src\Scene\GameScene.h">
       <Filter>Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Field\Field.h">
+    <ClInclude Include="Src\Application\Object\Field\Field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h">
+    <ClInclude Include="Src\Application\Object\MovableObject\MovableObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Tower\Tower.h">
+    <ClInclude Include="Src\Application\Object\Tower\Tower.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h">
+    <ClInclude Include="Src\Application\Object\ShadowObject\ShadowObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h">
+    <ClInclude Include="Src\Application\Object\PointLightObject\PointLightObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h">
+    <ClInclude Include="Src\Application\Object\ShadowObject\ShadowObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h">
+    <ClInclude Include="Src\Application\Object\PointLightObject\PointLightObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Event\RewardEventData.h">
@@ -215,7 +215,7 @@
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\MovableObject\MovableObject.h">
+    <ClInclude Include="Src\Application\Object\MovableObject\MovableObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h">
@@ -230,7 +230,7 @@
     <ClInclude Include="Src\Scene\TitleScene.h">
       <Filter>Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Player\PlayerHand.h">
+    <ClInclude Include="Src\Application\Object\Player\PlayerHand.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h">

@@ -13,12 +13,12 @@
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 
 // Application
-#include <Application/MovableObject/MovableObjectManager.h>
-#include <Application/Field/Field.h>
-#include <Application/Tower/Tower.h>
+#include <Application/Object/MovableObject/MovableObjectManager.h>
+#include <Application/Object/Field/Field.h>
+#include <Application/Object/Tower/Tower.h>
 #include <Application/EnemySpawnManager/EnemySpawnManager.h>
-#include <Application/PointLightObject/PointLightObjectManager.h>
-#include <Application/ShadowObject/ShadowObjectManager.h>
+#include <Application/Object/PointLightObject/PointLightObjectManager.h>
+#include <Application/Object/ShadowObject/ShadowObjectManager.h>
 #include <Application/Event/RewardGauge.h>
 #include <Application/UI/Game/GameUI.h>
 #include <Application/ClearChecker/ClearChecker.h>
