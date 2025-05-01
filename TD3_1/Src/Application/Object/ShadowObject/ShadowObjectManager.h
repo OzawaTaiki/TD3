@@ -4,7 +4,7 @@
 #include <vector>
 
 // Application
-#include <Application/ShadowObject/ShadowObject.h>
+#include <Application/Object/ShadowObject/ShadowObject.h>
 
 class PointLightObject;
 class MovableObject;

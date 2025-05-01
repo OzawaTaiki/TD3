@@ -6,8 +6,8 @@
 #include <fstream>
 
 // Application
-#include <Application/PointLightObject/PointLightObject.h>
-#include <Application/MovableObject/MovableObject.h>
+#include <Application/Object/PointLightObject/PointLightObject.h>
+#include <Application/Object/MovableObject/MovableObject.h>
 
 // Externals
 #include <json.hpp>

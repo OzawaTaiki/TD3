@@ -8,7 +8,9 @@
             "Enemy_forward",
             "Shadowobject",
             "Shadowobjectreturning",
-            "None"
+            "None",
+            "Player",
+            "Playerforward"
         ]
     }
 }

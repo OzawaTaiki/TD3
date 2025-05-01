@@ -152,6 +152,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\CameraController\CameraController.cpp" />
+    <ClCompile Include="Src\Application\Util\MyMath\MyMath.cpp" />
+    <ClCompile Include="Src\Application\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleModifier.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp" />
     <ClCompile Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.cpp" />
@@ -163,22 +166,21 @@
     <ClCompile Include="Src\Application\TItle\TitleBackModel.cpp" />
     <ClCompile Include="Src\Application\Util\SimpleEasing\SimpleEasing.cpp" />
     <ClCompile Include="Src\Application\Enemy\Route\EnemyRouteManager.cpp" />
-    <ClCompile Include="Src\Application\Player\PlayerHand.cpp" />
     <ClCompile Include="Src\Application\ClearChecker\ClearChecker.cpp" />
-    <ClCompile Include="Src\Application\MovableObject\MovableObject.cpp" />
+    <ClCompile Include="Src\Application\Object\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Src\Application\UI\Game\GameUI.cpp" />
     <ClCompile Include="Src\Application\Transition\Fade\Fade.cpp" />
     <ClCompile Include="Src\Application\CameraShake\CameraShake.cpp" />
     <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="Src\Application\Event\RewardGauge.cpp" />
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObjectManager.cpp" />
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObjectManager.cpp" />
-    <ClCompile Include="Src\Application\PointLightObject\PointLightObject.cpp" />
-    <ClCompile Include="Src\Application\ShadowObject\ShadowObject.cpp" />
+    <ClCompile Include="Src\Application\Object\PointLightObject\PointLightObjectManager.cpp" />
+    <ClCompile Include="Src\Application\Object\ShadowObject\ShadowObjectManager.cpp" />
+    <ClCompile Include="Src\Application\Object\PointLightObject\PointLightObject.cpp" />
+    <ClCompile Include="Src\Application\Object\ShadowObject\ShadowObject.cpp" />
     <ClCompile Include="Src\Application\EnemySpawnManager\EnemySpawnManager.cpp" />
     <ClCompile Include="Src\Application\Enemy\Enemy.cpp" />
-    <ClCompile Include="Src\Application\MovableObject\MovableObjectManager.cpp" />
-    <ClCompile Include="Src\Application\Field\Field.cpp" />
+    <ClCompile Include="Src\Application\Object\MovableObject\MovableObjectManager.cpp" />
+    <ClCompile Include="Src\Application\Object\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Application\UI\Game\Wave\WaveUI.cpp" />
     <ClCompile Include="Src\Essential\ParticleModifierFactory.cpp" />
@@ -186,7 +188,7 @@
     <ClCompile Include="Src\Essential\SampleScene.cpp" />
     <ClCompile Include="Src\Essential\SceneFactory.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
-    <ClCompile Include="Src\Application\Tower\Tower.cpp" />
+    <ClCompile Include="Src\Application\Object\Tower\Tower.cpp" />
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Application\UI\Title\TitleUI.cpp" />
@@ -197,6 +199,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\CameraController\CameraController.h" />
+    <ClInclude Include="Src\Application\Util\MyMath\MyMath.h" />
+    <ClInclude Include="Src\Application\Object\Player\Player.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleModifier.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h" />
     <ClInclude Include="Src\Application\Particles\Tower\SmokeParticle\SmokeModifier.h" />
@@ -209,23 +214,22 @@
     <ClInclude Include="Src\Application\Util\SimpleEasing\SimpleEasing.h" />
     <ClInclude Include="Src\Application\Enemy\EnemyAttackInfo.h" />
     <ClInclude Include="Src\Application\Enemy\Route\EnemyRouteManager.h" />
-    <ClInclude Include="Src\Application\Player\PlayerHand.h" />
     <ClInclude Include="Src\Application\ClearChecker\ClearChecker.h" />
-    <ClInclude Include="Src\Application\MovableObject\MovableObject.h" />
+    <ClInclude Include="Src\Application\Object\MovableObject\MovableObject.h" />
     <ClInclude Include="Src\Application\UI\Game\GameUI.h" />
     <ClInclude Include="Src\Application\Transition\Fade\Fade.h" />
     <ClInclude Include="Src\Application\CameraShake\CameraShake.h" />
     <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="Src\Application\Event\RewardEventData.h" />
     <ClInclude Include="Src\Application\Event\RewardGauge.h" />
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObjectManager.h" />
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObjectManager.h" />
-    <ClInclude Include="Src\Application\PointLightObject\PointLightObject.h" />
-    <ClInclude Include="Src\Application\ShadowObject\ShadowObject.h" />
+    <ClInclude Include="Src\Application\Object\PointLightObject\PointLightObjectManager.h" />
+    <ClInclude Include="Src\Application\Object\ShadowObject\ShadowObjectManager.h" />
+    <ClInclude Include="Src\Application\Object\PointLightObject\PointLightObject.h" />
+    <ClInclude Include="Src\Application\Object\ShadowObject\ShadowObject.h" />
     <ClInclude Include="Src\Application\EnemySpawnManager\EnemySpawnManager.h" />
     <ClInclude Include="Src\Application\Enemy\Enemy.h" />
-    <ClInclude Include="Src\Application\MovableObject\MovableObjectManager.h" />
-    <ClInclude Include="Src\Application\Field\Field.h" />
+    <ClInclude Include="Src\Application\Object\MovableObject\MovableObjectManager.h" />
+    <ClInclude Include="Src\Application\Object\Field\Field.h" />
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveChangeData.h" />
     <ClInclude Include="Src\Application\UI\Game\Wave\WaveUI.h" />
     <ClInclude Include="Src\Essential\ParticleModifierFactory.h" />
@@ -233,7 +237,7 @@
     <ClInclude Include="Src\Essential\SampleScene.h" />
     <ClInclude Include="Src\Essential\SceneFactory.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
-    <ClInclude Include="Src\Application\Tower\Tower.h" />
+    <ClInclude Include="Src\Application\Object\Tower\Tower.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Application\UI\Title\TitleUI.h" />

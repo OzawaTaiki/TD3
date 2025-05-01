@@ -12,8 +12,7 @@
 #include <Features/Event/EventListener.h>
 
 // Application
-#include <Application/MovableObject/MovableObject.h>
-#include <Application/Player/PlayerHand.h>
+#include <Application/Object/MovableObject/MovableObject.h>
 
 class Camera;
 
@@ -67,9 +66,6 @@ private:
 	float targetY_;
 	float currentY_;
 
-
-	// 手オブジェクト
-	std::unique_ptr<PlayerHand> hand_;
 
     float objectHp_ = 10.0f; // オブジェクトのHP
 

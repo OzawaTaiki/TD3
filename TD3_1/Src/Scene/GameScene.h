@@ -13,16 +13,18 @@
 #include <Features/Collision/RayCast/RayCollisionManager.h>
 
 // Application
-#include <Application/MovableObject/MovableObjectManager.h>
-#include <Application/Field/Field.h>
-#include <Application/Tower/Tower.h>
+#include <Application/Object/MovableObject/MovableObjectManager.h>
+#include <Application/Object/Field/Field.h>
+#include <Application/Object/Tower/Tower.h>
 #include <Application/EnemySpawnManager/EnemySpawnManager.h>
-#include <Application/PointLightObject/PointLightObjectManager.h>
-#include <Application/ShadowObject/ShadowObjectManager.h>
+#include <Application/Object/PointLightObject/PointLightObjectManager.h>
+#include <Application/Object/ShadowObject/ShadowObjectManager.h>
 #include <Application/Event/RewardGauge.h>
 #include <Application/UI/Game/GameUI.h>
 #include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
+#include <Application/Object/Player/Player.h>
+#include <Application/CameraController/CameraController.h>
 
 class GameScene : public BaseScene
 {
@@ -59,6 +61,8 @@ private:
 /// Application
 /// </summary>
 private:
+    // プレイヤー
+    std::unique_ptr<Player> player_;
     // フィールド
 	std::unique_ptr<Field> field_;
     // 動かせるオブジェクトを管理するクラス
@@ -77,6 +81,8 @@ private:
     std::unique_ptr<GameUI> gameUI_;
     // クリアチェック
     std::unique_ptr<ClearChecker> clearChecker_ = nullptr;
+    // カメラ追従
+    std::unique_ptr<CameraController> cameraController_;
 
 private:
     // フェード関連

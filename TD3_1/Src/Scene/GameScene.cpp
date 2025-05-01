@@ -15,7 +15,7 @@ GameScene::~GameScene() {
 
 void GameScene::Initialize() {
 	SceneCamera_.Initialize();
-	SceneCamera_.translate_ = {0, 50, -50};
+	SceneCamera_.translate_ = {0, 0, 0};
 	SceneCamera_.rotate_ = {0.81f, 0, 0};
 	SceneCamera_.UpdateMatrix();
 	debugCamera_.Initialize();
@@ -43,6 +43,10 @@ void GameScene::Initialize() {
 	///
 
 	/*---生成と初期化---*/
+
+	// プレイヤー
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 
 	// フィールド
 	field_ = std::make_unique<Field>();
@@ -97,6 +101,11 @@ void GameScene::Initialize() {
 
 	ResultData::GetInstance()->Reset();
 
+	// カメラ追従
+	cameraController_ = std::make_unique<CameraController>();
+	cameraController_->Initialize({ 0.0f, 45.0f, -45.0f }); // 初期オフセット
+	cameraController_->SetTarget(&player_->GetTranslate());
+
 	LoadFromFile();
 }
 
@@ -113,11 +122,11 @@ void GameScene::Update() {
 
 	lights_->ImGui();
 	ImGui::Begin("Camera");
-	ImGui::DragFloat3("translate", &originalCameraTranslate_.x, 0.01f);
+	/*ImGui::DragFloat3("translate", &originalCameraTranslate_.x, 0.01f);
 	ImGui::DragFloat3("rotate", &SceneCamera_.rotate_.x, 0.01f);
 	if (ImGui::Button("Save")) {
 		SaveToFile();
-	}
+	}*/
 	ImGui::End();
 
 #endif // _DEBUG
@@ -137,6 +146,12 @@ void GameScene::Update() {
 	CameraShake::GetInstance()->Update();
 	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
 
+	// カメラをプレイヤーに追従
+	cameraController_->Update();
+	SceneCamera_.translate_ = cameraController_->GetCameraPosition() + CameraShake::GetInstance()->GetOffset();
+
+	// プレイヤー更新
+	player_->Update(movableObjectManager_->GetAllObjects());
 	// フィールド更新
 	field_->Update();
 	// 動かせるオブジェクト更新
@@ -228,6 +243,8 @@ void GameScene::Draw() {
 
 	ground_->Draw(&SceneCamera_, textureGround_, {0.627f, 0.322f, 0.176f, 1});
 
+	// プレイヤー描画
+	player_->Draw(SceneCamera_);
 	// フィールド描画
 	field_->Draw(&SceneCamera_, { 1, 1, 1, 1 });
 	// 動かせるオブジェクト描画
