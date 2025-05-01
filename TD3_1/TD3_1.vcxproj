@@ -152,6 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Application\Util\MyMath\MyMath.cpp" />
     <ClCompile Include="Src\Application\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleModifier.cpp" />
     <ClCompile Include="Src\Application\Particles\Enemy\Move\BubbleParticle.cpp" />
@@ -197,6 +198,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Application\Util\MyMath\MyMath.h" />
     <ClInclude Include="Src\Application\Object\Player\Player.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleModifier.h" />
     <ClInclude Include="Src\Application\Particles\Enemy\Move\BubbleParticle.h" />

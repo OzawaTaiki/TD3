@@ -142,7 +142,7 @@ void GameScene::Update() {
 	SceneCamera_.translate_ = originalCameraTranslate_ + CameraShake::GetInstance()->GetOffset();
 
 	// プレイヤー更新
-	player_->Update();
+	player_->Update(movableObjectManager_->GetAllObjects());
 	// フィールド更新
 	field_->Update();
 	// 動かせるオブジェクト更新

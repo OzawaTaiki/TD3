@@ -70,6 +70,30 @@ void MovableObjectManager::Update(const Camera& camera)
 
 	// オブジェクトをドラッグアンドドロップで動かす処理
 	/*HandleObjectDragAndDrop(camera);*/
+
+#ifdef _DEBUG
+	ImGui::Begin("movableObject");
+
+	if (ImGui::Button("AddObject")) {
+		AddMovableObject({ 0, 1, -6 });
+	}
+	for (size_t i = 0; i < objects_.size(); ++i) {
+		// オブジェクト番号表示
+		std::string labelNum = "Object[" + std::to_string(i) + "]";
+		ImGui::Text(labelNum.c_str());
+
+		// オブジェクト座標表示（非活性化していじれないように）
+		Vector3 translate = objects_[i]->GetTranslate();
+		ImGui::BeginDisabled(true); ImGui::DragFloat3("", &translate.x); ImGui::EndDisabled(); ImGui::SameLine();
+
+		// オブジェクト削除ボタン
+		std::string labelDel = "Delete##" + std::to_string(i);
+		if (ImGui::Button(labelDel.c_str())) {
+			objects_.erase(objects_.begin() + i);
+		}
+	}
+	ImGui::End();
+#endif
 }
 
 void MovableObjectManager::Draw(const Camera& camera)
@@ -229,30 +253,6 @@ void MovableObjectManager::HandleObjectDragAndDrop(const Camera& camera)
 		draggingObject_ = nullptr; // ドラッグ中オブジェクトをクリア
 
 	}
-
-#ifdef _DEBUG
-	ImGui::Begin("movableObject");
-
-	if (ImGui::Button("AddObject")) {
-		AddMovableObject({ 0, 1, -6 });
-	}
-	for (size_t i = 0; i < objects_.size(); ++i) {
-		// オブジェクト番号表示
-		std::string labelNum = "Object[" + std::to_string(i) + "]";
-		ImGui::Text(labelNum.c_str());
-
-		// オブジェクト座標表示（非活性化していじれないように）
-		Vector3 translate = objects_[i]->GetTranslate();
-		ImGui::BeginDisabled(true); ImGui::DragFloat3("", &translate.x); ImGui::EndDisabled(); ImGui::SameLine();
-
-		// オブジェクト削除ボタン
-		std::string labelDel = "Delete##" + std::to_string(i);
-		if (ImGui::Button(labelDel.c_str())) {
-			objects_.erase(objects_.begin() + i);
-		}
-	}
-	ImGui::End();
-#endif
 }
 
 Ray MovableObjectManager::CreateMouseRay(const Camera& camera)
