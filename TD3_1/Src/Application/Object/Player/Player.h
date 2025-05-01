@@ -85,10 +85,25 @@ private:
 	// パラメーター
 	// ---------------------------------------------------------
 	
-	// 移動速度
+	/*移動*/
+
+	// 速さ
 	float moveSpeed_ = 0.15f;
+	// 速度
+	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };
+	// 加速率
+	const float acceleration = 0.2f;
+	// 減速率
+	const float deceleration = 0.4f;
+
+	/*回転*/
+
 	// プレイヤーの向き（Y軸回転角度）
 	float rotationY_ = 0.0f;
+	// 目標回転角度
+	float targetRotationY_ = 0.0f;
+	// 回転の追従速度
+	const float rotateSpeed_ = 0.2f;
 
 	// ---------------------------------------------------------
 	// オブジェクト掴み関連

@@ -71,6 +71,10 @@ void Player::Update(const std::vector<std::unique_ptr<MovableObject>>& movableOb
 // ----------------------------------------
 void Player::Draw(const Camera& camera)
 {
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("velocity", &velocity_.x);
+	ImGui::End();
+
 	// オブジェクト描画
 	objectPlayer_->Draw(&camera, texturePlayer_, { 1, 1, 1, 1 });
 }
@@ -83,15 +87,25 @@ void Player::HandleMove()
 	// 左スティック入力取得
 	Vector2 leftStick = input_->GetPadLeftStick();
 
-	// 移動方向の計算
-	Vector3 moveDirection(leftStick.x, 0.0f, leftStick.y);
-	if (moveDirection.Length() > 0.0f) {
-		moveDirection.Normalize();
-		moveDirection *= moveSpeed_;
-	}
+	// 入力方向をベースにした目標速度ベクトルを作成
+	Vector3 targetVelocity(leftStick.x, 0.0f, leftStick.y);
 
-	// プレイヤーに移動を適用
-	objectPlayer_->translate_ += moveDirection;
+	if (targetVelocity.Length() > 1.0f) {
+		targetVelocity.Normalize();
+	}
+	targetVelocity *= moveSpeed_;
+
+	// 加減速処理
+	Vector3 velocityDelta = targetVelocity - velocity_;
+
+	// 加速または減速
+	float adjustmentRate = (targetVelocity.LengthSquared() > 0.01f) ? acceleration : deceleration;
+
+	// 差分に調整率を掛けて、現在速度を更新
+	velocity_ += velocityDelta * adjustmentRate;
+
+	// 移動を適用
+	objectPlayer_->translate_ += velocity_;
 }
 
 // ----------------------------------------
@@ -102,11 +116,33 @@ void Player::HandleRotate()
 	// 右スティック入力取得
 	Vector2 rightStick = input_->GetPadRightStick();
 
-	// 向いている角度を右スティックの方向に更新
-	if (rightStick.Length() >= 0.1f) {
-		rotationY_ = std::atan2f(rightStick.x, rightStick.y);
+	const float inputThreshold = 0.1f; // 入力の閾値
+	const float rotationLerpSpeed = 0.1f; // 回転速度係数
 
-		// クォータニオンを使ってY軸回転を設定
+	// 入力があるときのみ回転処理を行う
+	if (rightStick.Length() >= inputThreshold) {
+		// 入力方向を角度に変換
+		float targetRotationY = std::atan2f(rightStick.x, rightStick.y);
+
+		// 差分を計算（-π ~ π に正規化）
+		float angleDiff = targetRotationY - rotationY_;
+		if (angleDiff > std::numbers::pi_v<float>) {
+			angleDiff -= std::numbers::pi_v <float> * 2.0f;
+		} else if (angleDiff < -std::numbers::pi_v<float>) {
+			angleDiff += std::numbers::pi_v<float> * 2.0f;
+		}
+
+		// 回転角度を補間して更新
+		rotationY_ += angleDiff * rotationLerpSpeed;
+
+		// 正規化（-π ~ π）
+		if (rotationY_ > std::numbers::pi_v<float>) {
+			rotationY_ -= std::numbers::pi_v<float> * 2.0f;
+		} else if (rotationY_ < -std::numbers::pi_v<float>) {
+			rotationY_ += std::numbers::pi_v<float> * 2.0f;
+		}
+
+		// クォータニオンを適用
 		objectPlayer_->quaternion_ = Quaternion::MakeRotateAxisAngleQuaternion(Vector3(0, 1, 0), rotationY_);
 	}
 }
@@ -119,8 +155,6 @@ void Player::HandleRotate()
 // ----------------------------------------
 void Player::HandleObjectPickup(const std::vector<std::unique_ptr<MovableObject>>& movableObjects)
 {
-	ImGui::Begin("Player");
-
 	///
 	/// RB入力でオブジェクトの掴み状態を切り替える
 	/// 
@@ -172,17 +206,12 @@ void Player::HandleObjectPickup(const std::vector<std::unique_ptr<MovableObject>
 		// プレイヤーの向いている方向
 		Vector3 forward = GetForwardFromYRotation(objectPlayer_->quaternion_);
 
-		ImGui::DragFloat3("forward", &forward.x);
-
 		// オブジェクトをプレイヤーの前方少し上に配置
 		Vector3 targetPos = playerPos + forward * 2.0f + Vector3(0, 4, 0); // 前方に2.0, 上に4.0
 
 		// 位置を反映
 		holdingObject_->SetTranslate(targetPos);
 	}
-
-	ImGui::Checkbox("isHolding", &isHolding_);
-	ImGui::End();
 }
 
 // ----------------------------------------
