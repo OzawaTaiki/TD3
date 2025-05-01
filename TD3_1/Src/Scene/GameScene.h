@@ -24,6 +24,7 @@
 #include <Application/ClearChecker/ClearChecker.h>
 #include <Application/Transition/Fade/Fade.h>
 #include <Application/Object/Player/Player.h>
+#include <Application/CameraController/CameraController.h>
 
 class GameScene : public BaseScene
 {
@@ -80,6 +81,8 @@ private:
     std::unique_ptr<GameUI> gameUI_;
     // クリアチェック
     std::unique_ptr<ClearChecker> clearChecker_ = nullptr;
+    // カメラ追従
+    std::unique_ptr<CameraController> cameraController_;
 
 private:
     // フェード関連

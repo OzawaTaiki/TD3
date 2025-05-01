@@ -26,6 +26,12 @@ public:
 	/// <param name="camera"></param>
 	void Draw(const Camera& camera);
 
+
+	/// <summary>
+	/// 位置を取得
+	/// </summary>
+	Vector3& GetTranslate() const { return objectPlayer_->translate_; }
+
 private:
 	// ---------------------------------------------------------
 	// 内部処理
