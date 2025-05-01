@@ -71,9 +71,11 @@ void Player::Update(const std::vector<std::unique_ptr<MovableObject>>& movableOb
 // ----------------------------------------
 void Player::Draw(const Camera& camera)
 {
+#ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("velocity", &velocity_.x);
 	ImGui::End();
+#endif
 
 	// オブジェクト描画
 	objectPlayer_->Draw(&camera, texturePlayer_, { 1, 1, 1, 1 });
