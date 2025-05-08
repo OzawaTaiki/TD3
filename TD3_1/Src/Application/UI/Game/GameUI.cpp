@@ -9,7 +9,7 @@ void GameUI::Initialize()
 	uint32_t textureTextGuide = TextureManager::GetInstance()->Load("game/ui/textGuide.png");
 	spriteTextGuide_ = Sprite::Create("textGuide", textureTextGuide);
 	spriteTextGuide_->Initialize();
-	spriteTextGuide_->translate_ = { 250, 85 };
+	spriteTextGuide_->translate_ = { 200, 85 };
 
 	// 打ち上げゲージ（文字）
 	uint32_t textureTextGauge = TextureManager::GetInstance()->Load("game/ui/textGauge.png");
