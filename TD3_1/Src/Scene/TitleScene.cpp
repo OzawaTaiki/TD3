@@ -88,7 +88,8 @@ void TitleScene::Update()
 		break;
 	case Phase::kMain:
 		// スペース押下でフェード開始
-		if (Input::GetInstance()->IsPadTriggered(PadButton::iPad_RB)) {
+		if (Input::GetInstance()->IsPadTriggered(PadButton::iPad_RB)||
+			Input::GetInstance()->IsKeyTriggered(DIK_SPACE)) {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
 		}

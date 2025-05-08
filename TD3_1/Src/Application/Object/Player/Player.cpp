@@ -16,7 +16,7 @@ void Player::Initialize()
 
 	///
 	///	オブジェクト関連
-	///	
+	///
 
 	// オブジェクト生成
 	objectPlayer_ = std::make_unique<ObjectModel>("Player");
@@ -86,11 +86,29 @@ void Player::Draw(const Camera& camera)
 // ----------------------------------------
 void Player::HandleMove()
 {
+
 	// 左スティック入力取得
-	Vector2 leftStick = input_->GetPadLeftStick();
+	Vector2 leftStick = { 0,0 };
+	if (input_->IsControllerConnected())
+	{
+		leftStick = input_->GetPadLeftStick();
+	}
+	else
+	{
+        if (input_->IsKeyPressed(DIK_W))
+			leftStick.y += 1.0f;
+		if (input_->IsKeyPressed(DIK_A))
+			leftStick.x += -1.0f;
+		if (input_->IsKeyPressed(DIK_S))
+			leftStick.y += -1.0f;
+		if (input_->IsKeyPressed(DIK_D))
+			leftStick.x += 1.0f;
+	}
+
 
 	// 入力方向をベースにした目標速度ベクトルを作成
 	Vector3 targetVelocity(leftStick.x, 0.0f, leftStick.y);
+
 
 	if (targetVelocity.Length() > 1.0f) {
 		targetVelocity.Normalize();
@@ -116,7 +134,23 @@ void Player::HandleMove()
 void Player::HandleRotate()
 {
 	// 右スティック入力取得
-	Vector2 rightStick = input_->GetPadRightStick();
+	Vector2 rightStick = { 0,0 };
+
+	if(input_->IsControllerConnected())
+	{
+		rightStick = input_->GetPadRightStick();
+    }
+    else
+    {
+		if (input_->IsKeyPressed(DIK_W))
+			rightStick.y += 1.0f;
+		if (input_->IsKeyPressed(DIK_A))
+			rightStick.x += -1.0f;
+		if (input_->IsKeyPressed(DIK_S))
+			rightStick.y += -1.0f;
+		if (input_->IsKeyPressed(DIK_D))
+			rightStick.x += 1.0f;
+    }
 
 	const float inputThreshold = 0.1f; // 入力の閾値
 	const float rotationLerpSpeed = 0.1f; // 回転速度係数
@@ -151,7 +185,7 @@ void Player::HandleRotate()
 
 // ----------------------------------------
 // オブジェクト掴み処理
-// 
+//
 // memo : プレイヤー前方のコライダーと動かせるオブジェクトの衝突判定を行っている
 //		　衝突した状態でRB押下でオブジェクトを掴む。その状態でもう一度RB押下でオブジェクトを離す。
 // ----------------------------------------
@@ -159,11 +193,12 @@ void Player::HandleObjectPickup(const std::vector<std::unique_ptr<MovableObject>
 {
 	///
 	/// RB入力でオブジェクトの掴み状態を切り替える
-	/// 
-	if (input_->IsPadTriggered(PadButton::iPad_RB)) {
+	///
+	if (input_->IsPadTriggered(PadButton::iPad_RB) ||
+		input_->IsKeyTriggered(DIK_L)) {
 		///
 		/// オブジェクトを掴む処理
-		/// 
+		///
 		if (!isHolding_) {
 			MovableObject* hitObject = nullptr;
 
@@ -183,7 +218,7 @@ void Player::HandleObjectPickup(const std::vector<std::unique_ptr<MovableObject>
 			}
 		///
 		/// 掴んだオブジェクトを離す処理
-		/// 
+		///
 		} else {
 			// オブジェクトのY座標を1に戻す（掴んだ際に上に上がるため）
 			Vector3 currentPos = holdingObject_->GetTranslate();
@@ -200,7 +235,7 @@ void Player::HandleObjectPickup(const std::vector<std::unique_ptr<MovableObject>
 
 	///
 	/// 掴んだオブジェクトの移動処理
-	/// 
+	///
 	if (isHolding_ && holdingObject_) {
 		// プレイヤーの位置
 		Vector3 playerPos = objectPlayer_->translate_;

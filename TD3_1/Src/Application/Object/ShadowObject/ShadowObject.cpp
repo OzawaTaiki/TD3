@@ -138,7 +138,9 @@ void ShadowObject::CalculateShadowTransform(const float maxDistance)
 void ShadowObject::HandleAttackInput(bool isDragging)
 {
 	if (!isDragging) {
-		if (Input::GetInstance()->IsPadTriggered(PadButton::iPad_LB)) {
+		if (Input::GetInstance()->IsPadTriggered(PadButton::iPad_LB) ||
+			Input::GetInstance()->IsKeyTriggered(DIK_J) ||
+			Input::GetInstance()->IsKeyTriggered(DIK_SPACE)) {
 			if (!isScaling_) {
 				isScaling_ = true;
 				isReturning_ = false;
